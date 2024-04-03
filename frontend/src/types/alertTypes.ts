@@ -1,11 +1,3 @@
-export interface LoginCredentials {
-  username: string;
-  password: string;
-  rememberMe?: boolean;
-  // twoFactorAuthCode?: string;
-}
-
-// ALERT TYPES
 export interface AlertAction {
   type: string;
   message?: string;
