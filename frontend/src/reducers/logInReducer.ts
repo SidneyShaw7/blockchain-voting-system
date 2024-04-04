@@ -1,26 +1,35 @@
-import { userConstants } from '../constants';
-import { LogInAction, LogInState } from '../types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { User, LogInState } from '../types';
 
-const user = JSON.parse(localStorage.getItem('user'));
-const initialState = user ? { loggedIn: true, user } : {};
+const initialState: LogInState = {
+  loggingIn: false,
+  loggedIn: false,
+  user: null,
+};
 
-export function authentication(state = initialState, action: LogInAction): LogInState {
-  switch (action.type) {
-    case userConstants.LOGIN_REQUEST:
-      return {
-        loggingIn: true,
-        user: action.user
-      };
-    case userConstants.LOGIN_SUCCESS:
-      return {
-        loggedIn: true,
-        user: action.user
-      };
-    case userConstants.LOGIN_FAILURE:
-      return {};
-    case userConstants.LOGOUT:
-      return {};
-    default:
-      return state
-  }
-}
+const authenticationSlice = createSlice({
+  name: 'authentication',
+  initialState,
+  reducers: {
+    loginRequest(state) {
+      state.loggingIn = true;
+    },
+    loginSuccess(state, action: PayloadAction<User>) {
+      state.loggingIn = false;
+      state.loggedIn = true;
+      state.user = action.payload;
+    },
+    loginFailure(state) {
+      state.loggingIn = false;
+      state.loggedIn = false;
+      state.user = null;
+    },
+    logout() {
+      return initialState;
+    },
+  },
+});
+
+export const { loginRequest, loginSuccess, loginFailure, logout } = authenticationSlice.actions;
+
+export default authenticationSlice.reducer;
