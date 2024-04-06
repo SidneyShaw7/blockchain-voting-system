@@ -1,35 +1,48 @@
-// import { authHeader } from '../helpers';
-import { LoginCredentials } from '../types';
+import { LoginCredentials, RegistrationForm } from '../types';
 
 const apiUrl = import.meta.env.API_URL;
 
-const register = async (user: LoginCredentials) => {
-  const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(user),
-  };
-
-  const response = await fetch(`${apiUrl}/users/register`, requestOptions);
-  return handleResponse(response);
+const register = async (userData: RegistrationForm) => {
+  try {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData),
+    };
+    const response = await fetch(`${apiUrl}/users/register`, requestOptions);
+    return handleResponse(response);
+  } catch (error) {
+    console.error('Registration failed', error);
+  }
 };
 
-const login = async ({ username, password }: LoginCredentials) => {
-  const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password }),
-  };
-
-  const response = await fetch(`${apiUrl}/users/authenticate`, requestOptions);
-  const user = await handleResponse(response);
-  localStorage.setItem('user', JSON.stringify(user));
-  return user;
+const login = async (loginCredentials: LoginCredentials) => {
+  try {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(loginCredentials),
+    };
+    const response = await fetch(`${apiUrl}/users/authenticate`, requestOptions);
+    const userData = await handleResponse(response);
+    localStorage.setItem('user', JSON.stringify(userData));
+    return userData;
+  } catch (error) {
+    console.error('Login failed', error);
+  }
 };
 
-const logout = () => {
-  // removing user from local storage to log user out
-  localStorage.removeItem('user');
+const logout = async () => {
+  try {
+    const response = await fetch(`${apiUrl}/users/logout`, { method: 'POST' });
+    if (!response.ok) {
+      throw new Error('Logout failed on the server');
+    }
+    localStorage.removeItem('user');
+  } catch (error) {
+    console.error('Logout failed', error);
+    throw error;
+  }
 };
 
 async function handleResponse(response: Response) {
@@ -41,7 +54,6 @@ async function handleResponse(response: Response) {
       logout();
       location.reload();
     }
-
     const error = (data && data.message) || response.statusText;
     return Promise.reject(error);
   }

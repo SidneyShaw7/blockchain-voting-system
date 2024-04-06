@@ -9,4 +9,5 @@ export type {
   //   AppDispatch,
   //   LogInAction,
   LogInState,
+  RegistrationForm,
 } from './userTypes';
