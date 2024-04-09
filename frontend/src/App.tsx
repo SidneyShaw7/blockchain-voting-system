@@ -1,7 +1,12 @@
-import './App.css'
+import './main.css';
+import { RegistrationForm } from './components/RegistrationFrom/index';
 
 function App() {
-return (<div></div>)
+  return (
+    <div>
+      <RegistrationForm />
+    </div>
+  );
 }
 
-export default App
+export default App;
