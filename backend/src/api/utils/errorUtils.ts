@@ -1,4 +1,4 @@
-import { ErrorWithStatus } from '../../types';
+import { ErrorWithStatus } from '../types';
 
 // export function createError(
 //   name: string,
