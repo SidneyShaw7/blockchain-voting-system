@@ -42,7 +42,7 @@ const RegistrationForm = () => {
           <div className="hidden lg:relative lg:block lg:p-12">
             <a className="block text-white" href="#">
               <span className="sr-only">Home</span>
-              <img src="/src/images/brand_white.png" alt="" className="h-16 sm:h-18"/>
+              <img src="/src/images/brand_white.png" alt="" className="h-16 sm:h-18" />
               {/* <svg className="h-8 sm:h-10" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="/src/images/DALL·E 2024-04-08 14.30.37 - Logo design featuring the letters SWS arranged to form a circle shape, without any additional graphic elements like explicit circles or borders. Eac.svg" fill="currentColor" />
               </svg> */}
@@ -94,10 +94,6 @@ const RegistrationForm = () => {
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                 />
               </div>
-              {/* <label>
-                First Name:
-                <input type="text" placeholder="First Name" value={formData.firstName} onChange={handleChange} />
-              </label> */}
 
               <div className="col-span-6 sm:col-span-3">
                 <label htmlFor="LastName" className="block text-sm font-medium text-gray-700">
@@ -114,14 +110,6 @@ const RegistrationForm = () => {
                 />
               </div>
 
-              {/* <label>
-                Last Name:
-                <input type="text" placeholder="Last Name" value={formData.lastName} onChange={handleChange} />
-              </label> */}
-              {/* <label>
-                Username:
-                <input type="text" placeholder="Username" value={formData.username} onChange={handleChange} />
-              </label> */}
               <div className="col-span-6">
                 <label htmlFor="Email" className="block text-sm font-medium text-gray-700">
                   Username
@@ -151,10 +139,6 @@ const RegistrationForm = () => {
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                 />
               </div>
-              {/* <label>
-                Email:
-                <input type="email" placeholder="Email" value={formData.email} onChange={handleChange} />
-              </label> */}
               <div className="col-span-6 sm:col-span-3">
                 <label htmlFor="Password" className="block text-sm font-medium text-gray-700">
                   Password
@@ -184,14 +168,6 @@ const RegistrationForm = () => {
                   className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
                 />
               </div>
-              {/* <label>
-                Password:
-                <input type="password" placeholder="Password" value={formData.password} onChange={handleChange} />
-              </label>
-              <label>
-                Re-enter Password:
-                <input type="password" placeholder="Re-enter Password" value={formData.reEnterPassword} onChange={handleChange} />
-              </label> */}
 
               <div className="col-span-6">
                 <label htmlFor="MarketingAccept" className="flex gap-4">
@@ -212,12 +188,12 @@ const RegistrationForm = () => {
                 <p className="text-sm text-gray-500">
                   By creating an account, you agree to our
                   <a href="#" className="text-gray-700 underline">
-                    {" "}
-                    terms and conditions{" "}
+                    {' '}
+                    terms and conditions{' '}
                   </a>
                   and
                   <a href="#" className="text-gray-700 underline">
-                    {" "}
+                    {' '}
                     privacy policy
                   </a>
                   .
@@ -234,13 +210,12 @@ const RegistrationForm = () => {
 
                 <p className="mt-4 text-sm text-gray-500 sm:mt-0">
                   Already have an account?
-                  <a href="#" className="text-gray-700 underline">
-                    {" "}
+                  <a href="/log-in" className="text-gray-700 underline">
+                    {' '}
                     Log in
                   </a>
                 </p>
               </div>
-              {/* <button type="submit">Register</button> */}
             </form>
           </div>
         </main>

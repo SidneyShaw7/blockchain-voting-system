@@ -1,0 +1,10 @@
+POST http://localhost:3000/api/users/register
+content-type: application/json
+
+{
+  "firstName": "Nikita",
+  "lastName": "Dmitriev",
+  "username": "nikitosikea",
+  "email": "lalaalenasd@gmail.com",
+  "password": "Developer9000!"
+}

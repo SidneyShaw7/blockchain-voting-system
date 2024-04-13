@@ -1,6 +1,7 @@
 import { LoginCredentials, RegistrationForm } from '../types';
 
-const apiUrl = import.meta.env.API_URL;
+// const apiUrl = import.meta.env.API_URL;
+const apiUrl = 'http://localhost:3000';
 
 const register = async (userData: RegistrationForm) => {
   try {
@@ -9,7 +10,7 @@ const register = async (userData: RegistrationForm) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData),
     };
-    const response = await fetch(`${apiUrl}/users/register`, requestOptions);
+    const response = await fetch(`${apiUrl}/api/users/register`, requestOptions);
     return handleResponse(response);
   } catch (error) {
     console.error('Registration failed', error);
