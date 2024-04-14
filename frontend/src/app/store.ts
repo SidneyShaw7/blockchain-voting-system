@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { authenticationReducer } from '../features/authentication';
+import { loginReducer } from '../features/login';
 import { registrationReducer } from '../features/registration';
 import { alertReducer } from '../features/alert';
 import { TypedUseSelectorHook, useDispatch as rawUseDispatch, useSelector as rawUseSelector } from 'react-redux';
@@ -7,7 +7,7 @@ import { TypedUseSelectorHook, useDispatch as rawUseDispatch, useSelector as raw
 
 export const store = configureStore({
   reducer: {
-    authentication: authenticationReducer,
+    authentication: loginReducer,
     registration: registrationReducer,
     alert: alertReducer,
   },

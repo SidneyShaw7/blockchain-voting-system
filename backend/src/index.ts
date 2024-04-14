@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { userRouter } from './api/routes';
 import { logger } from './api/middleware';
 import { config } from './api/config';
+import { errorHandler } from './api/middleware';
 
 // Load environment variables
 dotenv.config();
@@ -18,14 +19,15 @@ app.use(express.json());
 // app.use(logger);  // Ensure all requests are logged
 
 // Connect to MongoDB
-mongoose.connect(config.mongo.url, { retryWrites: true, w: 'majority' })
+mongoose
+  .connect(config.mongo.url, { retryWrites: true, w: 'majority' })
   .then(() => {
     logger.info('Connected to MongoDB.');
-    startServer();  // Start the server after DB connection is established
+    startServer(); 
   })
   .catch((error) => {
     logger.error('Unable to connect to MongoDB.');
-    logger.error(error.message); // Log the error message for better clarity
+    logger.error(error.message); 
   });
 
 // Function to start the Express server
@@ -35,13 +37,14 @@ function startServer() {
   });
 }
 
-// Basic ping-pong route for simple live checks
-app.get('/pingpong', (_req, res) => {
+// Basic ping route for simple live checks
+app.get('/ping', (_req, res) => {
   logger.info('Ping received, pong sent.');
   res.send('pong');
 });
 
 // User-related routes from the router
 app.use('/api/users', userRouter);
+app.use(errorHandler);
 
 export default app;

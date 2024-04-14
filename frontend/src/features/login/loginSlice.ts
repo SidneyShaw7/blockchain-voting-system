@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { login } from './authenticationThunks';
+import { login } from './loginThunks';
 import { LogInState } from '../../types';
 
 const initialState: LogInState = {
@@ -8,8 +8,8 @@ const initialState: LogInState = {
   user: null,
 };
 
-const authenticationSlice = createSlice({
-  name: 'authentication',
+const loginSlice = createSlice({
+  name: 'login',
   initialState,
   reducers: {
     logout() {
@@ -37,6 +37,6 @@ const authenticationSlice = createSlice({
   },
 });
 
-export const { logout } = authenticationSlice.actions;
+export const { logout } = loginSlice.actions;
 
-export default authenticationSlice.reducer;
+export default loginSlice.reducer;

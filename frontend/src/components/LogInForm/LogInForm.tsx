@@ -1,6 +1,6 @@
 import { useDispatch } from '../../app/store';
 import React, { useState } from 'react';
-import { login } from '../../features/authentication/authenticationThunks';
+import { login } from '../../features/login/loginThunks';
 
 const LoginForm = () => {
   const dispatch = useDispatch();

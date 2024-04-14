@@ -1,6 +1,6 @@
 import { ValidationChain, body } from 'express-validator';
 
-export const userValidationRules = (): ValidationChain[] => [
+export const registerValidationRules = (): ValidationChain[] => [
   body('firstName').trim().isLength({ min: 2, max: 50 }).withMessage('First name must be between 2 and 50 characters'),
   body('lastName').trim().isLength({ min: 2, max: 50 }).withMessage('Last name must be between 2 and 50 characters'),
   body('username').trim().isLength({ min: 3 }).withMessage('Username must be at least 3 characters long'),
