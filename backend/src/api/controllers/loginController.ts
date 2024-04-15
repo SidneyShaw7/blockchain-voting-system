@@ -29,6 +29,14 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     });
   }
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    return next({
+      status: 500,
+      message: 'JWT secret is not defined. Server unable to process requests requiring authentication.',
+      errorCode: 'JWT_CONFIGURATION_ERROR',
+    });
+  }
+  const token = jwt.sign({ id: user._id }, secret, { expiresIn: '1h' });
   res.json({ message: 'Login successful', token, user: { username: user.username } });
 };

@@ -1,1 +1,1 @@
-export { config } from './config';
+export { config, corsConfig } from './config';
