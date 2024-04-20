@@ -1,15 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import helmet from 'helmet';
 import { userRouter } from './api/routes';
 import { logger } from './api/middleware';
 import { config, corsConfig } from './api/config';
 import { errorHandler } from './api/middleware';
 import { ErrorWithStatus } from './api/types';
-
-dotenv.config();
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
@@ -17,11 +15,12 @@ const app = express();
 app.use(helmet());
 app.use(cors(corsConfig));
 app.use(express.json());
+app.use(cookieParser());
 // app.use(logger);  // Ensure all requests are logged
 
 if (!config.mongo.url) {
   logger.error('MongoDB URL is not configured. Please check your environment variables.');
-  process.exit(1); // (optioally )exit if cannot connect to database
+  process.exit(1);
 }
 // Connect to MongoDB
 mongoose

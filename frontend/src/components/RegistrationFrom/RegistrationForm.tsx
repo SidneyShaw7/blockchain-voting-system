@@ -1,6 +1,7 @@
 import { useDispatch } from '../../app/store';
 import React, { useState } from 'react';
-import { register } from '../../features/registration/registrationThunks';
+import { register } from '../../features/registration';
+import { resetRegistrationState } from '../../features/registration';
 
 const RegistrationForm = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const RegistrationForm = () => {
       return;
     }
     dispatch(register(formData));
+    dispatch(resetRegistrationState());
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -210,7 +212,7 @@ const RegistrationForm = () => {
 
                 <p className="mt-4 text-sm text-gray-500 sm:mt-0">
                   Already have an account?
-                  <a href="/log-in" className="text-gray-700 underline">
+                  <a href="/login" className="text-gray-700 underline">
                     {' '}
                     Log in
                   </a>

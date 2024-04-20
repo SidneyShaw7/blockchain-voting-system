@@ -107,7 +107,7 @@ const LoginForm = () => {
 
                 <p className="mt-4 text-sm text-gray-500 sm:mt-0">
                   Don't have an account?
-                  <a href="/" className="text-gray-700 underline">
+                  <a href="/register" className="text-gray-700 underline">
                     {' '}
                     Sign up
                   </a>

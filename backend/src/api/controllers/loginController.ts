@@ -16,27 +16,44 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     });
   }
 
-  const { username, password } = req.body as IUser;
-  const user = await User.findOne({
-    $or: [{ username: username }, { email: username }],
-  }).exec();
+  try {
+    const { username, password } = req.body as IUser;
+    const user = await User.findOne({
+      $or: [{ username: username }, { email: username }],
+    }).exec();
 
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    return next({
-      status: 401,
-      message: 'Login failed, username or password is incorrect',
-      errorCode: 'LOGIN_FAILED',
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return next({
+        status: 401,
+        message: 'Login failed, username or password is incorrect',
+        errorCode: 'LOGIN_FAILED',
+      });
+    }
+
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      return next({
+        status: 500,
+        message: 'JWT secret is not defined. Server unable to process requests requiring authentication.',
+        errorCode: 'JWT_CONFIGURATION_ERROR',
+      });
+    }
+    const token = jwt.sign({ id: user._id }, secret, { expiresIn: '1h' });
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 3600 * 1000,
+      sameSite: 'strict' as const,
     });
-  }
 
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    return next({
+    res.json({ message: 'Login successful', token, user: { username: user.username } });
+  } catch (error) {
+    next({
       status: 500,
-      message: 'JWT secret is not defined. Server unable to process requests requiring authentication.',
-      errorCode: 'JWT_CONFIGURATION_ERROR',
+      message: 'Internal server error',
+      errorCode: 'LOGIN_ERROR',
+      data: { detail: error instanceof Error ? error.message : 'Unknown Error' },
     });
   }
-  const token = jwt.sign({ id: user._id }, secret, { expiresIn: '1h' });
-  res.json({ message: 'Login successful', token, user: { username: user.username } });
 };
