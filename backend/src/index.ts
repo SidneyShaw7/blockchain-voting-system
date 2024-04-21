@@ -71,8 +71,7 @@ app.get('/ping', (_req, res) => {
 });
 
 // User-related routes from the router
-app.use('/api/register', userRouter);
-app.use('/api/login', userRouter);
+app.use('/api/users', userRouter);
 app.use(errorHandler);
 
 export default app;

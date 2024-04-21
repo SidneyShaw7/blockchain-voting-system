@@ -4,6 +4,6 @@
 // }
 
 export interface AlertState {
-  type?: 'alert-success' | 'alert-danger';
+  type?: 'success' | 'error' | 'info' | 'warning';
   message?: string;
 }

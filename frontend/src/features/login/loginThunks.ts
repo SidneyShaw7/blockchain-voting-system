@@ -7,6 +7,7 @@ export const login = createAsyncThunk<User, LoginCredentials, { rejectValue: str
   async (credentials, { rejectWithValue }) => {
     try {
       const user = await userService.login(credentials);
+      localStorage.setItem('user', JSON.stringify(user));
       return user;
     } catch (error: unknown) {
       let errorMessage = 'An unknown error occurred';
@@ -24,6 +25,8 @@ export const login = createAsyncThunk<User, LoginCredentials, { rejectValue: str
 export const logout = createAsyncThunk('authentication/logout', async (_, { rejectWithValue }) => {
   try {
     await userService.logout();
+    localStorage.removeItem('user');
+    sessionStorage.clear();
   } catch (error: unknown) {
     let errorMessage = 'Failed to log out';
     if (typeof error === 'object' && error !== null && 'message' in error) {

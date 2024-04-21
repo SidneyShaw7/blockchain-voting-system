@@ -7,7 +7,7 @@ import { TypedUseSelectorHook, useDispatch as rawUseDispatch, useSelector as raw
 
 export const store = configureStore({
   reducer: {
-    authentication: loginReducer,
+    login: loginReducer,
     registration: registrationReducer,
     alert: alertReducer,
     sidebar: sidebarReducer,

@@ -5,6 +5,7 @@
 export interface LoginCredentials {
   username: string;
   password: string;
+  email?: string;
   rememberMe?: boolean;
   // twoFactorAuthCode?: string;
 }
@@ -38,10 +39,12 @@ export interface User {
 
 // export type LogInAction = RequestAction | SuccessAction | FailureAction | { type: userConstants.LOGOUT };
 
-export interface LogInState {
-  loggingIn?: boolean;
-  loggedIn?: boolean;
-  user?: User | null;
+export interface LoginState {
+  loggingIn: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+  user: User | null;
+  errorMessage?: string;
 }
 
 // REGISTRATION STATE

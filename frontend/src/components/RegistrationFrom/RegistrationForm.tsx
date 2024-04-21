@@ -1,10 +1,13 @@
-import { useDispatch } from '../../app/store';
-import React, { useState } from 'react';
-import { register } from '../../features/registration';
-import { resetRegistrationState } from '../../features/registration';
+import { useDispatch, useSelector, RootState } from '../../app/store';
+import React, { useState, useEffect } from 'react';
+import { register, resetRegistrationState } from '../../features/registration';
+import { useNavigate } from 'react-router-dom';
+import { error as showError } from '../../features/alert';
 
 const RegistrationForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isSuccess, user, isError, errorMessage } = useSelector((state: RootState) => state.registration);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -19,12 +22,21 @@ const RegistrationForm = () => {
     e.preventDefault();
 
     if (formData.password !== formData.passwordConfirmation) {
-      alert('Passwords do not match.');
+      dispatch(showError({ message: 'Passwords do not match.' }));
       return;
     }
     dispatch(register(formData));
-    dispatch(resetRegistrationState());
   };
+
+  useEffect(() => {
+    if (isSuccess && user) {
+      navigate('/home');
+      dispatch(resetRegistrationState());
+    }
+    if (isError && errorMessage) {
+      dispatch(showError({ message: errorMessage }));
+    }
+  }, [dispatch, navigate, isSuccess, user, isError, errorMessage]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;

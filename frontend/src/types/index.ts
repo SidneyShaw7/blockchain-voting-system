@@ -3,11 +3,6 @@ export type {
   LoginCredentials,
   User,
   RegistrationState,
-  //   RequestAction,
-  //   SuccessAction,
-  //   FailureAction,
-  //   AppDispatch,
-  //   LogInAction,
-  LogInState,
+  LoginState,
   RegistrationForm,
 } from './userTypes';

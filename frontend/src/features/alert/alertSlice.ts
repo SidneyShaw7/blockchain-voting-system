@@ -8,10 +8,16 @@ const alertSlice = createSlice({
   initialState,
   reducers: {
     success: (_state, action: PayloadAction<{ message: string }>) => {
-      return { type: 'alert-success', message: action.payload.message };
+      return { type: 'success', message: action.payload.message };
     },
     error: (_state, action: PayloadAction<{ message: string }>) => {
-      return { type: 'alert-danger', message: action.payload.message };
+      return { type: 'error', message: action.payload.message };
+    },
+    info: (_state, action: PayloadAction<{ message: string }>) => {
+      return { type: 'info', message: action.payload.message };
+    },
+    warning: (_state, action: PayloadAction<{ message: string }>) => {
+      return { type: 'warning', message: action.payload.message };
     },
     clear: () => {
       return {};

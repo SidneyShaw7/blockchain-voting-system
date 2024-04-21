@@ -1,11 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { login } from './loginThunks';
-import { LogInState } from '../../types';
+import { LoginState } from '../../types';
 
-const initialState: LogInState = {
+const initialState: LoginState = {
   loggingIn: false,
-  loggedIn: false,
+  isSuccess: false,
+  isError: false,
   user: null,
+  errorMessage: undefined,
 };
 
 const loginSlice = createSlice({
@@ -20,19 +22,24 @@ const loginSlice = createSlice({
     builder
       .addCase(login.pending, (state) => {
         state.loggingIn = true;
-        state.loggedIn = false;
+        state.isSuccess = false;
+        state.isError = false;
         state.user = null;
+        state.errorMessage = undefined;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loggingIn = false;
-        state.loggedIn = true;
+        state.isSuccess = true;
+        state.isError = false;
         state.user = action.payload;
+        state.errorMessage = undefined;
       })
-      .addCase(login.rejected, (state) => {
+      .addCase(login.rejected, (state, action) => {
         state.loggingIn = false;
-        state.loggedIn = false;
+        state.isSuccess = false;
+        state.isError = true;
         state.user = null;
-        // might define an error message here
+        state.errorMessage = action.payload || 'Failed to login';
       });
   },
 });

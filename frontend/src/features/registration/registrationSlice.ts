@@ -6,7 +6,7 @@ const initialState: RegistrationState = {
   isRegistering: false,
   isSuccess: false,
   isError: false,
-  errorMessage: '',
+  errorMessage: undefined,
   user: null,
 };
 
@@ -24,7 +24,7 @@ const registrationSlice = createSlice({
         state.isRegistering = true;
         state.isSuccess = false;
         state.isError = false;
-        state.errorMessage = '';
+        state.errorMessage = undefined;
         state.user = null;
       })
       .addCase(register.fulfilled, (state, action) => {
@@ -32,7 +32,7 @@ const registrationSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.user = action.payload;
-        state.errorMessage = '';
+        state.errorMessage = undefined;
       })
       .addCase(register.rejected, (state, action) => {
         state.isRegistering = false;

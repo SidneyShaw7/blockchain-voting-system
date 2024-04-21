@@ -1,9 +1,13 @@
-import { useDispatch } from '../../app/store';
-import React, { useState } from 'react';
+import { useDispatch, useSelector, RootState } from '../../app/store';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { login } from '../../features/login/loginThunks';
+import { error as showError, success as showSuccess } from '../../features/alert/alertSlice';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isError, isSuccess, errorMessage } = useSelector((state: RootState) => state.login);
 
   const [formData, setFormData] = useState({
     username: '',
@@ -14,6 +18,16 @@ const LoginForm = () => {
     e.preventDefault();
     dispatch(login(formData));
   };
+
+  useEffect(() => {
+    if (isError && errorMessage) {
+      dispatch(showError({ message: errorMessage }));
+    }
+    if (isSuccess) {
+      dispatch(showSuccess({ message: 'Login successful! Redirecting...' }));
+      setTimeout(() => navigate('/dashboard'), 1500); // Adjust the redirect path as needed
+    }
+  }, [dispatch, isError, isSuccess, errorMessage, navigate]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -107,7 +121,7 @@ const LoginForm = () => {
 
                 <p className="mt-4 text-sm text-gray-500 sm:mt-0">
                   Don't have an account?
-                  <a href="/register" className="text-gray-700 underline">
+                  <a href="/" className="text-gray-700 underline">
                     {' '}
                     Sign up
                   </a>
