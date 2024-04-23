@@ -1,3 +1,16 @@
+import { CSSProperties } from 'react';
+
+export const positionStyle: CSSProperties = {
+  position: 'fixed',
+  top: 0,
+  left: '50%',
+  transform: 'translateX(-50%)',
+  width: '90%',
+  maxWidth: '600px',
+  zIndex: 1000,
+  margin: '10px 0',
+};
+
 export const colorStyles = {
   success: {
     background: 'bg-green-200',

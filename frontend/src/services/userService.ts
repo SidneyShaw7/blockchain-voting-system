@@ -7,7 +7,9 @@ async function fetchApi(endpoint: string, options: RequestInit) {
   const response = await fetch(`${apiUrl}${endpoint}`, options);
   const data = await handleResponse(response);
   if (!response.ok) {
-    throw new Error(data.message || 'An unexpected error occurred');
+    console.log(data);
+    console.log(data.error);
+    throw new Error(data.error);
   }
   return data;
 }

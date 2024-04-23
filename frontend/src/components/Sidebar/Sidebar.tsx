@@ -45,7 +45,7 @@ const Sidebar: React.FC = () => {
             >
               <ul className="list-none pl-4">
                 <li className="mb-2 mt-3">
-                  <a href="#voteInitiatives" className="text-[#00478F] hover:text-[#2A231F]" onClick={handleCloseSidebar}>
+                  <a href="/#voteInitiatives/" className="text-[#00478F] hover:text-[#2A231F]" onClick={handleCloseSidebar}>
                     Vote Initiatives
                   </a>
                 </li>
@@ -58,7 +58,7 @@ const Sidebar: React.FC = () => {
             </div>
           </li>
           <li className="mb-4">
-            <a href="#about" className="text-[#00478F] hover:text-[#2A231F]" onClick={handleCloseSidebar}>
+            <a href="/createevent" className="text-[#00478F] hover:text-[#2A231F]" onClick={handleCloseSidebar}>
               Create Event
             </a>
           </li>

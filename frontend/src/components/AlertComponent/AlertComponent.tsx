@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../app/store';
 import { clear } from '../../features/alert';
-import { colorStyles, icons } from './alertStyles';
+import { colorStyles, icons, positionStyle } from './alertStyles';
 
 const AlertComponent = () => {
   const alert = useSelector((state: RootState) => state.alert);
@@ -21,6 +21,7 @@ const AlertComponent = () => {
 
   return (
     <div
+      style={positionStyle}
       role="alert"
       aria-live="assertive"
       className={`px-6 py-4 mx-auto my-4 rounded-md text-lg flex items-center max-w-lg ${
