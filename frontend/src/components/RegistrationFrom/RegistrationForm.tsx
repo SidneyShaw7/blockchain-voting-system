@@ -105,7 +105,7 @@ const RegistrationForm = () => {
                   type="text"
                   id="FirstName"
                   name="firstName"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm focus:border-[#00478F]"
                 />
               </div>
 
@@ -120,7 +120,7 @@ const RegistrationForm = () => {
                   type="text"
                   id="LastName"
                   name="lastName"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm focus:border-[#00478F]"
                 />
               </div>
 
@@ -135,7 +135,7 @@ const RegistrationForm = () => {
                   type="text"
                   id="Username"
                   name="username"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm focus:border-[#00478F]"
                 />
               </div>
 
@@ -150,7 +150,7 @@ const RegistrationForm = () => {
                   type="email"
                   id="Email"
                   name="email"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm focus:border-[#00478F]"
                 />
               </div>
               <div className="col-span-6 sm:col-span-3">
@@ -164,7 +164,7 @@ const RegistrationForm = () => {
                   type="password"
                   id="Password"
                   name="password"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm focus:border-[#00478F]"
                 />
               </div>
 
@@ -179,7 +179,7 @@ const RegistrationForm = () => {
                   type="password"
                   id="PasswordConfirmation"
                   name="passwordConfirmation"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm"
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm focus:border-[#00478F]"
                 />
               </div>
 
@@ -217,7 +217,7 @@ const RegistrationForm = () => {
               <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
                 <button
                   type="submit"
-                  className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500"
+                  className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
                 >
                   Create an account
                 </button>

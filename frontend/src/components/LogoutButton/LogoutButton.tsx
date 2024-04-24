@@ -15,10 +15,6 @@ export const LogoutButton = () => {
     if (isOpen) {
       dispatch(toggleSidebar());
     }
-
-    // localStorage.removeItem('token');
-    // sessionStorage.clear();
-
     navigate('/login');
   };
 

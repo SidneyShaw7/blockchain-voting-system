@@ -1,0 +1,7 @@
+I probably created this txt file too late, but suddenly I decided that it is actually would be nice to note all my journey. Document my decisions, why I did this not that, why I used this stack but not another.
+It's been 3 weeks since I started my fullstack portfolio project, many of my thoughts already gone but I'll do my best to keep up. 
+
+Tue Apr 23
+Live and learn. Today I found out about Formik and Yop libraries for React ecosystem. Seems to me it's a relief for the management and validation of forms. I start using it for the EventCreationForm component but as my previous forms (login and register) don't use it, I had to refactor both to keep my coding style the same on every component. Those libraries look easy to implement, not much of a headache.
+
+Try to refactor ready-to-go components with Formik was such a stupid idea, spent hours on it and hated it. Went back to my prev code, might still use Yup for validation, awesome tool.

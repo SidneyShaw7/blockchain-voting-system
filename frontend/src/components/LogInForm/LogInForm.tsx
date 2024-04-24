@@ -25,7 +25,7 @@ const LoginForm = () => {
     }
     if (isSuccess) {
       dispatch(showSuccess({ message: 'Login successful! Redirecting...' }));
-      setTimeout(() => navigate('/dashboard'), 1500); // Adjust the redirect path as needed
+      setTimeout(() => navigate('/dashboard'), 1500);
     }
   }, [dispatch, isError, isSuccess, errorMessage, navigate]);
 
@@ -73,15 +73,15 @@ const LoginForm = () => {
             </svg> */}
               </a>
 
-              <p className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">Welcome back!</p>
+              {/* <p className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">Welcome back!</p> */}
               <h1 className="mt-2 text-1xl font-bold text-gray-900 sm:text-2xl md:text-3xl">Login to Secure Voting System</h1>
 
               <p className="mt-4 leading-relaxed text-gray-500">Access your voting dashboard.</p>
             </div>
 
-            <div className="hidden lg:relative lg:block lg:p-12">
+            {/* <div className="hidden lg:relative lg:block lg:p-12">
               <p className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl block m:hidden">Welcome back!</p>
-            </div>
+            </div> */}
             <form onSubmit={handleSubmit} action="#" className="mt-8 grid grid-cols-6 gap-6">
               <div className="col-span-6">
                 <label htmlFor="Username" className="block text-sm font-medium text-gray-700">
@@ -93,7 +93,7 @@ const LoginForm = () => {
                   type="text"
                   id="Username"
                   name="username"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white shadow-sm"
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white shadow-sm focus:border-[#00478F]"
                 />
               </div>
 
@@ -107,14 +107,14 @@ const LoginForm = () => {
                   type="password"
                   id="Password"
                   name="password"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white shadow-sm"
+                  className="mt-1 w-full rounded-md border-gray-200 bg-white shadow-sm focus:border-[#00478F]"
                 />
               </div>
 
               <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
                 <button
                   type="submit"
-                  className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500"
+                  className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
                 >
                   Log in
                 </button>
