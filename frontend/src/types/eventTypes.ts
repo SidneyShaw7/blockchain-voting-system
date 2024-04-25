@@ -1,10 +1,7 @@
-export interface CandidateDetails {
-  name: string;
-  bio: string;
-}
-
-interface GeneralVoteOption {
-  option: string;
+export interface Option {
+  name?: string;
+  bio?: string;
+  option?: string;
 }
 
 export enum StorageType {
@@ -13,11 +10,10 @@ export enum StorageType {
   PrivateNetwork = 'Private Network',
 }
 
-
 export interface VotingEventFormValues {
   title: string;
   description: string;
-  options: CandidateDetails[] | GeneralVoteOption[];
+  options: Option[];
   startDate: Date;
   endDate: Date;
   timezone: string;
@@ -25,35 +21,26 @@ export interface VotingEventFormValues {
   votingMethod: string;
   anonymity: boolean;
   resultVisibility: boolean;
-  storageType?: StorageType;
+  storageType: StorageType;
+  eventType: string;
 }
 
-// Define prop types for the helper components
-export interface FieldSectionProps {
-    name: string;
-    placeholder: string;
-    input?: React.ElementType;
-  }
-  
- export interface DateFieldProps {
-    name: string;
-    label: string;
-    values: any;
-    setFieldValue: (field: string, value: any) => void;
-  }
-  
- export interface SelectFieldProps {
-    name: string;
-    label: string;
-    options: string[];
-  }
-  
- export interface CheckboxFieldProps {
-    name: string;
-    label: string;
-  }
-  
- export interface OptionFieldProps {
-    index: number;
-    remove: (index: number) => void;
-  }
+//  prop types for the helper components
+
+export interface BaseFieldProps {
+  name: string;
+  label: string;
+}
+
+export interface InputFieldProps extends BaseFieldProps {
+  inputType?: 'input' | 'textarea';
+}
+
+export interface SelectFieldProps extends BaseFieldProps {
+  options: string[];
+}
+
+export interface OptionFieldProps {
+  index: number;
+  remove: (index: number) => void;
+}

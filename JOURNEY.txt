@@ -5,3 +5,7 @@ Tue Apr 23
 Live and learn. Today I found out about Formik and Yop libraries for React ecosystem. Seems to me it's a relief for the management and validation of forms. I start using it for the EventCreationForm component but as my previous forms (login and register) don't use it, I had to refactor both to keep my coding style the same on every component. Those libraries look easy to implement, not much of a headache.
 
 Try to refactor ready-to-go components with Formik was such a stupid idea, spent hours on it and hated it. Went back to my prev code, might still use Yup for validation, awesome tool.
+
+Thu Apr 25
+Didnt like my Formik form at all
+Tried to refactor the code to react-hook-from. having such a headache with Yup validation. need debugging, need fixes, need refactoring.
