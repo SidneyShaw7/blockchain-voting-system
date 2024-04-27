@@ -9,3 +9,8 @@ Try to refactor ready-to-go components with Formik was such a stupid idea, spent
 Thu Apr 25
 Didnt like my Formik form at all
 Tried to refactor the code to react-hook-from. having such a headache with Yup validation. need debugging, need fixes, need refactoring.
+
+Fri Apr 26
+Refactoring refactoring refactoring. Searching the web for fixing my bug I found out that it is actially not my code where a bug, but a library which Im using. TS COMPLAINING, people suggest to downgrade the Yup to prev version, or use yupResolver with the next generic type yupResolver<yup.AnyObjectSchema>. WHY ITS NOT MENTIONED IN DOCS. I dont know, also why do people use buggy libraries and recommend it to each other? It speed ups dev process but debugging is miserable and painfull. 
+
+Decided to refactor the EventCreationForm validation with Zod library, took me 20 mins, easy to use and no bugs compare to Yup.

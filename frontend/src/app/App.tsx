@@ -5,7 +5,7 @@ import { LoginForm } from '../components/LoginForm';
 import { MainLayout } from '../components/MainLayout';
 import { AuthLayout } from '../components/AuthLayout';
 import { HomePage } from '../components/HomePage';
-import { EventCreationForm } from '../components/EventCreationForm';
+import { CreateEventForm } from '../components/CreateEventForm';
 
 function App() {
   return (
@@ -40,7 +40,7 @@ function App() {
             path="/createevent"
             element={
               <MainLayout>
-                <EventCreationForm />
+                <CreateEventForm />
               </MainLayout>
             }
           />

@@ -10,6 +10,11 @@ export enum StorageType {
   PrivateNetwork = 'Private Network',
 }
 
+export enum EventType {
+  Candidate = 'Candidate',
+  General = 'General',
+}
+
 export interface VotingEventFormValues {
   title: string;
   description: string;
@@ -22,7 +27,7 @@ export interface VotingEventFormValues {
   anonymity: boolean;
   resultVisibility: boolean;
   storageType: StorageType;
-  eventType: string;
+  eventType: EventType;
 }
 
 //  prop types for the helper components
@@ -43,4 +48,13 @@ export interface SelectFieldProps extends BaseFieldProps {
 export interface OptionFieldProps {
   index: number;
   remove: (index: number) => void;
+}
+
+// event state
+
+export interface VotingEventState {
+  isSubmitting: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+  errorMessage?: string;
 }

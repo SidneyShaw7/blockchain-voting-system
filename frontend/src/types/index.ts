@@ -1,7 +1,13 @@
-export type { AlertState } from './alertTypes';
-export type { LoginCredentials, User, RegistrationState, LoginState, RegistrationForm } from './userTypes';
-
-export type { ErrorWithStatus, FieldsError } from './errorTypes';
-export type { VotingEventFormValues } from './eventTypes';
-export type { InputFieldProps, SelectFieldProps, OptionFieldProps, BaseFieldProps } from './eventTypes';
-export { StorageType } from './eventTypes';
+export type { AlertState } from './alert.types';
+export type { LoginCredentials, User, RegistrationState, LoginState, RegistrationForm } from './user.types';
+export type { ErrorWithStatus, FieldsError } from './error.types';
+export type {
+  VotingEventFormValues,
+  Option,
+  VotingEventState,
+  InputFieldProps,
+  SelectFieldProps,
+  OptionFieldProps,
+  BaseFieldProps,
+} from './event.types';
+export { StorageType, EventType } from './event.types';
