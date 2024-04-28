@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { userService } from '../../services';
 import { User, LoginCredentials } from '../../types';
+import { processError } from '../../utils/helpers';
 
 export const login = createAsyncThunk<User, LoginCredentials, { rejectValue: string }>(
   'authentication/login',
@@ -9,15 +10,8 @@ export const login = createAsyncThunk<User, LoginCredentials, { rejectValue: str
       const user = await userService.login(credentials);
       localStorage.setItem('user', JSON.stringify(user));
       return user;
-    } catch (error: unknown) {
-      let errorMessage = 'An unknown error occurred';
-      if (typeof error === 'object' && error !== null && 'message' in error) {
-        const message = (error as { message: unknown }).message;
-        if (typeof message === 'string') {
-          errorMessage = message;
-        }
-      }
-      return rejectWithValue(errorMessage);
+    } catch (error) {
+      return rejectWithValue(processError(error));
     }
   }
 );
@@ -27,14 +21,7 @@ export const logout = createAsyncThunk('authentication/logout', async (_, { reje
     await userService.logout();
     localStorage.removeItem('user');
     sessionStorage.clear();
-  } catch (error: unknown) {
-    let errorMessage = 'Failed to log out';
-    if (typeof error === 'object' && error !== null && 'message' in error) {
-      const message = (error as { message: unknown }).message;
-      if (typeof message === 'string') {
-        errorMessage = message;
-      }
-    }
-    return rejectWithValue(errorMessage);
+  } catch (error) {
+    return rejectWithValue(processError(error));
   }
 });

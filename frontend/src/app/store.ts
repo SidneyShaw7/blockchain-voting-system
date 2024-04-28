@@ -3,7 +3,7 @@ import { loginReducer } from '../features/login';
 import { registrationReducer } from '../features/registration';
 import { alertReducer } from '../features/alert';
 import { sidebarReducer } from '../features/sidebar';
-import { createEventReducer } from '../features/createEvent';
+import { createEventReducer } from '../features/manageEvent';
 import { TypedUseSelectorHook, useDispatch as rawUseDispatch, useSelector as rawUseSelector } from 'react-redux';
 
 export const store = configureStore({

@@ -57,4 +57,5 @@ export interface VotingEventState {
   isSuccess: boolean;
   isError: boolean;
   errorMessage?: string;
+  eventData?: VotingEventFormValues;
 }
