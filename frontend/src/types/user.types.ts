@@ -14,23 +14,23 @@ export interface User {
   lastName?: string;
 }
 
-export interface LoginState {
-  loggingIn: boolean;
-  isSuccess: boolean;
-  isError: boolean;
-  user: User | null;
-  errorMessage?: string;
-}
+// export interface LoginState {
+//   isProcessing: boolean;
+//   isSuccess: boolean;
+//   isError: boolean;
+//   data: User | null;
+//   errorMessage?: string;
+// }
 
 // REGISTRATION STATE
 
-export interface RegistrationState {
-  isRegistering: boolean;
-  isSuccess: boolean;
-  isError: boolean;
-  errorMessage?: string;
-  user?: User | null;
-}
+// export interface RegistrationState {
+//   isProcessing: boolean;
+//   isSuccess: boolean;
+//   isError: boolean;
+//   errorMessage?: string;
+//   data?: User | null;
+// }
 
 // REGISTRATION FORM MODEL
 export interface RegistrationForm {

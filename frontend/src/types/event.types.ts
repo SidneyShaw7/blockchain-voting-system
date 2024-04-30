@@ -52,10 +52,10 @@ export interface OptionFieldProps {
 
 // event state
 
-export interface VotingEventState {
-  isSubmitting: boolean;
-  isSuccess: boolean;
-  isError: boolean;
-  errorMessage?: string;
-  eventData?: VotingEventFormValues;
-}
+// export interface VotingEventState {
+//   isProcessing: boolean;
+//   isSuccess: boolean;
+//   isError: boolean;
+//   errorMessage?: string;
+//   data?: VotingEventFormValues;
+// }

@@ -1,46 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { login } from './loginThunks';
-import { LoginState } from '../../types';
+import { User } from '../../types';
+import { AsyncState } from '../../types';
+import { createAsyncReducers } from '../../utils/reducerUtils';
 
-const initialState: LoginState = {
-  loggingIn: false,
+const initialState: AsyncState<User | null> = {
+  isProcessing: false,
   isSuccess: false,
   isError: false,
-  user: null,
   errorMessage: undefined,
+  data: null,
 };
+
+const { pending, fulfilled, rejected } = createAsyncReducers<User | null>();
 
 const loginSlice = createSlice({
   name: 'login',
   initialState,
   reducers: {
-    logout() {
-      return initialState;
-    },
+    logout: () => initialState,
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(login.pending, (state) => {
-        state.loggingIn = true;
-        state.isSuccess = false;
-        state.isError = false;
-        state.user = null;
-        state.errorMessage = undefined;
-      })
-      .addCase(login.fulfilled, (state, action) => {
-        state.loggingIn = false;
-        state.isSuccess = true;
-        state.isError = false;
-        state.user = action.payload;
-        state.errorMessage = undefined;
-      })
-      .addCase(login.rejected, (state, action) => {
-        state.loggingIn = false;
-        state.isSuccess = false;
-        state.isError = true;
-        state.user = null;
-        state.errorMessage = action.payload || 'Failed to login';
-      });
+    builder.addCase(login.pending, pending).addCase(login.fulfilled, fulfilled).addCase(login.rejected, rejected);
   },
 });
 
