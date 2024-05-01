@@ -1,1 +1,1 @@
-export type { ErrorWithStatus, ErrorData } from './errorTypes';
+export type { ErrorWithStatus, ErrorData } from './error.types';

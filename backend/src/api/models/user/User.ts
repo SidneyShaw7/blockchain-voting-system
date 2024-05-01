@@ -2,11 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import { IUser } from './userTypes';
 import logger from '../../middleware/logger';
-
-function capitalize(val: string): string {
-  if (typeof val !== 'string') val = '';
-  return val.charAt(0).toUpperCase() + val.substring(1).toLowerCase();
-}
+import { capitalize } from '../../utils';
 
 const userSchema = new mongoose.Schema<IUser>({
   firstName: {
@@ -48,6 +44,7 @@ const userSchema = new mongoose.Schema<IUser>({
     },
   },
   createdAt: { type: Date, default: Date.now },
+  events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'VotingEvent' }]
 });
 
 userSchema.pre('save', async function (next) {
