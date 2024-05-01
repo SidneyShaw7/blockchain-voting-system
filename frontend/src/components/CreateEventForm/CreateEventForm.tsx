@@ -35,9 +35,9 @@ const CreateEventForm = () => {
     console.log(data);
   };
 
-  if (typeof StorageType === 'undefined') {
-    console.error('storageType is unexpectedly undefined');
-  }
+  // if (typeof StorageType === 'undefined') {
+  //   console.error('storageType is unexpectedly undefined');
+  // }
 
   return (
     <FormProvider {...methods}>
