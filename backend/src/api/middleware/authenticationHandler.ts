@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { User } from '../models/user';
 
-export const authenticate = (req: Request, _res: Response, next: NextFunction) => {
+export const authenticate = async (req: Request, _res: Response, next: NextFunction) => {
   try {
     const token = req.cookies.token;
 
@@ -15,15 +16,27 @@ export const authenticate = (req: Request, _res: Response, next: NextFunction) =
     }
 
     const secret = process.env.JWT_SECRET as string;
-    const decoded = jwt.verify(token, secret);
+    const decodedToken = jwt.verify(token, secret);
 
-    if (typeof decoded === 'object' && 'id' in decoded) {
-      req.userId = decoded.id;
+    if (typeof decodedToken === 'object' && 'id' in decodedToken && typeof decodedToken.id === 'string') {
+      const user = await User.findById(decodedToken.id);
+      if (!user) {
+        return next({
+          status: 404,
+          message: 'User not found',
+          errorCode: 'USER_NOT_FOUND',
+          data: { userId: decodedToken.id, ip: req.ip },
+        });
+      }
+
+      req.user = user;
+      req.userId = decodedToken.id;
+
       next();
     } else {
-      next({
+      return next({
         status: 401,
-        message: 'Invalid token format.',
+        message: 'Token is invalid',
         errorCode: 'INVALID_TOKEN',
         data: { detail: 'Token does not contain required id.', ip: req.ip },
       });

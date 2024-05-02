@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
 import { VotingEvent } from '../models/votingEvent';
-import { VotingEventFormValues } from '../models/votingEvent';
+// import { VotingEventFormValues } from '../models/votingEvent'; 
 
 export const createEvent = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const errors = validationResult(req);
@@ -28,7 +28,7 @@ export const createEvent = async (req: Request, res: Response, next: NextFunctio
     storageType,
     eventType,
     createdBy,
-  } = req.body as VotingEventFormValues;
+  } = req.body;
 
   try {
     const newEvent = new VotingEvent({

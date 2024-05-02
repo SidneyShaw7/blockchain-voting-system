@@ -1,2 +1,2 @@
 export { default as User } from './User';
-export type { IUser } from './userTypes';
+export type { IUser } from './user.types';
