@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
-import { IUser, User } from '../models/user';
-import jwt from 'jsonwebtoken';
+import { IUser } from '../types';
+import { registerUser } from '../services';
 
-export const registerUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const registerUserController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return next({
@@ -17,30 +17,16 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
   const { firstName, lastName, username, email, password } = req.body as IUser;
 
   try {
-    const newUser = new User({
-      firstName,
-      lastName,
-      username,
-      email,
-      password,
-    });
-
-    await newUser.save();
-
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET!, {
-      expiresIn: '1h', 
-    });
+    const { user, token } = await registerUser({ firstName, lastName, username, email, password });
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', 
+      secure: process.env.NODE_ENV === 'production',
       maxAge: 3600 * 1000,
       sameSite: 'strict' as const,
     });
 
-    const userResponse = { firstName, lastName, username, email };
-    res.status(201).send({ message: 'User registered successfully', user: userResponse });
-    
+    res.status(201).send({ message: 'User registered successfully', user });
   } catch (error) {
     next({
       status: 500,

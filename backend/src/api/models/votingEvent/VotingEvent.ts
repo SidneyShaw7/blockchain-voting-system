@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Option, StorageType, EventType } from './event.types';
+import { Option, StorageType, EventType } from '../../types/event.types';
 import logger from '../../middleware/logger';
 import { capitalize } from '../../utils';
 

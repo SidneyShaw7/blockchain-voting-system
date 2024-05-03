@@ -28,7 +28,7 @@ const Sidebar: React.FC = () => {
         <div className="bg-[#00478F] text-white p-5 flex justify-between items-center"></div>
         <ul className="list-none p-4">
           <li className="mb-4">
-            <a href="/" className="text-[#00478F] hover:text-[#2A231F]" onClick={handleCloseSidebar}>
+            <a href="/home" className="text-[#00478F] hover:text-[#2A231F]" onClick={handleCloseSidebar}>
               Home
             </a>
           </li>

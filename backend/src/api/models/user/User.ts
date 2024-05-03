@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { IUser } from './user.types';
+import { IUser } from '../../types/user.types';
 import logger from '../../middleware/logger';
 import { capitalize } from '../../utils';
 
