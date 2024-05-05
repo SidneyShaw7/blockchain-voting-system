@@ -7,7 +7,7 @@ import { error as showError } from '../../features/alert';
 const RegistrationForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isSuccess, user, isError, errorMessage } = useSelector((state: RootState) => state.registration);
+  const { isSuccess, data, isError, errorMessage } = useSelector((state: RootState) => state.registration);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -29,14 +29,14 @@ const RegistrationForm = () => {
   };
 
   useEffect(() => {
-    if (isSuccess && user) {
+    if (isSuccess && data) {
       navigate('/home');
       dispatch(resetRegistrationState());
     }
     if (isError && errorMessage) {
       dispatch(showError({ message: errorMessage }));
     }
-  }, [dispatch, navigate, isSuccess, user, isError, errorMessage]);
+  }, [dispatch, navigate, isSuccess, data, isError, errorMessage]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;

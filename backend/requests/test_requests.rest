@@ -8,3 +8,15 @@ content-type: application/json
   "email": "lalaalenasd@gmail.com",
   "password": "Developer9000!"
 }
+
+
+POST http://localhost:3000/api/users/events/create
+content-type: application/json
+
+{
+  "firstName": "Nikita",
+  "lastName": "Dmitriev",
+  "username": "nikitosikea",
+  "email": "lalaalenasd@gmail.com",
+  "password": "Developer9000!"
+}

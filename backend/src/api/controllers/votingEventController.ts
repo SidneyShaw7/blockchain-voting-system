@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
-// import { VotingEvent } from '../models/votingEvent';
 import { VotingEventFormValuesDB } from '../types';
 import { createVotingEvent, getEventById, getAllEvents, deleteEventById } from '../services';
 
@@ -37,11 +36,12 @@ export const createEventController = async (req: Request, res: Response, next: N
   }
 };
 
-export const getEventController = async (req: Request, res: Response, next: NextFunction) => {
+export const getEventController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const event = await getEventById(req.params.eventId);
     if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
+      res.status(404).json({ message: 'Event not found' });
+      return;
     }
     res.json(event);
   } catch (error) {
@@ -53,16 +53,25 @@ export const getEventController = async (req: Request, res: Response, next: Next
   }
 };
 
-export const getAllEventsController = async (_req: Request, res: Response) => {
-  const events = await getAllEvents();
-  res.json(events);
+export const getAllEventsController = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const events = await getAllEvents();
+    res.json(events);
+  } catch (error) {
+    next({
+      status: 500,
+      message: 'Internal server error',
+      errorCode: 'INTERNAL_ERROR',
+    });
+  }
 };
 
-export const deleteEventController = async (req: Request, res: Response, next: NextFunction) => {
+export const deleteEventController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const deletedEvent = await deleteEventById(req.params.eventId);
     if (!deletedEvent) {
-      return res.status(404).json({ message: 'Event not found' });
+      res.status(404).json({ message: 'Event not found' });
+      return;
     }
     res.status(200).json({ message: 'Event deleted successfully' });
   } catch (error) {

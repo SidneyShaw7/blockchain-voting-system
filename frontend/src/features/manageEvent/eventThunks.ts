@@ -15,17 +15,17 @@ export const createEvent = createAsyncThunk<VotingEventFormValues, VotingEventFo
   }
 );
 
-// // update
-// export const updateEvent = createAsyncThunk<VotingEventFormValues, { eventId: string; formData: VotingEventFormValues }, { rejectValue: string }>(
-//   'event/update',
-//   async ({ eventId, formData }, { rejectWithValue }) => {
-//     try {
-//       return await eventService.updateEvent(eventId, formData);
-//     } catch (error) {
-//       return rejectWithValue(processError(error));
-//     }
-//   }
-// );
+// update
+export const updateEvent = createAsyncThunk<VotingEventFormValues, { eventId: string; formData: VotingEventFormValues }, { rejectValue: string }>(
+  'event/update',
+  async ({ eventId, formData }, { rejectWithValue }) => {
+    try {
+      return await eventService.updateEvent(eventId, formData);
+    } catch (error) {
+      return rejectWithValue(processError(error));
+    }
+  }
+);
 
 // delete
 export const deleteEvent = createAsyncThunk<void, string, { rejectValue: string }>(

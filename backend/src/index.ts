@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import helmet from 'helmet';
-import { userRouter } from './api/routes';
+import { loginRouter, registerRouter, votingEventRouter } from './api/routes';
 import { logger } from './api/middleware';
 import { config, corsConfig } from './api/config';
 import { errorHandler } from './api/middleware';
@@ -71,7 +71,9 @@ app.get('/ping', (_req, res) => {
 });
 
 // User-related routes from the router
-app.use('/api/users', userRouter);
+app.use('/api/users', registerRouter);
+app.use('/api/users', loginRouter);
+app.use('/api/users', votingEventRouter);
 app.use(errorHandler);
 
 export default app;

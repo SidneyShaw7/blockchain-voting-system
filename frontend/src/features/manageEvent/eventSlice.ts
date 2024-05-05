@@ -15,7 +15,7 @@ const initialState: AsyncState<VotingEventFormValues> = {
 const { pending, fulfilled, rejected } = createAsyncReducers<VotingEventFormValues>();
 
 const eventSlice = createSlice({
-  name: 'eventCreation',
+  name: 'votingEvent',
   initialState,
   reducers: {
     resetEventState: () => initialState,

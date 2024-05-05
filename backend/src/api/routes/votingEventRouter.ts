@@ -11,8 +11,8 @@ import {
 
 const router = express.Router();
 
-router.post('/events', authenticate, eventValidationRules(), asyncHandler(createEventController));
+router.post('/events/create', authenticate, eventValidationRules(), asyncHandler(createEventController));
 router.get('/events/:eventId', authenticate, asyncHandler(getEventController));
-router.get('/events', authenticate, asyncHandler(getAllEventsController));
+router.get('/events/all', authenticate, asyncHandler(getAllEventsController));
 router.delete('/events/:eventId', authenticate, asyncHandler(deleteEventController));
 export default router;

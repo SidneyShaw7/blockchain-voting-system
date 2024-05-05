@@ -1,3 +1,3 @@
-export { default as createEventReducer } from './eventSlice';
+export { default as votingEventReducer } from './eventSlice';
 export { resetEventState } from './eventSlice';
-export { createEvent } from './eventThunks';
+export { createEvent, updateEvent, deleteEvent, getEvent } from './eventThunks';
