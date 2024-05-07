@@ -1,0 +1,19 @@
+{
+  "name": "blockchain-voting-system",
+  "version": "1.0.0",
+  "description": "|Project overview|: Develop a secure, transparent, and anonymous online voting system utilizing blockchain technology to ensure the integrity of votes suitable for elections and surveys.",
+  "main": "cypress.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "test:frontend": "cypress run --spec 'cypress/integration/frontend/**/*'",
+    "test:backend": "cypress run --spec 'cypress/integration/backend/**/*'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^13.8.1"
+  }
+}

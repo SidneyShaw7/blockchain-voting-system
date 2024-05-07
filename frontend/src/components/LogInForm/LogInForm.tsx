@@ -25,7 +25,7 @@ const LoginForm = () => {
     }
     if (isSuccess) {
       dispatch(showSuccess({ message: 'Login successful! Redirecting...' }));
-      setTimeout(() => navigate('/dashboard'), 1500);
+      setTimeout(() => navigate('/home'), 1500);
     }
   }, [dispatch, isError, isSuccess, errorMessage, navigate]);
 

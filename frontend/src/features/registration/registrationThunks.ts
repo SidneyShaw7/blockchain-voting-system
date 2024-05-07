@@ -8,11 +8,11 @@ export const register = createAsyncThunk<User, RegistrationForm, { rejectValue: 
   'authentication/register',
   async (formData, { rejectWithValue, dispatch }) => {
     try {
-      const newUser = await userService.register(formData);
+      const response = await userService.register(formData);
 
       await dispatch(login({ username: formData.email, password: formData.password })).unwrap();
 
-      return newUser;
+      return response.data;
     } catch (error) {
       return rejectWithValue(processError(error));
     }

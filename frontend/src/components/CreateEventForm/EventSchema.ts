@@ -14,7 +14,7 @@ export const EventSchema = z.object({
   startDate: z.date(),
   endDate: z.date(),
   timezone: z.string().min(1, 'Timezone is required'),
-  voterEligibility: z.string().min(1, 'Voter eligibility is required'),
+  // voterEligibility: z.string().min(1, 'Voter eligibility is required'),
   votingMethod: z.string().min(1, 'Voting method is required'),
   anonymity: z.boolean(),
   resultVisibility: z.boolean(),

@@ -7,9 +7,9 @@ export const login = createAsyncThunk<User, LoginCredentials, { rejectValue: str
   'authentication/login',
   async (credentials, { rejectWithValue }) => {
     try {
-      const user = await userService.login(credentials);
-      localStorage.setItem('user', JSON.stringify(user));
-      return user;
+      const response = await userService.login(credentials);
+      // localStorage.setItem('user', JSON.stringify(user)); // USING HTTPONLY COOKIE INSTEAD
+      return response.data;
     } catch (error) {
       return rejectWithValue(processError(error));
     }
@@ -19,7 +19,7 @@ export const login = createAsyncThunk<User, LoginCredentials, { rejectValue: str
 export const logout = createAsyncThunk('authentication/logout', async (_, { rejectWithValue }) => {
   try {
     await userService.logout();
-    localStorage.removeItem('user');
+    // localStorage.removeItem('user'); USING HPTTPONLY COOKIE INSTEAD
     sessionStorage.clear();
   } catch (error) {
     return rejectWithValue(processError(error));

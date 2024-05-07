@@ -22,7 +22,7 @@ export interface VotingEventFormValues {
   startDate: Date;
   endDate: Date;
   timezone: string;
-  voterEligibility: string;
+  // voterEligibility: string;
   votingMethod: string;
   anonymity: boolean;
   resultVisibility: boolean;

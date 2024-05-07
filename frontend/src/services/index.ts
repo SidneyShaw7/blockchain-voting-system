@@ -1,2 +1,2 @@
-export { userService } from './userService';
-export { eventService } from './eventService';
+export { default as userService } from './userService';
+export { default as eventService } from './eventService';

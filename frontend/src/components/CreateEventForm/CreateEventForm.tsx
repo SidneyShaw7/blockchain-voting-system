@@ -4,8 +4,14 @@ import { EventSchema } from './EventSchema';
 import { VotingEventFormValues, StorageType, EventType } from '../../types';
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form';
 import { DateField, InputField, SelectField, CheckboxField } from './helperFieldComponents';
+import { useDispatch } from '../../app/store';
+import { createEvent } from '../../features/manageEvent';
+import { useEffect } from 'react';
 
 const CreateEventForm = () => {
+  const dispatch = useDispatch();
+  // const useEffect = useEffect();
+
   const methods = useForm<VotingEventFormValues>({
     resolver: zodResolver(EventSchema),
     defaultValues: {
@@ -15,7 +21,7 @@ const CreateEventForm = () => {
       startDate: new Date(),
       endDate: new Date(),
       timezone: '',
-      voterEligibility: '',
+      // voterEligibility: '',
       votingMethod: '',
       anonymity: false,
       resultVisibility: false,
@@ -29,10 +35,16 @@ const CreateEventForm = () => {
     name: 'options',
   });
 
+  useEffect(() => {
+    console.log(methods.formState.errors);
+  }, [methods.formState.errors]);
+
   const { handleSubmit, watch } = methods;
   const eventType = watch('eventType');
   const onSubmit = (data: VotingEventFormValues) => {
-    console.log(data);
+    console.log('Ready to submit', data);
+    dispatch(createEvent(data));
+    console.log('Dispatch called');
   };
 
   // if (typeof StorageType === 'undefined') {
@@ -77,11 +89,7 @@ const CreateEventForm = () => {
           <DateField name="startDate" label="Start date:" />
           <DateField name="endDate" label="End date:" />
           <SelectField name="timezone" label="Select Timezone" options={['UTC', 'EST', 'PST']} />
-          <SelectField
-            name="votingMethod"
-            label="Select Voting Method"
-            options={['singleChoice', 'multipleChoice', 'rankedChoice']}
-          />
+          <SelectField name="votingMethod" label="Select Voting Method" options={['singleChoice', 'multipleChoice', 'rankedChoice']} />
           <CheckboxField name="anonymity" label="Anonymity Allowed" />
           <CheckboxField name="resultVisibility" label="Show Results Immediately" />
           <SelectField name="storageType" label="Select Storage Type" options={Object.values(StorageType)} />

@@ -22,7 +22,7 @@ const MONGODB_URL = process.env.MONGODB_URL as string;
 const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
 
 const corsConfig = {
-  origin: process.env.NODE_ENV === 'development' ? '*' : CORS_ORIGIN,
+  origin: process.env.NODE_ENV === 'development' ? 'http://localhost:5173' : CORS_ORIGIN,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -38,4 +38,4 @@ const config = {
   },
 };
 
-export { config, corsConfig};
+export { config, corsConfig };

@@ -8,43 +8,42 @@ export const createEvent = createAsyncThunk<VotingEventFormValues, VotingEventFo
   'event/create',
   async (formData, { rejectWithValue }) => {
     try {
-      return await eventService.createEvent(formData);
+      const response = await eventService.createEvent(formData);
+      return response.data;
     } catch (error) {
       return rejectWithValue(processError(error));
     }
   }
 );
 
-// update
-export const updateEvent = createAsyncThunk<VotingEventFormValues, { eventId: string; formData: VotingEventFormValues }, { rejectValue: string }>(
-  'event/update',
-  async ({ eventId, formData }, { rejectWithValue }) => {
-    try {
-      return await eventService.updateEvent(eventId, formData);
-    } catch (error) {
-      return rejectWithValue(processError(error));
-    }
-  }
-);
+// // update
+// export const updateEvent = createAsyncThunk<VotingEventFormValues, { eventId: string; formData: VotingEventFormValues }, { rejectValue: string }>(
+//   'event/update',
+//   async ({ eventId, formData }, { rejectWithValue }) => {
+//     try {
+//       return await eventService.updateEvent(eventId, formData);
+//     } catch (error) {
+//       return rejectWithValue(processError(error));
+//     }
+//   }
+// );
 
 // delete
-export const deleteEvent = createAsyncThunk<void, string, { rejectValue: string }>(
-  'event/delete',
-  async (eventId, { rejectWithValue }) => {
-    try {
-      await eventService.deleteEvent(eventId);
-    } catch (error) {
-      return rejectWithValue(processError(error));
-    }
+export const deleteEvent = createAsyncThunk<void, string, { rejectValue: string }>('event/delete', async (eventId, { rejectWithValue }) => {
+  try {
+    await eventService.deleteEvent(eventId);
+  } catch (error) {
+    return rejectWithValue(processError(error));
   }
-);
+});
 
 // get
 export const getEvent = createAsyncThunk<VotingEventFormValues, string, { rejectValue: string }>(
   'event/get',
   async (eventId, { rejectWithValue }) => {
     try {
-      return await eventService.getEvent(eventId);
+      const response = await eventService.getEvent(eventId);
+      return response.data;
     } catch (error) {
       return rejectWithValue(processError(error));
     }

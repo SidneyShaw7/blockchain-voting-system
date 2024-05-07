@@ -73,7 +73,7 @@ app.get('/ping', (_req, res) => {
 // User-related routes from the router
 app.use('/api/users', registerRouter);
 app.use('/api/users', loginRouter);
-app.use('/api/users', votingEventRouter);
+app.use('/api/events', votingEventRouter);
 app.use(errorHandler);
 
 export default app;
