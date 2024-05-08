@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import { IUser } from '../../types/user.types';
+import { User } from '../../types/user.types';
 import logger from '../../middleware/logger';
 import { capitalize } from '../../utils';
 
-const userSchema = new mongoose.Schema<IUser>({
+const userSchema = new mongoose.Schema<User>({
   firstName: {
     type: String,
     required: true,
@@ -61,5 +61,5 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-const User = mongoose.model<IUser>('User', userSchema);
-export default User;
+const UserModel = mongoose.model<User>('User', userSchema);
+export default UserModel;

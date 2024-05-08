@@ -14,8 +14,18 @@ export const createEventController = async (req: Request, res: Response, next: N
     });
   }
 
+  if (!req.user) {
+    console.error('Authentication middleware failed to set req.user');
+    return next({
+      status: 500,
+      message: 'Authentication failure. Please log in.',
+      errorCode: 'AUTHENTICATION_FAILURE',
+    });
+  }
+
   try {
-    const newEvent = await createVotingEvent(req.body as VotingEventFormValuesDB);
+    const userId = req.user._id.toString();
+    const newEvent = await createVotingEvent(req.body as VotingEventFormValuesDB, userId);
     res.status(201).send({
       message: 'Event created successfully',
       event: {

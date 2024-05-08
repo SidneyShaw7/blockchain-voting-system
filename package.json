@@ -6,9 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "test:frontend": "cypress run --spec 'cypress/integration/frontend/**/*'",
-    "test:backend": "cypress run --spec 'cypress/integration/backend/**/*'"
+    "cypress:run": "cypress run"
   },
   "keywords": [],
   "author": "",

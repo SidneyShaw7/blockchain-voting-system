@@ -13,7 +13,7 @@ export const eventValidationRules = (): ValidationChain[] => [
     .custom((value, { req }) => new Date(value) > new Date(req.body.startDate))
     .withMessage('End date must be after start date'),
   body('timezone').trim().isLength({ min: 1 }).withMessage('Timezone must not be empty'),
-  body('voterEligibility').trim().isLength({ min: 1 }).withMessage('Voter eligibility must not be empty'),
+  // body('voterEligibility').trim().isLength({ min: 1 }).withMessage('Voter eligibility must not be empty'),
   body('votingMethod').trim().isLength({ min: 1 }).withMessage('Voting method must not be empty'),
   body('anonymity').isBoolean(),
   body('resultVisibility').isBoolean(),

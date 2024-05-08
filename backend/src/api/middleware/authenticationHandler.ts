@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { User } from '../models/user';
+import { UserModel } from '../models/user';
 
 export const authenticate = async (req: Request, _res: Response, next: NextFunction) => {
   try {
@@ -19,7 +19,7 @@ export const authenticate = async (req: Request, _res: Response, next: NextFunct
     const decodedToken = jwt.verify(token, secret);
 
     if (typeof decodedToken === 'object' && 'id' in decodedToken && typeof decodedToken.id === 'string') {
-      const user = await User.findById(decodedToken.id);
+      const user = await UserModel.findById(decodedToken.id);
       if (!user) {
         return next({
           status: 404,

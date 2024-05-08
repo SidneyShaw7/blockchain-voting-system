@@ -58,7 +58,7 @@ const Sidebar: React.FC = () => {
             </div>
           </li>
           <li className="mb-4">
-            <a href="/createevent" className="text-[#00478F] hover:text-[#2A231F]" onClick={handleCloseSidebar}>
+            <a href="/event/create" className="text-[#00478F] hover:text-[#2A231F]" onClick={handleCloseSidebar}>
               Create Event
             </a>
           </li>

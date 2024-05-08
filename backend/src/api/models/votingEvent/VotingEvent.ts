@@ -53,11 +53,11 @@ const votingEventSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  voterEligibility: {
-    type: String,
-    required: true,
-    trim: true,
-  },
+  // voterEligibility: {
+  //   type: String,
+  //   required: true,
+  //   trim: true,
+  // },
   votingMethod: {
     type: String,
     required: true,

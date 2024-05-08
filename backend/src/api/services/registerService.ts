@@ -1,10 +1,10 @@
-import { User } from '../models/user';
-import { IUser, IUserResponse } from '../types';
+import { UserModel } from '../models/user';
+import { UserResponse, UserRegistration } from '../types';
 import jwt from 'jsonwebtoken';
 
-export const registerUser = async (userData: IUser): Promise<{ user: IUserResponse; token: string }> => {
+export const registerUser = async (userData: UserRegistration): Promise<{ user: UserResponse; token: string }> => {
   const { firstName, lastName, username, email, password } = userData;
-  const newUser = new User({
+  const newUser = new UserModel({
     firstName,
     lastName,
     username,
@@ -18,7 +18,8 @@ export const registerUser = async (userData: IUser): Promise<{ user: IUserRespon
     expiresIn: '1h',
   });
 
-  const userResponse: IUserResponse = {
+  const userResponse: UserResponse = {
+    id: newUser._id.toString(),
     firstName,
     lastName,
     username,

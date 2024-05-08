@@ -21,10 +21,10 @@ describe('Registration Form', function () {
     it('allows user to fill out the form and submit', function () {
       cy.get('input[name="firstName"]').type('John');
       cy.get('input[name="lastName"]').type('Doe');
-      cy.get('input[name="username"]').type('johndoe');
+      cy.get('input[name="username"]').type('nikitosikea');
       cy.get('input[name="email"]').type('john@example.com');
-      cy.get('input[name="password"]').type('Password123!');
-      cy.get('input[name="passwordConfirmation"]').type('Password123!');
+      cy.get('input[name="password"]').type('Developer9000!');
+      cy.get('input[name="passwordConfirmation"]').type('Developer9000!');
       cy.get('input[type="checkbox"]').check();
       cy.contains('Create an account').click();
   
@@ -34,7 +34,7 @@ describe('Registration Form', function () {
   
     it('displays error message for passwords not matching', function () {
       cy.get('input[name="password"]').type('password123');
-      cy.get('input[name="passwordConfirmation"]').type('password456');
+      cy.get('input[name="passwordConfirmation"]').type('Developer9000!');
       cy.contains('Create an account').click();
   
       // Ensure error message for passwords not matching is displayed

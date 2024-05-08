@@ -10,7 +10,7 @@ const api = axios.create({
 
 // handle global request or response transformations or logging, here:
 api.interceptors.request.use((request) => {
-  console.log('Starting Request', request);
+//   console.log('Starting Request', request);
   return request;
 });
 

@@ -1,4 +1,4 @@
-import { User } from '../models/user';
+import { UserModel } from '../models/user';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { LoginCredentials } from '../types';
@@ -8,7 +8,7 @@ export const loginUser = async ({
   username,
   password,
 }: LoginCredentials): Promise<{ token: string; username: string }> => {
-  const user = await User.findOne({
+  const user = await UserModel.findOne({
     $or: [{ username: username }, { email: username }],
   }).exec();
 

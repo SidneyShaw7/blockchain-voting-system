@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
-import { IUser } from '../types';
+import { UserRegistration } from '../types';
 import { registerUser } from '../services';
 
 export const registerUserController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -14,7 +14,7 @@ export const registerUserController = async (req: Request, res: Response, next: 
     });
   }
 
-  const { firstName, lastName, username, email, password } = req.body as IUser;
+  const { firstName, lastName, username, email, password } = req.body as UserRegistration;
 
   try {
     const { user, token } = await registerUser({ firstName, lastName, username, email, password });
