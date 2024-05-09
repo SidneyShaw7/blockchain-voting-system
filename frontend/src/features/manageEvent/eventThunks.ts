@@ -16,17 +16,19 @@ export const createEvent = createAsyncThunk<VotingEventFormValues, VotingEventFo
   }
 );
 
-// // update
-// export const updateEvent = createAsyncThunk<VotingEventFormValues, { eventId: string; formData: VotingEventFormValues }, { rejectValue: string }>(
-//   'event/update',
-//   async ({ eventId, formData }, { rejectWithValue }) => {
-//     try {
-//       return await eventService.updateEvent(eventId, formData);
-//     } catch (error) {
-//       return rejectWithValue(processError(error));
-//     }
-//   }
-// );
+// update
+export const updateEvent = createAsyncThunk<
+  VotingEventFormValues,
+  { eventId: string; formData: VotingEventFormValues },
+  { rejectValue: string }
+>('event/update', async ({ eventId, formData }, { rejectWithValue }) => {
+  try {
+    const response = await eventService.updateEvent(eventId, formData);
+    return response.data;
+  } catch (error) {
+    return rejectWithValue(processError(error));
+  }
+});
 
 // delete
 export const deleteEvent = createAsyncThunk<void, string, { rejectValue: string }>('event/delete', async (eventId, { rejectWithValue }) => {
@@ -54,6 +56,9 @@ export const getEvent = createAsyncThunk<VotingEventFormValues, string, { reject
 export const voteOnEvent = createAsyncThunk<void, { eventId: string; optionId: string }, { rejectValue: string }>(
   'event/vote',
   async ({ eventId, optionId }, { rejectWithValue }) => {
+    if (!eventId) {
+      return rejectWithValue('Event ID is required');
+    }
     try {
       await eventService.voteOnEvent(eventId, optionId);
     } catch (error) {

@@ -4,24 +4,27 @@ import logger from '../../middleware/logger';
 import { capitalize } from '../../utils';
 
 // mngoose schema for an option in the voting event
-const optionSchema = new mongoose.Schema<Option>(
-  {
-    name: {
-      type: String,
-      set: capitalize,
-    },
-    bio: {
-      type: String,
-      set: capitalize,
-    },
-    option: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+const optionSchema = new mongoose.Schema<Option>({
+  name: {
+    type: String,
+    set: capitalize,
   },
-  { _id: false }
-);
+  bio: {
+    type: String,
+    set: capitalize,
+  },
+  option: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+});
+
+// virtual 'id' field to optionSchema for client side easy using
+optionSchema.virtual('id').get(function() {
+  return this._id.toHexString();
+});
+optionSchema.set('toJSON', { virtuals: true });
 
 // mongoose schema for a voting event
 const votingEventSchema = new mongoose.Schema({
@@ -87,6 +90,12 @@ const votingEventSchema = new mongoose.Schema({
     required: true,
   },
 });
+
+//  virtual 'id' field to votingEventSchema for client side easy using
+votingEventSchema.virtual('id').get(function() {
+  return this._id.toHexString();
+});
+votingEventSchema.set('toJSON', { virtuals: true });
 
 votingEventSchema.pre('save', function (next) {
   if (this.isModified('title')) {

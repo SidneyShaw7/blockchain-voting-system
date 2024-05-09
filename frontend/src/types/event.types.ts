@@ -1,4 +1,5 @@
 export interface Option {
+  id: string;
   name?: string;
   bio?: string;
   option?: string;
@@ -16,6 +17,7 @@ export enum EventType {
 }
 
 export interface VotingEventFormValues {
+  id: string;
   title: string;
   description: string;
   options: Option[];

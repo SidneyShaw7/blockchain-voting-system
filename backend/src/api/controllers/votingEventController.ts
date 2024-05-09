@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
 import { VotingEventFormValuesDB } from '../types';
-import { createVotingEvent, getEventById, getAllEvents, deleteEventById } from '../services';
+import { createVotingEvent, getEventById, getAllEvents, deleteEventById, updateVotingEvent } from '../services';
 
 export const createEventController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const errors = validationResult(req);
@@ -40,6 +40,45 @@ export const createEventController = async (req: Request, res: Response, next: N
     next({
       status: 500,
       message: 'Internal server error during event creation',
+      errorCode: 'INTERNAL_ERROR',
+      data: { detail: error instanceof Error ? error.message : 'Unknown Error' },
+    });
+  }
+};
+
+export const updateEventController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next({
+      status: 400,
+      message: 'Validation errors in your event data',
+      errorCode: 'VALIDATION_FAILED',
+      data: errors.array(),
+    });
+  }
+
+  if (!req.user) {
+    console.error('Authentication middleware failed to set req.user');
+    return next({
+      status: 500,
+      message: 'Authentication failure. Please log in.',
+      errorCode: 'AUTHENTICATION_FAILURE',
+    });
+  }
+
+  try {
+    const eventId = req.params.eventId;
+    const userId = req.user._id.toString(); 
+    const updatedEvent = await updateVotingEvent(eventId, req.body, userId);
+
+    res.status(200).json({
+      message: 'Event updated successfully',
+      event: updatedEvent, //  DECIDE LATER what parts of the event to send back
+    });
+  } catch (error) {
+    next({
+      status: 500,
+      message: 'Internal server error during event update',
       errorCode: 'INTERNAL_ERROR',
       data: { detail: error instanceof Error ? error.message : 'Unknown Error' },
     });

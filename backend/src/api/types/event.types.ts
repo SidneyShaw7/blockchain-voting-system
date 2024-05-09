@@ -1,5 +1,5 @@
-import { Types, Document } from 'mongoose'; 
-export interface Option {
+import { Types, Document } from 'mongoose';
+export interface Option extends Document {
   name?: string;
   bio?: string;
   option?: string;
@@ -32,8 +32,8 @@ export interface VotingEventFormValues {
   createdBy: Types.ObjectId;
 }
 
-// Database document interface tailored to match db model 
-export interface VotingEventFormValuesDB extends Document { 
+// Database document interface tailored to match db model
+export interface VotingEventFormValuesDB extends Document {
   title: string;
   description: string;
   options: Option[];
@@ -45,6 +45,6 @@ export interface VotingEventFormValuesDB extends Document {
   anonymity: boolean;
   resultVisibility: boolean;
   storageType: StorageType;
-  eventType: EventType;    
+  eventType: EventType;
   createdBy: Types.ObjectId;
 }
