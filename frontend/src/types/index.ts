@@ -3,7 +3,9 @@ export type { LoginCredentials, User, RegistrationForm } from './user.types';
 export type { ErrorWithStatus, FieldsError } from './error.types';
 export type {
   VotingEventFormValues,
+  VotingEventFormValuesDB,
   Option,
+  OptionDB,
   InputFieldProps,
   SelectFieldProps,
   OptionFieldProps,

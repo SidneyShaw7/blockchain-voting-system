@@ -5,6 +5,7 @@ import { LoginForm } from '../components/LoginForm';
 import { MainLayout, AuthLayout } from '../components/layouts';
 import { HomePage } from '../components/HomePage';
 import { CreateEventForm } from '../components/CreateEventForm';
+import { VotingEventInterface } from '../components/VotingEventEnterface';
 
 function App() {
   return (
@@ -36,10 +37,18 @@ function App() {
             }
           />
           <Route
-            path="/event/create"
+            path="/events/create"
             element={
               <MainLayout>
                 <CreateEventForm />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/events/:eventId"
+            element={
+              <MainLayout>
+                <VotingEventInterface />
               </MainLayout>
             }
           />

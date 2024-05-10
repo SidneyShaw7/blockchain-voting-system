@@ -1,10 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createEvent, deleteEvent, getEvent, voteOnEvent, updateEvent } from './eventThunks';
-import { VotingEventFormValues } from '../../types';
+import { VotingEventFormValuesDB } from '../../types';
 import { AsyncState } from '../../types';
 import { createAsyncReducers } from '../../utils/reducerUtils';
+import { PayloadAction } from '@reduxjs/toolkit';
 
-const initialState: AsyncState<VotingEventFormValues> = {
+const initialState: AsyncState<VotingEventFormValuesDB> = {
   isProcessing: false,
   isSuccess: false,
   isError: false,
@@ -12,7 +13,7 @@ const initialState: AsyncState<VotingEventFormValues> = {
   data: null,
 };
 
-const { pending, fulfilled, rejected } = createAsyncReducers<VotingEventFormValues>();
+const { pending, fulfilled, rejected } = createAsyncReducers<VotingEventFormValuesDB>();
 
 const eventSlice = createSlice({
   name: 'votingEvent',
@@ -24,9 +25,14 @@ const eventSlice = createSlice({
     builder
       // create
       .addCase(createEvent.pending, pending)
-      .addCase(createEvent.fulfilled, (state, action) => fulfilled(state, action))
+      .addCase(createEvent.fulfilled, (state, action: PayloadAction<VotingEventFormValuesDB>) => {
+        state.isProcessing = false;
+        state.isSuccess = true;
+        state.isError = false;
+        state.data = action.payload;
+      })
       .addCase(createEvent.rejected, (state, action) => rejected(state, action))
-      // // update
+      // update
       .addCase(updateEvent.pending, pending)
       .addCase(updateEvent.fulfilled, (state, action) => fulfilled(state, action))
       .addCase(updateEvent.rejected, (state, action) => rejected(state, action))

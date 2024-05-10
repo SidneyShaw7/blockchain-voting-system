@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getEvent, voteOnEvent } from '../../features/manageEvent';
-import { Option } from '../../types';
+import { OptionDB } from '../../types';
 import { useDispatch, RootState } from '../../app/store';
-import { error as showError} from '../../features/alert/alertSlice';
+// import { error as showError} from '../../features/alert/alertSlice';
 
 const VotingEventInterface = () => {
   const { eventId } = useParams<{ eventId?: string }>();
@@ -18,21 +18,14 @@ const VotingEventInterface = () => {
     }
   }, [dispatch, eventId]);
 
-//   if (eventId) {
-//     dispatch(voteOnEvent({ eventId, optionId: 'someOptionId' }));
-//   } else {
-//     console.error('Event ID is undefined.');
-//     dispatch(showError({ message: 'Event ID is undefined.' }));
-//   }
-
-  const handleVote = (optionId: string) => {
-    if (eventId) {
-      dispatch(voteOnEvent({ eventId, optionId }));
-    } else {
-      console.error('Event ID is undefined.');
-      dispatch(showError({ message: 'Event ID is undefined.' }));
-    }
-  };
+  // const handleVote = (optionId: string) => {
+  //   if (eventId) {
+  //     dispatch(voteOnEvent({ eventId, optionId }));
+  //   } else {
+  //     console.error('Event ID is undefined.');
+  //     dispatch(showError({ message: 'Event ID is undefined.' }));
+  //   }
+  // };
 
   if (isLoading) {
     return <div>Loading event details...</div>;
@@ -47,12 +40,12 @@ const VotingEventInterface = () => {
       <h1 className="text-2xl font-bold text-center">{event.title}</h1>
       <p className="text-lg">{event.description}</p>
       <ul>
-        {event.options.map((option: Option, index: number) => (
-          <li key={index} className="my-2">
+        {event.options.map((option: OptionDB) => (
+          <li key={option.id} className="my-2">
             <div className="option-details">
               <p className="option-text">{option.name || option.option}</p>
               <button
-                onClick={() => handleVote(option.id)}
+                onClick={() => eventId && option.id && dispatch(voteOnEvent({ eventId, optionId: option.id }))}
                 className="vote-button bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded"
               >
                 Vote

@@ -1,8 +1,11 @@
 export interface Option {
-  id: string;
   name?: string;
   bio?: string;
   option?: string;
+}
+
+export interface OptionDB extends Option {
+  id: string;
 }
 
 export enum StorageType {
@@ -17,7 +20,6 @@ export enum EventType {
 }
 
 export interface VotingEventFormValues {
-  id: string;
   title: string;
   description: string;
   options: Option[];
@@ -30,6 +32,11 @@ export interface VotingEventFormValues {
   resultVisibility: boolean;
   storageType: StorageType;
   eventType: EventType;
+}
+
+export interface VotingEventFormValuesDB extends VotingEventFormValues {
+  id: string;
+  options: OptionDB[];
 }
 
 //  prop types for the helper components
@@ -51,13 +58,3 @@ export interface OptionFieldProps {
   index: number;
   remove: (index: number) => void;
 }
-
-// event state
-
-// export interface VotingEventState {
-//   isProcessing: boolean;
-//   isSuccess: boolean;
-//   isError: boolean;
-//   errorMessage?: string;
-//   data?: VotingEventFormValues;
-// }

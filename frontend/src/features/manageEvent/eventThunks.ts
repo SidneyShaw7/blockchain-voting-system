@@ -1,10 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { eventService } from '../../services';
-import { VotingEventFormValues } from '../../types';
+import { VotingEventFormValues, VotingEventFormValuesDB } from '../../types';
 import { processError } from '../../utils/helpers';
 
-// create
-export const createEvent = createAsyncThunk<VotingEventFormValues, VotingEventFormValues, { rejectValue: string }>(
+export const createEvent = createAsyncThunk<VotingEventFormValuesDB, VotingEventFormValues, { rejectValue: string }>(
   'event/create',
   async (formData, { rejectWithValue }) => {
     try {
@@ -16,21 +15,18 @@ export const createEvent = createAsyncThunk<VotingEventFormValues, VotingEventFo
   }
 );
 
-// update
-export const updateEvent = createAsyncThunk<
-  VotingEventFormValues,
-  { eventId: string; formData: VotingEventFormValues },
-  { rejectValue: string }
->('event/update', async ({ eventId, formData }, { rejectWithValue }) => {
-  try {
-    const response = await eventService.updateEvent(eventId, formData);
-    return response.data;
-  } catch (error) {
-    return rejectWithValue(processError(error));
+export const updateEvent = createAsyncThunk<VotingEventFormValuesDB, { eventId: string; formData: VotingEventFormValuesDB }, { rejectValue: string }>(
+  'event/update',
+  async ({ eventId, formData }, { rejectWithValue }) => {
+    try {
+      const response = await eventService.updateEvent(eventId, formData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(processError(error));
+    }
   }
-});
+);
 
-// delete
 export const deleteEvent = createAsyncThunk<void, string, { rejectValue: string }>('event/delete', async (eventId, { rejectWithValue }) => {
   try {
     await eventService.deleteEvent(eventId);
@@ -39,8 +35,7 @@ export const deleteEvent = createAsyncThunk<void, string, { rejectValue: string 
   }
 });
 
-// get
-export const getEvent = createAsyncThunk<VotingEventFormValues, string, { rejectValue: string }>(
+export const getEvent = createAsyncThunk<VotingEventFormValuesDB, string, { rejectValue: string }>(
   'event/get',
   async (eventId, { rejectWithValue }) => {
     try {
@@ -52,7 +47,6 @@ export const getEvent = createAsyncThunk<VotingEventFormValues, string, { reject
   }
 );
 
-// vote
 export const voteOnEvent = createAsyncThunk<void, { eventId: string; optionId: string }, { rejectValue: string }>(
   'event/vote',
   async ({ eventId, optionId }, { rejectWithValue }) => {

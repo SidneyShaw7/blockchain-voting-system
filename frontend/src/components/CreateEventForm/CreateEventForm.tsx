@@ -4,13 +4,16 @@ import { EventSchema } from './EventSchema';
 import { VotingEventFormValues, StorageType, EventType } from '../../types';
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form';
 import { DateField, InputField, SelectField, CheckboxField } from './helperFieldComponents';
-import { useDispatch } from '../../app/store';
-import { createEvent } from '../../features/manageEvent';
+import { useDispatch, useSelector, RootState } from '../../app/store';
+import { createEvent, resetEventState } from '../../features/manageEvent';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { error as showError } from '../../features/alert';
 
 const CreateEventForm = () => {
   const dispatch = useDispatch();
-  // const useEffect = useEffect();
+  const navigate = useNavigate();
+  const { isSuccess, data, isError, errorMessage } = useSelector((state: RootState) => state.votingEvent);
 
   const methods = useForm<VotingEventFormValues>({
     resolver: zodResolver(EventSchema),
@@ -36,8 +39,14 @@ const CreateEventForm = () => {
   });
 
   useEffect(() => {
-    console.log(methods.formState.errors);
-  }, [methods.formState.errors]);
+    if (isSuccess && data) {
+      navigate('/events/');
+      dispatch(resetEventState());
+    }
+    if (isError && errorMessage) {
+      dispatch(showError({ message: errorMessage }));
+    }
+  }, [dispatch, navigate, isSuccess, data, isError, errorMessage]);
 
   const { handleSubmit, watch } = methods;
   const eventType = watch('eventType');
@@ -46,10 +55,6 @@ const CreateEventForm = () => {
     dispatch(createEvent(data));
     console.log('Dispatch called');
   };
-
-  // if (typeof StorageType === 'undefined') {
-  //   console.error('storageType is unexpectedly undefined');
-  // }
 
   return (
     <FormProvider {...methods}>
