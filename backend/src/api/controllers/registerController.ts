@@ -1,9 +1,9 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { UserRegistration } from '../types';
 import { registerUser } from '../services';
 import { ErrorWithStatus, handleValidationErrors } from '../utils';
 
-export const registerUserController = async (req: Request, res: Response): Promise<void> => {
+export const registerUserController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   handleValidationErrors(req);
 
   const { firstName, lastName, username, email, password } = req.body as UserRegistration;
@@ -20,9 +20,11 @@ export const registerUserController = async (req: Request, res: Response): Promi
 
     res.status(201).send({ message: 'User registered successfully', user });
   } catch (error) {
-    throw new ErrorWithStatus('Failed to register user', 500, 'REGISTRATION_ERROR', {
-      detail: error instanceof Error ? error.message : 'Unknown error',
-      input: { firstName, lastName, username, email },
-    });
+    next(
+      new ErrorWithStatus('Failed to register user', 500, 'REGISTRATION_ERROR', {
+        detail: error instanceof Error ? error.message : 'Unknown error',
+        input: { firstName, lastName, username, email },
+      })
+    );
   }
 };

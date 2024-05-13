@@ -1,9 +1,9 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { LoginCredentials } from '../types';
 import { loginUser } from '../services';
 import { ErrorWithStatus, handleValidationErrors } from '../utils';
 
-export const loginUserController = async (req: Request, res: Response) => {
+export const loginUserController = async (req: Request, res: Response, next: NextFunction) => {
   handleValidationErrors(req);
 
   const credentials = req.body as LoginCredentials;
@@ -20,9 +20,11 @@ export const loginUserController = async (req: Request, res: Response) => {
 
     res.json({ message: 'Login successful', token, user: { username } });
   } catch (error) {
-    throw new ErrorWithStatus('Login failed', 500, 'LOGIN_ERROR', {
-      detail: error instanceof Error ? error.message : 'Unknown login error',
-    });
+    next(
+      new ErrorWithStatus('Login failed', 500, 'LOGIN_ERROR', {
+        detail: error instanceof Error ? error.message : 'Unknown login error',
+      })
+    );
   }
 };
 

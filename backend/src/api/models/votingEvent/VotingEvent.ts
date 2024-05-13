@@ -18,10 +18,20 @@ const optionSchema = new mongoose.Schema<Option>({
     required: true,
     trim: true,
   },
+  votes: {
+    type: Number,
+    default: 0,
+  },
+  voters: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  ],
 });
 
 // virtual 'id' field to optionSchema for client side easy using
-optionSchema.virtual('id').get(function() {
+optionSchema.virtual('id').get(function () {
   return this._id.toHexString();
 });
 optionSchema.set('toJSON', { virtuals: true });
@@ -89,10 +99,16 @@ const votingEventSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  invitedPersons: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  ],
 });
 
 //  virtual 'id' field to votingEventSchema for client side easy using
-votingEventSchema.virtual('id').get(function() {
+votingEventSchema.virtual('id').get(function () {
   return this._id.toHexString();
 });
 votingEventSchema.set('toJSON', { virtuals: true });

@@ -68,8 +68,8 @@ app.get('/ping', (_req, res) => {
     res.send('pong');
 });
 // User-related routes from the router
-app.use('/api/users', routes_1.registerRouter);
-app.use('/api/users', routes_1.loginRouter);
+app.use('/api/users', routes_1.registerRouter, routes_1.loginRouter);
+// app.use('/api/users', loginRouter);
 app.use('/api/events', routes_1.votingEventRouter);
-app.use(middleware_2.errorHandler);
+app.use(middleware_2.errorMiddleware);
 exports.default = app;

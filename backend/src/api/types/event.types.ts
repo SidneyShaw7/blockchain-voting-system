@@ -2,7 +2,9 @@ import { Types, Document } from 'mongoose';
 export interface Option extends Document {
   name?: string;
   bio?: string;
-  option?: string;
+  option: string; 
+  votes: number;
+  voters: Types.ObjectId[];
 }
 
 export enum StorageType {
@@ -47,4 +49,5 @@ export interface VotingEventFormValuesDB extends Document {
   storageType: StorageType;
   eventType: EventType;
   createdBy: Types.ObjectId;
+  invitedPersons: Types.ObjectId[]; 
 }

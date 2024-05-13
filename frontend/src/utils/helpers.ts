@@ -8,6 +8,7 @@ export const processError = (error: unknown): string => {
     if (error.response) {
       // Specific error message from server
       return error.response.data.message || error.response.statusText || 'An unknown error occurred';
+        // return error.response.data;
     } else if (error.request) {
       // The request was made but no response was received
       return 'The server did not respond.';

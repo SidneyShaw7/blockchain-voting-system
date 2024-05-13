@@ -6,12 +6,16 @@ import {
   getEventController,
   getAllEventsController,
   deleteEventController,
+  voteOnEventController,
+  updateEventController,
 } from '../controllers/votingEventController';
 
 const router = express.Router();
 
 router.post('/create', authenticate, eventValidationRules(), handleAsync(createEventController));
 router.get('/:eventId', authenticate, handleAsync(getEventController));
-router.get('/all', authenticate, handleAsync(getAllEventsController));
+router.get('/', authenticate, handleAsync(getAllEventsController));
 router.delete('/:eventId', authenticate, handleAsync(deleteEventController));
+router.post('/:eventId/vote/:optionId', authenticate, handleAsync(voteOnEventController));
+router.put('/:eventId/update', authenticate, eventValidationRules(), handleAsync(updateEventController));
 export default router;

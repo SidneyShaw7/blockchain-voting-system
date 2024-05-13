@@ -15,7 +15,7 @@ const eventService = {
     return api.get(`/api/events/${eventId}`);
   },
   voteOnEvent: (eventId: string, optionId: string) => {
-    return api.post(`/api/events/${eventId}/vote`, { optionId });
+    return api.post(`/api/events/${eventId}/vote/${optionId}`);
   },
 };
 

@@ -8,6 +8,8 @@ export const createEvent = createAsyncThunk<VotingEventFormValuesDB, VotingEvent
   async (formData, { rejectWithValue }) => {
     try {
       const response = await eventService.createEvent(formData);
+      console.log(response.data.id);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(processError(error));
@@ -20,7 +22,7 @@ export const updateEvent = createAsyncThunk<VotingEventFormValuesDB, { eventId: 
   async ({ eventId, formData }, { rejectWithValue }) => {
     try {
       const response = await eventService.updateEvent(eventId, formData);
-      return response.data;
+      return response.data.event;
     } catch (error) {
       return rejectWithValue(processError(error));
     }
@@ -40,6 +42,8 @@ export const getEvent = createAsyncThunk<VotingEventFormValuesDB, string, { reje
   async (eventId, { rejectWithValue }) => {
     try {
       const response = await eventService.getEvent(eventId);
+      console.log(response.data.id);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(processError(error));

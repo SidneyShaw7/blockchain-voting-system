@@ -2,13 +2,13 @@ import { UserModel } from '../models/user';
 import { VotingEvent } from '../models/votingEvent';
 import { VotingEventFormValues, VotingEventFormValuesDB } from '../types';
 import mongoose from 'mongoose';
-import { startSession } from 'mongoose';
+import { startSession, Types } from 'mongoose';
 import { ErrorWithStatus } from '../utils';
 
 export const createVotingEvent = async (eventData: VotingEventFormValues, userId: string): Promise<VotingEventFormValuesDB> => {
   const session = await startSession();
+  session.startTransaction();
   try {
-    session.startTransaction();
     const creatorId = new mongoose.Types.ObjectId(userId);
 
     const newEvent = new VotingEvent({
@@ -33,11 +33,7 @@ export const createVotingEvent = async (eventData: VotingEventFormValues, userId
     return newEvent.toObject() as VotingEventFormValuesDB;
   } catch (error) {
     await session.abortTransaction();
-    if (error instanceof Error) {
-      throw new ErrorWithStatus(error.message || 'Failed to create event', 500, 'INTERNAL_ERROR');
-    } else {
-      throw new ErrorWithStatus('Unknown error occurred', 500, 'INTERNAL_ERROR');
-    }
+    throw new ErrorWithStatus(error instanceof Error ? error.message : 'Failed to update event', 500, 'INTERNAL_ERROR');
   } finally {
     session.endSession();
   }
@@ -70,17 +66,13 @@ export const updateVotingEvent = async (
     return updatedEvent.toObject() as VotingEventFormValuesDB;
   } catch (error) {
     await session.abortTransaction();
-    if (error instanceof Error) {
-      throw new ErrorWithStatus(error.message || 'Failed to update event', 500, 'INTERNAL_ERROR');
-    } else {
-      throw new ErrorWithStatus('Unknown error occurred', 500, 'INTERNAL_ERROR');
-    }
+    throw new ErrorWithStatus(error instanceof Error ? error.message : 'Failed to update event', 500, 'INTERNAL_ERROR');
   } finally {
     session.endSession();
   }
 };
 
-export const getEventById = async (eventId: string): Promise<VotingEventFormValues | null> => {
+export const getEventById = async (eventId: string, userId: string): Promise<VotingEventFormValuesDB & { hasVoted: boolean }> => {
   if (!eventId) {
     throw new ErrorWithStatus('Event ID is required', 400, 'EVENT_ID_REQUIRED');
   }
@@ -88,7 +80,10 @@ export const getEventById = async (eventId: string): Promise<VotingEventFormValu
   if (!event) {
     throw new ErrorWithStatus('Event not found', 404, 'EVENT_NOT_FOUND');
   }
-  return event;
+  const voterObjectId = new Types.ObjectId(userId);
+  const hasVoted = event.options.some((option) => option.voters.includes(voterObjectId));
+
+  return { ...event, hasVoted } as VotingEventFormValuesDB & { hasVoted: boolean };
 };
 
 export const getAllEvents = async (): Promise<VotingEventFormValuesDB[]> => {
@@ -101,4 +96,37 @@ export const deleteEventById = async (eventId: string): Promise<VotingEventFormV
     throw new ErrorWithStatus('Event not found', 404, 'EVENT_NOT_FOUND');
   }
   return event;
+};
+
+export const voteOnEvent = async (eventId: string, optionId: string, userId: string): Promise<void> => {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    const event = await VotingEvent.findById(eventId).session(session);
+    if (!event) {
+      throw new ErrorWithStatus('Event not found', 404, 'EVENT_NOT_FOUND');
+    }
+
+    const option = event.options.id(optionId);
+    if (!option) {
+      throw new ErrorWithStatus('Option not found', 404, 'OPTION_NOT_FOUND');
+    }
+
+    const voterObjectId = new Types.ObjectId(userId);
+    if (option.voters.includes(voterObjectId)) {
+      throw new ErrorWithStatus('User has already voted', 403, 'ALREADY_VOTED');
+    }
+
+    option.votes += 1;
+    option.voters.push(voterObjectId);
+
+    await event.save({ session });
+    await session.commitTransaction();
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
 };
