@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import { loginRouter, registerRouter, votingEventRouter } from './api/routes';
 import { logger } from './api/middleware';
 import { config, corsConfig } from './api/config';
-import { errorHandler } from './api/middleware';
+import { errorMiddleware } from './api/middleware';
 import { ErrorWithStatus } from './api/types';
 import cookieParser from 'cookie-parser';
 
@@ -74,6 +74,6 @@ app.get('/ping', (_req, res) => {
 app.use('/api/users', registerRouter);
 app.use('/api/users', loginRouter);
 app.use('/api/events', votingEventRouter);
-app.use(errorHandler);
+app.use(errorMiddleware);
 
 export default app;

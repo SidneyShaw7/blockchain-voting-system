@@ -1,7 +1,6 @@
 import express from 'express';
-import { authenticate } from '../middleware';
 import { eventValidationRules } from '../validations/votingEventValidations';
-import { asyncHandler } from '../middleware';
+import { handleAsync, authenticate } from '../utils';
 import {
   createEventController,
   getEventController,
@@ -11,8 +10,8 @@ import {
 
 const router = express.Router();
 
-router.post('/create', authenticate, eventValidationRules(), asyncHandler(createEventController));
-router.get('/:eventId', authenticate, asyncHandler(getEventController));
-router.get('/all', authenticate, asyncHandler(getAllEventsController));
-router.delete('/:eventId', authenticate, asyncHandler(deleteEventController));
+router.post('/create', authenticate, eventValidationRules(), handleAsync(createEventController));
+router.get('/:eventId', authenticate, handleAsync(getEventController));
+router.get('/all', authenticate, handleAsync(getAllEventsController));
+router.delete('/:eventId', authenticate, handleAsync(deleteEventController));
 export default router;

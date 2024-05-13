@@ -1,11 +1,11 @@
 import express from 'express';
 import { loginUserController, logoutUserController } from '../controllers';
 import { loginValidationRules } from '../validations';
-import { asyncHandler } from '../middleware';
+import { handleAsync } from '../utils';
 
 const router = express.Router();
 
-router.post('/login', loginValidationRules(), asyncHandler(loginUserController));
-router.post('/logout', asyncHandler(logoutUserController));
+router.post('/login', loginValidationRules(), handleAsync(loginUserController));
+router.post('/logout', handleAsync(logoutUserController));
 
 export default router;

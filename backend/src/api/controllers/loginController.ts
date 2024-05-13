@@ -1,18 +1,11 @@
-import { Request, Response, NextFunction } from 'express';
-import { validationResult } from 'express-validator';
+import { Request, Response } from 'express';
 import { LoginCredentials } from '../types';
 import { loginUser } from '../services';
+import { ErrorWithStatus, handleValidationErrors } from '../utils';
 
-export const loginUserController = async (req: Request, res: Response, next: NextFunction) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return next({
-      status: 400,
-      message: 'Validation failed, incorrect username or password',
-      errorCode: 'VALIDATION_FAILED',
-      data: errors.array(),
-    });
-  }
+export const loginUserController = async (req: Request, res: Response) => {
+  handleValidationErrors(req);
+
   const credentials = req.body as LoginCredentials;
 
   try {
@@ -27,11 +20,8 @@ export const loginUserController = async (req: Request, res: Response, next: Nex
 
     res.json({ message: 'Login successful', token, user: { username } });
   } catch (error) {
-    next({
-      status: 500,
-      message: 'Internal server error',
-      errorCode: 'LOGIN_ERROR',
-      data: { detail: error instanceof Error ? error.message : 'Unknown Error' },
+    throw new ErrorWithStatus('Login failed', 500, 'LOGIN_ERROR', {
+      detail: error instanceof Error ? error.message : 'Unknown login error',
     });
   }
 };

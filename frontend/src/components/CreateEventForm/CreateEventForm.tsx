@@ -40,27 +40,29 @@ const CreateEventForm = () => {
 
   useEffect(() => {
     if (isSuccess && data) {
-      navigate('/events/');
+      navigate(`/events/${data.id}`);
       dispatch(resetEventState());
     }
     if (isError && errorMessage) {
+      console.error(errorMessage);
       dispatch(showError({ message: errorMessage }));
     }
   }, [dispatch, navigate, isSuccess, data, isError, errorMessage]);
 
-  const { handleSubmit, watch } = methods;
+  const { watch } = methods;
   const eventType = watch('eventType');
+
   const onSubmit = (data: VotingEventFormValues) => {
-    console.log('Ready to submit', data);
+    // console.log('Ready to submit', data);
     dispatch(createEvent(data));
-    console.log('Dispatch called');
+    // console.log('Dispatch called');
   };
 
   return (
     <FormProvider {...methods}>
       <div className="w-full max-w-4xl mx-auto p-4">
         <h1 className="text-2xl font-bold text-center mb-4">Create Voting Event</h1>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
           <InputField label="Event Title" name="title" />
           <InputField label="Description" name="description" inputType="textarea" />
           <SelectField name="eventType" label="Event Type" options={['Candidate', 'General']} />

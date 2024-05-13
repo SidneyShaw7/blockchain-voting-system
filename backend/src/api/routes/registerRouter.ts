@@ -1,10 +1,10 @@
 import express from 'express';
 import { registerUserController } from '../controllers';
 import { registerValidationRules } from '../validations';
-import { asyncHandler } from '../middleware';
+import { handleAsync } from '../utils';
 
 const router = express.Router();
 
-router.post('/register', registerValidationRules(), asyncHandler(registerUserController));
+router.post('/register', registerValidationRules(), handleAsync(registerUserController));
 
 export default router;

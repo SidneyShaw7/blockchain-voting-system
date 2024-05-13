@@ -37,7 +37,7 @@ function App() {
             }
           />
           <Route
-            path="/events/create"
+            path="/event/create"
             element={
               <MainLayout>
                 <CreateEventForm />

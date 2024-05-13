@@ -3,7 +3,7 @@ import { VotingEvent } from '../models/votingEvent';
 import { VotingEventFormValues, VotingEventFormValuesDB } from '../types';
 import mongoose from 'mongoose';
 import { startSession } from 'mongoose';
-import { ErrorWithStatus } from '../utils/custom.errors';
+import { ErrorWithStatus } from '../utils';
 
 export const createVotingEvent = async (eventData: VotingEventFormValues, userId: string): Promise<VotingEventFormValuesDB> => {
   const session = await startSession();
@@ -60,7 +60,6 @@ export const updateVotingEvent = async (
       throw new ErrorWithStatus('User not authorized to update this event', 403, 'NOT_AUTHORIZED');
     }
 
-    // Update the event with new data
     const updatedEvent = await VotingEvent.findByIdAndUpdate(eventId, { $set: eventData }, { new: true, session });
 
     if (!updatedEvent) {
@@ -82,7 +81,14 @@ export const updateVotingEvent = async (
 };
 
 export const getEventById = async (eventId: string): Promise<VotingEventFormValues | null> => {
-  return VotingEvent.findById(eventId);
+  if (!eventId) {
+    throw new ErrorWithStatus('Event ID is required', 400, 'EVENT_ID_REQUIRED');
+  }
+  const event = await VotingEvent.findById(eventId);
+  if (!event) {
+    throw new ErrorWithStatus('Event not found', 404, 'EVENT_NOT_FOUND');
+  }
+  return event;
 };
 
 export const getAllEvents = async (): Promise<VotingEventFormValuesDB[]> => {
@@ -90,5 +96,9 @@ export const getAllEvents = async (): Promise<VotingEventFormValuesDB[]> => {
 };
 
 export const deleteEventById = async (eventId: string): Promise<VotingEventFormValuesDB | null> => {
-  return VotingEvent.findByIdAndDelete(eventId);
+  const event = await VotingEvent.findByIdAndDelete(eventId);
+  if (!event) {
+    throw new ErrorWithStatus('Event not found', 404, 'EVENT_NOT_FOUND');
+  }
+  return event;
 };

@@ -1,27 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { validationResult } from 'express-validator';
 import { VotingEventFormValuesDB } from '../types';
 import { createVotingEvent, getEventById, getAllEvents, deleteEventById, updateVotingEvent } from '../services';
+import { ErrorWithStatus, handleValidationErrors, checkUserAuthentication, handleError } from '../utils';
 
 export const createEventController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return next({
-      status: 400,
-      message: 'Validation errors in your event data',
-      errorCode: 'VALIDATION_FAILED',
-      data: errors.array(),
-    });
-  }
-
-  if (!req.user) {
-    console.error('Authentication middleware failed to set req.user');
-    return next({
-      status: 500,
-      message: 'Authentication failure. Please log in.',
-      errorCode: 'AUTHENTICATION_FAILURE',
-    });
-  }
+  handleValidationErrors(req);
+  checkUserAuthentication(req);
 
   try {
     const userId = req.user._id.toString();
@@ -29,6 +13,7 @@ export const createEventController = async (req: Request, res: Response, next: N
     res.status(201).send({
       message: 'Event created successfully',
       event: {
+        id: newEvent._id,
         title: newEvent.title,
         description: newEvent.description,
         startDate: newEvent.startDate,
@@ -37,38 +22,17 @@ export const createEventController = async (req: Request, res: Response, next: N
       },
     });
   } catch (error) {
-    next({
-      status: 500,
-      message: 'Internal server error during event creation',
-      errorCode: 'INTERNAL_ERROR',
-      data: { detail: error instanceof Error ? error.message : 'Unknown Error' },
-    });
+    throw next(handleError(error));
   }
 };
 
 export const updateEventController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return next({
-      status: 400,
-      message: 'Validation errors in your event data',
-      errorCode: 'VALIDATION_FAILED',
-      data: errors.array(),
-    });
-  }
-
-  if (!req.user) {
-    console.error('Authentication middleware failed to set req.user');
-    return next({
-      status: 500,
-      message: 'Authentication failure. Please log in.',
-      errorCode: 'AUTHENTICATION_FAILURE',
-    });
-  }
+  handleValidationErrors(req);
+  checkUserAuthentication(req);
 
   try {
     const eventId = req.params.eventId;
-    const userId = req.user._id.toString(); 
+    const userId = req.user._id.toString();
     const updatedEvent = await updateVotingEvent(eventId, req.body, userId);
 
     res.status(200).json({
@@ -76,12 +40,7 @@ export const updateEventController = async (req: Request, res: Response, next: N
       event: updatedEvent, //  DECIDE LATER what parts of the event to send back
     });
   } catch (error) {
-    next({
-      status: 500,
-      message: 'Internal server error during event update',
-      errorCode: 'INTERNAL_ERROR',
-      data: { detail: error instanceof Error ? error.message : 'Unknown Error' },
-    });
+    throw next(handleError(error));
   }
 };
 
@@ -94,11 +53,7 @@ export const getEventController = async (req: Request, res: Response, next: Next
     }
     res.json(event);
   } catch (error) {
-    next({
-      status: 500,
-      message: 'Internal server error',
-      errorCode: 'INTERNAL_ERROR',
-    });
+    throw next(handleError(error));
   }
 };
 
@@ -107,11 +62,7 @@ export const getAllEventsController = async (_req: Request, res: Response, next:
     const events = await getAllEvents();
     res.json(events);
   } catch (error) {
-    next({
-      status: 500,
-      message: 'Internal server error',
-      errorCode: 'INTERNAL_ERROR',
-    });
+    throw next(handleError(error));
   }
 };
 
@@ -119,15 +70,10 @@ export const deleteEventController = async (req: Request, res: Response, next: N
   try {
     const deletedEvent = await deleteEventById(req.params.eventId);
     if (!deletedEvent) {
-      res.status(404).json({ message: 'Event not found' });
-      return;
+      throw new ErrorWithStatus('Event not found', 404, 'EVENT_NOT_FOUND');
     }
     res.status(200).json({ message: 'Event deleted successfully' });
   } catch (error) {
-    next({
-      status: 500,
-      message: 'Internal server error',
-      errorCode: 'INTERNAL_ERROR',
-    });
+    throw next(handleError(error));
   }
 };
