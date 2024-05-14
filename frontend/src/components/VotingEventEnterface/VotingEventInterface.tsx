@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { getEvent, voteOnEvent } from '../../features/manageEvent';
@@ -11,7 +11,8 @@ const VotingEventInterface = () => {
   const dispatch = useDispatch();
   const event = useSelector((state: RootState) => state.votingEvent.data);
   const isLoading = useSelector((state: RootState) => state.votingEvent.isProcessing);
-  const [hasVoted, setHasVoted] = useState(false);
+  const userId = useSelector((state: RootState) => state.login.id); // Assuming you have userId in your auth state
+
 
   useEffect(() => {
     if (eventId) {
@@ -23,7 +24,6 @@ const VotingEventInterface = () => {
     if (eventId) {
       try {
         await dispatch(voteOnEvent({ eventId, optionId })).unwrap();
-        setHasVoted(true);
       } catch (error) {
         console.error('Failed to vote on event:', error);
         dispatch(showError({ message: 'Failed to vote on event.' }));
@@ -51,14 +51,16 @@ const VotingEventInterface = () => {
           <li key={option.id} className="my-2">
             <div className="option-details">
               <p className="option-text">{option.name || option.option}</p>
-              <button onClick={() => handleVote(option.id)} className="vote-button bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded">
-                Vote
-              </button>
+              {!event.hasVoted && (
+                <button onClick={() => handleVote(option.id)} className="vote-button bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded">
+                  Vote
+                </button>
+              )}
             </div>
           </li>
         ))}
       </ul>
-      {hasVoted && <p className="text-lg text-center text-green-500">Thank you for voting!</p>}
+      {event.hasVoted && <div>You have already voted</div>}
     </div>
   );
 };

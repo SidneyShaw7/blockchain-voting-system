@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { VotingEventFormValuesDB } from '../types';
+// import { VotingEventFormValuesDB } from '../types';
 import { createVotingEvent, getEventById, getAllEvents, deleteEventById, updateVotingEvent, voteOnEvent } from '../services';
 import { ErrorWithStatus, handleValidationErrors, checkUserAuthentication } from '../utils';
 
@@ -9,7 +9,7 @@ export const createEventController = async (req: Request, res: Response, next: N
 
   try {
     const userId = req.user._id.toString();
-    const newEvent = await createVotingEvent(req.body as VotingEventFormValuesDB, userId);
+    const newEvent = await createVotingEvent(req.body, userId);
     res.status(201).send({
       message: 'Event created successfully',
       event: {
@@ -55,7 +55,9 @@ export const updateEventController = async (req: Request, res: Response, next: N
 
 export const getEventController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const event = await getEventById(req.params.eventId);
+    const eventId = req.params.eventId;
+    const userId = req.user._id.toString();
+    const event = await getEventById(eventId, userId);
     if (!event) {
       throw new ErrorWithStatus('Event not found', 404, 'EVENT_NOT_FOUND');
     }
@@ -85,10 +87,7 @@ export const getAllEventsController = async (_req: Request, res: Response, next:
 export const deleteEventController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const deletedEvent = await deleteEventById(req.params.eventId);
-    if (!deletedEvent) {
-      throw new ErrorWithStatus('Event not found', 404, 'EVENT_NOT_FOUND');
-    }
-    res.status(200).json({ message: 'Event deleted successfully' });
+    res.status(200).json({ message: 'Event deleted successfully', deletedEvent });
   } catch (error) {
     next(
       new ErrorWithStatus('Failed to delete event', 500, 'EVENT_DELETION_FAILED', {

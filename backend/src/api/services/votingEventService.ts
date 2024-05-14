@@ -1,6 +1,6 @@
 import { UserModel } from '../models/user';
 import { VotingEvent } from '../models/votingEvent';
-import { VotingEventFormValues, VotingEventFormValuesDB } from '../types';
+import { VotingEventFormValues, VotingEventFormValuesDB, LeanVotingEvent } from '../types';
 import mongoose from 'mongoose';
 import { startSession, Types } from 'mongoose';
 import { ErrorWithStatus } from '../utils';
@@ -66,32 +66,32 @@ export const updateVotingEvent = async (
     return updatedEvent.toObject() as VotingEventFormValuesDB;
   } catch (error) {
     await session.abortTransaction();
-    throw new ErrorWithStatus(error instanceof Error ? error.message : 'Failed to update event', 500, 'INTERNAL_ERROR');
+    throw new ErrorWithStatus(error instanceof Error ? error.message : 'Failed to update event', 500, 'INTERNAL_ERROR', {
+      detail: error instanceof Error ? error.message : 'Unknown error',
+    });
   } finally {
     session.endSession();
   }
 };
 
-export const getEventById = async (eventId: string, userId: string): Promise<VotingEventFormValuesDB & { hasVoted: boolean }> => {
+export const getEventById = async (eventId: string): Promise<LeanVotingEvent> => {
   if (!eventId) {
     throw new ErrorWithStatus('Event ID is required', 400, 'EVENT_ID_REQUIRED');
   }
-  const event = await VotingEvent.findById(eventId);
+  const event = await VotingEvent.findById(eventId).lean<LeanVotingEvent>({ virtuals: true }); // to eunsure I get events and options ids
   if (!event) {
     throw new ErrorWithStatus('Event not found', 404, 'EVENT_NOT_FOUND');
   }
-  const voterObjectId = new Types.ObjectId(userId);
-  const hasVoted = event.options.some((option) => option.voters.includes(voterObjectId));
 
-  return { ...event, hasVoted } as VotingEventFormValuesDB & { hasVoted: boolean };
+  return event;
 };
 
-export const getAllEvents = async (): Promise<VotingEventFormValuesDB[]> => {
-  return VotingEvent.find();
+export const getAllEvents = async (): Promise<LeanVotingEvent[]> => {
+  return VotingEvent.find().lean<LeanVotingEvent[]>({ virtuals: true });
 };
 
-export const deleteEventById = async (eventId: string): Promise<VotingEventFormValuesDB | null> => {
-  const event = await VotingEvent.findByIdAndDelete(eventId);
+export const deleteEventById = async (eventId: string): Promise<LeanVotingEvent | null> => {
+  const event = await VotingEvent.findByIdAndDelete(eventId).lean<LeanVotingEvent>({ virtuals: true });
   if (!event) {
     throw new ErrorWithStatus('Event not found', 404, 'EVENT_NOT_FOUND');
   }
@@ -125,7 +125,9 @@ export const voteOnEvent = async (eventId: string, optionId: string, userId: str
     await session.commitTransaction();
   } catch (error) {
     await session.abortTransaction();
-    throw error;
+    throw new ErrorWithStatus('Failed to vote on event', 500, 'VOTE_FAILED', {
+      detail: error instanceof Error ? error.message : 'Unknown error',
+    });
   } finally {
     session.endSession();
   }

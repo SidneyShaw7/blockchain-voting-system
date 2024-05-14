@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongooseLeanVirtuals from 'mongoose-lean-virtuals';
 import { Option, StorageType, EventType } from '../../types/event.types';
 import logger from '../../middleware/logger';
 import { capitalize } from '../../utils';
@@ -35,6 +36,7 @@ optionSchema.virtual('id').get(function () {
   return this._id.toHexString();
 });
 optionSchema.set('toJSON', { virtuals: true });
+optionSchema.set('toObject', { virtuals: true });
 
 // mongoose schema for a voting event
 const votingEventSchema = new mongoose.Schema({
@@ -112,6 +114,9 @@ votingEventSchema.virtual('id').get(function () {
   return this._id.toHexString();
 });
 votingEventSchema.set('toJSON', { virtuals: true });
+votingEventSchema.set('toObject', { virtuals: true });
+
+votingEventSchema.plugin(mongooseLeanVirtuals); // installing plugin for just getting id instead of _id for my frontend; crazy insane
 
 votingEventSchema.pre('save', function (next) {
   if (this.isModified('title')) {

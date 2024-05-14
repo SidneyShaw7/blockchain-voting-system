@@ -17,3 +17,6 @@ Decided to refactor the EventCreationForm validation with Zod library, took me 2
 
 Mon Apr 29
 Making the event slice realised that my code on slices and thunks so much repetetive, decided to refactor all of the slices for easy to use, was not an easy task and Im not sure if I want to do more refactoring anymroe.
+
+Tue May 14
+Spend too much time figuring out whats wrong with my event schema and why its not returning an object wiht ids except of _ids. even though my virtuals are true everywhere and set up is correct, the reason for that was using lean() function, lean() just dont give you vitruals if returning the objucs, you need to install special plugin, write tens lines of code just to get pretty id naming except of _id. too much hustle for small adjustment, I spend 2 hours arguing with GPT that my code is correct and I dont need to refactor it, ended up reading articles on stack overflow, which saved just saved me. AI is not that perfect yet.

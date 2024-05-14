@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { login } from './loginThunks';
 import { User } from '../../types';
 import { AsyncState } from '../../types';
@@ -12,7 +12,7 @@ const initialState: AsyncState<User | null> = {
   data: null,
 };
 
-const { pending, fulfilled, rejected } = createAsyncReducers<User | null>();
+const { pending, rejected } = createAsyncReducers<User | null>();
 
 const loginSlice = createSlice({
   name: 'login',
@@ -21,7 +21,14 @@ const loginSlice = createSlice({
     logout: () => initialState,
   },
   extraReducers: (builder) => {
-    builder.addCase(login.pending, pending).addCase(login.fulfilled, fulfilled).addCase(login.rejected, rejected);
+    builder
+      .addCase(login.pending, pending)
+      .addCase(login.fulfilled, (state, action: PayloadAction<User | null>) => {
+        state.isProcessing = false;
+        state.isSuccess = true;
+        state.data = action.payload; 
+      })
+      .addCase(login.rejected, rejected);
   },
 });
 

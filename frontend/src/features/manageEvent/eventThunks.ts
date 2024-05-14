@@ -10,7 +10,7 @@ export const createEvent = createAsyncThunk<VotingEventFormValuesDB, VotingEvent
       const response = await eventService.createEvent(formData);
       console.log(response.data.id);
       console.log(response.data);
-      return response.data;
+      return response.data.event;
     } catch (error) {
       return rejectWithValue(processError(error));
     }
@@ -42,7 +42,6 @@ export const getEvent = createAsyncThunk<VotingEventFormValuesDB, string, { reje
   async (eventId, { rejectWithValue }) => {
     try {
       const response = await eventService.getEvent(eventId);
-      console.log(response.data.id);
       console.log(response.data);
       return response.data;
     } catch (error) {
