@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 
 export interface User {
-  _id: Types.ObjectId;
+  id: Types.ObjectId;
   firstName: string;
   lastName: string;
   username: string;
@@ -17,6 +17,7 @@ export interface UserResponse {
   lastName: string;
   username: string;
   email: string;
+  events?: string[];
 }
 
 export interface UserRegistration {
@@ -28,6 +29,7 @@ export interface UserRegistration {
 }
 
 export interface LoginCredentials {
-  username: string;
+  email?: string;
+  username?: string;
   password: string;
 }

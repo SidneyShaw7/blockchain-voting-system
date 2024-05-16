@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { LoginCredentials } from '../types';
+import { LoginCredentials, UserResponse } from '../types';
 import { loginUser } from '../services';
 import { ErrorWithStatus, handleValidationErrors } from '../utils';
 
@@ -9,7 +9,7 @@ export const loginUserController = async (req: Request, res: Response, next: Nex
   const credentials = req.body as LoginCredentials;
 
   try {
-    const { token, username } = await loginUser(credentials);
+    const { token, user } = await loginUser(credentials);
 
     res.cookie('token', token, {
       httpOnly: true,
@@ -18,7 +18,16 @@ export const loginUserController = async (req: Request, res: Response, next: Nex
       sameSite: 'strict' as const,
     });
 
-    res.json({ message: 'Login successful', token, user: { username } });
+    const userResponse: UserResponse = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      email: user.email,
+      events: user.events?.map((event) => event),
+    };
+
+    res.json({ message: 'Login successful', token, user: userResponse });
   } catch (error) {
     next(
       new ErrorWithStatus('Login failed', 500, 'LOGIN_ERROR', {

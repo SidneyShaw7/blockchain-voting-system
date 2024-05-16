@@ -56,8 +56,8 @@ export const updateEventController = async (req: Request, res: Response, next: N
 export const getEventController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const eventId = req.params.eventId;
-    const userId = req.user._id.toString();
-    const event = await getEventById(eventId, userId);
+    // const userId = req.user._id.toString();
+    const event = await getEventById(eventId);
     if (!event) {
       throw new ErrorWithStatus('Event not found', 404, 'EVENT_NOT_FOUND');
     }
