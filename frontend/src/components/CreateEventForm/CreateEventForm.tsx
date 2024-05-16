@@ -53,9 +53,7 @@ const CreateEventForm = () => {
   const eventType = watch('eventType');
 
   const onSubmit = (data: VotingEventFormValues) => {
-    // console.log('Ready to submit', data);
     dispatch(createEvent(data));
-    // console.log('Dispatch called');
   };
 
   return (
@@ -87,10 +85,14 @@ const CreateEventForm = () => {
           )}
           <button
             type="button"
-            onClick={() => append(eventType === 'Candidate' ? { name: '', bio: '' } : { option: '' })}
+            onClick={() =>
+              append(
+                eventType === EventType.Candidate ? { name: '', bio: '', option: '', voters: [], votes: 0 } : { option: '', voters: [], votes: 0 }
+              )
+            }
             className="mt-2 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded"
           >
-            Add {eventType === 'Candidate' ? 'Candidate' : 'Option'}
+            Add {eventType === EventType.Candidate ? 'Candidate' : 'Option'}
           </button>
 
           <DateField name="startDate" label="Start date:" />

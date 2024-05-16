@@ -1,7 +1,9 @@
 export interface Option {
   name?: string;
   bio?: string;
-  option?: string;
+  option: string;
+  votes: number;
+  voters: string[];
 }
 
 export interface OptionDB extends Option {

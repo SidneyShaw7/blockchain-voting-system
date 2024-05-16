@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { getEvent, voteOnEvent } from '../../features/manageEvent';
 import { OptionDB } from '../../types';
-import { useDispatch, RootState } from '../../app/store';
+import { useDispatch, RootState, useSelector } from '../../app/store';
 import { error as showError } from '../../features/alert/alertSlice';
 
 const VotingEventInterface = () => {
@@ -11,8 +10,7 @@ const VotingEventInterface = () => {
   const dispatch = useDispatch();
   const event = useSelector((state: RootState) => state.votingEvent.data);
   const isLoading = useSelector((state: RootState) => state.votingEvent.isProcessing);
-  const userId = useSelector((state: RootState) => state.login.id); // Assuming you have userId in your auth state
-
+  const userId = useSelector((state: RootState) => state.login.data?.id);
 
   useEffect(() => {
     if (eventId) {
@@ -42,6 +40,11 @@ const VotingEventInterface = () => {
     return console.log(event), (<div>No event found.</div>);
   }
 
+  console.log('User ID:', userId);
+  console.log('Event options:', event.options);
+  const hasUserVoted = userId && event.options.some((option) => option.voters.includes(userId));
+  console.log('Has User Voted:', hasUserVoted);
+
   return (
     <div className="event-container">
       <h1 className="text-2xl font-bold text-center">{event.title}</h1>
@@ -51,7 +54,7 @@ const VotingEventInterface = () => {
           <li key={option.id} className="my-2">
             <div className="option-details">
               <p className="option-text">{option.name || option.option}</p>
-              {!event.hasVoted && (
+              {!hasUserVoted && (
                 <button onClick={() => handleVote(option.id)} className="vote-button bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded">
                   Vote
                 </button>
@@ -60,7 +63,7 @@ const VotingEventInterface = () => {
           </li>
         ))}
       </ul>
-      {event.hasVoted && <div>You have already voted</div>}
+      {hasUserVoted && <div>You have already voted</div>}
     </div>
   );
 };
