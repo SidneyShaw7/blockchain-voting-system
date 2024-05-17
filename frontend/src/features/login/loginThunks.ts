@@ -1,13 +1,15 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { userService } from '../../services';
-import { User, LoginCredentials } from '../../types';
+import { AuthResponse, LoginCredentials } from '../../types';
 import { processError } from '../../utils/helpers';
 
-export const login = createAsyncThunk<User, LoginCredentials, { rejectValue: string }>(
+export const login = createAsyncThunk<AuthResponse, LoginCredentials, { rejectValue: string }>(
   'authentication/login',
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await userService.login(credentials);
+      console.log('Login response:', response.data);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(processError(error));

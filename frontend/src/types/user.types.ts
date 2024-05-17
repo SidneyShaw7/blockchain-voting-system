@@ -14,23 +14,13 @@ export interface User {
   lastName?: string;
 }
 
-// export interface LoginState {
-//   isProcessing: boolean;
-//   isSuccess: boolean;
-//   isError: boolean;
-//   data: User | null;
-//   errorMessage?: string;
-// }
+// auth response
 
-// REGISTRATION STATE
-
-// export interface RegistrationState {
-//   isProcessing: boolean;
-//   isSuccess: boolean;
-//   isError: boolean;
-//   errorMessage?: string;
-//   data?: User | null;
-// }
+export interface AuthResponse {
+  message: string;
+  token: string;
+  user: User;
+}
 
 // REGISTRATION FORM MODEL
 export interface RegistrationForm {

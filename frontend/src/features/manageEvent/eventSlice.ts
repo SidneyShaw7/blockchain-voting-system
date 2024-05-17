@@ -47,6 +47,7 @@ const eventSlice = createSlice({
       .addCase(getEvent.pending, pending)
       .addCase(getEvent.fulfilled, fulfilled)
       .addCase(getEvent.rejected, rejected)
+      // vote on
       .addCase(voteOnEvent.pending, pending)
       .addCase(voteOnEvent.fulfilled, (state) => {
         state.isProcessing = false;

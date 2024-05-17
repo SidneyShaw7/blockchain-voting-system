@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { login, logout } from './loginThunks';
-import { User } from '../../types';
-import { AsyncState } from '../../types';
+import { AuthResponse, AsyncState } from '../../types';
 import { createAsyncReducers } from '../../utils/reducerUtils';
 
-const initialState: AsyncState<User | null> = {
+interface LoginState extends AsyncState<AuthResponse> {}
+
+const initialState: LoginState = {
   isProcessing: false,
   isSuccess: false,
   isError: false,
@@ -12,7 +13,7 @@ const initialState: AsyncState<User | null> = {
   data: null,
 };
 
-const { pending, rejected } = createAsyncReducers<User | null>();
+const { pending, rejected } = createAsyncReducers<AuthResponse>();
 
 const loginSlice = createSlice({
   name: 'login',
@@ -23,10 +24,13 @@ const loginSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(login.pending, pending)
-      .addCase(login.fulfilled, (state, action: PayloadAction<User | null>) => {
+      .addCase(login.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
         state.isProcessing = false;
         state.isSuccess = true;
+        state.isError = false;
         state.data = action.payload;
+        console.log('Login fulfilled, state:', state);
+
       })
       .addCase(login.rejected, rejected)
       .addCase(logout.pending, pending)

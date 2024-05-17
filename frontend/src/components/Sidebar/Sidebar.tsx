@@ -33,12 +33,17 @@ const Sidebar: React.FC = () => {
             </a>
           </li>
           <li className="mb-4">
+            <a href="/events" className="text-[#00478F] hover:text-[#2A231F]" onClick={handleCloseSidebar}>
+              My Events
+            </a>
+          </li>
+          <li className="mb-4">
             <button
               onClick={() => setEventsOpen(!isEventsOpen)}
               className="text-[#00478F] hover:text-[#2A231F] focus:outline-none"
               aria-expanded={isEventsOpen}
             >
-              My Events
+              My Events (not working)
             </button>
             <div
               className={`overflow-hidden transition-height duration-700 ease-in-out ${isEventsOpen ? 'max-h-40' : 'max-h-0'}`}

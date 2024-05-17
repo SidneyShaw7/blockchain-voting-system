@@ -63,3 +63,15 @@ export const voteOnEvent = createAsyncThunk<void, { eventId: string; optionId: s
     }
   }
 );
+
+export const getAllEvents = createAsyncThunk<VotingEventFormValuesDB[], void, { rejectValue: string }>(
+  'event/getAllEvents',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await eventService.getAllEvents();
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(processError(error));
+    }
+  }
+);

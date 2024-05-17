@@ -6,11 +6,13 @@ import { useDispatch, RootState, useSelector } from '../../app/store';
 import { error as showError } from '../../features/alert/alertSlice';
 
 const VotingEventInterface = () => {
+  console.log('VotingEventInterface component re-render');
+
   const { eventId } = useParams<{ eventId?: string }>();
   const dispatch = useDispatch();
-  const event = useSelector((state: RootState) => state.votingEvent.data);
-  const isLoading = useSelector((state: RootState) => state.votingEvent.isProcessing);
-  const userId = useSelector((state: RootState) => state.login.data?.id);
+  const { data: event, isProcessing } = useSelector((state: RootState) => state.votingEvent);
+  const userId = useSelector((state: RootState) => state.login.data?.user.id);
+  console.log('userId from selector:', userId);
 
   useEffect(() => {
     if (eventId) {
@@ -22,6 +24,8 @@ const VotingEventInterface = () => {
     if (eventId) {
       try {
         await dispatch(voteOnEvent({ eventId, optionId })).unwrap();
+        dispatch(getEvent(eventId));
+
       } catch (error) {
         console.error('Failed to vote on event:', error);
         dispatch(showError({ message: 'Failed to vote on event.' }));
@@ -32,7 +36,7 @@ const VotingEventInterface = () => {
     }
   };
 
-  if (isLoading) {
+  if (isProcessing) {
     return <div>Loading event details...</div>;
   }
 
