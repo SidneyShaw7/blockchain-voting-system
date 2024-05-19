@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getEvent, voteOnEvent } from '../../features/manageEvent';
 import { OptionDB } from '../../types';
-import { useDispatch, RootState, useSelector } from '../../app/store';
+import { useDispatch, RootState, useSelector } from '../../store';
 import { error as showError } from '../../features/alert/alertSlice';
 
 const VotingEventInterface = () => {
@@ -25,7 +25,6 @@ const VotingEventInterface = () => {
       try {
         await dispatch(voteOnEvent({ eventId, optionId })).unwrap();
         dispatch(getEvent(eventId));
-
       } catch (error) {
         console.error('Failed to vote on event:', error);
         dispatch(showError({ message: 'Failed to vote on event.' }));

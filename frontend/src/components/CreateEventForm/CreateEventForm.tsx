@@ -4,7 +4,7 @@ import { EventSchema } from './EventSchema';
 import { VotingEventFormValues, StorageType, EventType } from '../../types';
 import { useForm, FormProvider, useFieldArray } from 'react-hook-form';
 import { DateField, InputField, SelectField, CheckboxField } from './helperFieldComponents';
-import { useDispatch, useSelector, RootState } from '../../app/store';
+import { useDispatch, useSelector, RootState } from '../../store';
 import { createEvent, resetEventState } from '../../features/manageEvent';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';

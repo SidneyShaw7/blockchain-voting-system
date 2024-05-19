@@ -1,4 +1,4 @@
-import { useDispatch, useSelector, RootState } from '../../app/store';
+import { useDispatch, useSelector, RootState } from '../../store';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../features/login/loginThunks';
@@ -38,11 +38,7 @@ const LoginForm = () => {
     <section className="bg-white">
       <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
         <section className="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-5">
-          <img
-            alt=""
-            src="/src/images/technology-in-digital-transformation.jpg"
-            className="absolute inset-0 h-full w-full object-cover opacity-80"
-          />
+          <img alt="" src="/src/images/technology-in-digital-transformation.jpg" className="absolute inset-0 h-full w-full object-cover opacity-80" />
 
           <div className="hidden lg:relative lg:block lg:p-12">
             <a className="block text-white" href="#">

@@ -1,4 +1,4 @@
-import { useDispatch, useSelector, RootState } from '../../app/store';
+import { useDispatch, useSelector, RootState } from '../../store';
 import { logout } from '../../features/login';
 import { useNavigate } from 'react-router-dom';
 import { toggleSidebar } from '../../features/sidebar';

@@ -1,8 +1,7 @@
-import { useEffect, } from 'react';
-import { useDispatch, useSelector, RootState } from '../../app/store';
+import { useEffect } from 'react';
+import { useDispatch, useSelector, RootState } from '../../store';
 import { getAllEvents } from '../../features/manageEvent';
 import { useNavigate } from 'react-router-dom';
-
 
 const UserEvents = () => {
   const dispatch = useDispatch();
@@ -30,7 +29,6 @@ const UserEvents = () => {
     navigate(`/events/${eventId}`);
   };
 
-
   return (
     <div className="max-w-4xl mx-auto p-4">
       <h1 className="text-3xl font-bold text-center mb-6">Your Events</h1>
@@ -44,10 +42,7 @@ const UserEvents = () => {
             <p className="text-gray-500 mb-1">Type: {event.eventType}</p>
             <p className="text-gray-500 mb-1">Storage: {event.storageType}</p>
             <p className="text-gray-500">Votes: {event.options.reduce((sum, option) => sum + option.votes, 0)}</p>
-            <button
-              onClick={() => handleViewEvent(event.id)}
-              className="mt-4 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
-            >
+            <button onClick={() => handleViewEvent(event.id)} className="mt-4 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
               View Event
             </button>
           </li>

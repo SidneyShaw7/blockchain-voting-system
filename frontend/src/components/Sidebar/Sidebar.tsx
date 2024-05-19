@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../app/store';
+import { RootState } from '../../store';
 import { useState } from 'react';
 import { LogoutButton } from '../LogoutButton';
 import { useDispatch } from 'react-redux';
@@ -45,9 +45,7 @@ const Sidebar: React.FC = () => {
             >
               My Events (not working)
             </button>
-            <div
-              className={`overflow-hidden transition-height duration-700 ease-in-out ${isEventsOpen ? 'max-h-40' : 'max-h-0'}`}
-            >
+            <div className={`overflow-hidden transition-height duration-700 ease-in-out ${isEventsOpen ? 'max-h-40' : 'max-h-0'}`}>
               <ul className="list-none pl-4">
                 <li className="mb-2 mt-3">
                   <a href="/#voteInitiatives/" className="text-[#00478F] hover:text-[#2A231F]" onClick={handleCloseSidebar}>
