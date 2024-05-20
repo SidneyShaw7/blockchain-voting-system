@@ -1,11 +1,11 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Alert } from '../AlertComponent';
 
-interface AuthLayout {
+interface AuthLayoutProps {
   children: ReactNode;
 }
 
-const AuthLayout: React.FC<AuthLayout> = ({ children }) => {
+const AuthLayout = ({ children }: AuthLayoutProps) => {
   return (
     <div>
       <Alert />

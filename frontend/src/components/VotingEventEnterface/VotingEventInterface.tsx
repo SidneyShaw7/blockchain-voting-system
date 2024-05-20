@@ -49,16 +49,16 @@ const VotingEventInterface = () => {
   console.log('Has User Voted:', hasUserVoted);
 
   return (
-    <div className="event-container">
-      <h1 className="text-2xl font-bold text-center">{event.title}</h1>
-      <p className="text-lg">{event.description}</p>
-      <ul>
+    <div className="event-container max-w-4xl mx-auto p-4 bg-white shadow-md rounded-lg">
+      <h1 className="text-3xl font-bold text-center mb-4">{event.title}</h1>
+      <p className="text-lg mb-4">{event.description}</p>
+      <ul className="space-y-4">
         {event.options.map((option: OptionDB) => (
-          <li key={option.id} className="my-2">
-            <div className="option-details">
-              <p className="option-text">{option.name || option.option}</p>
+          <li key={option.id} className="my-2 bg-gray-100 p-4 rounded-lg shadow">
+            <div className="option-details flex justify-between items-center">
+              <p className="option-text text-lg">{option.name || option.option}</p>
               {!hasUserVoted && (
-                <button onClick={() => handleVote(option.id)} className="vote-button bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded">
+                <button onClick={() => handleVote(option.id)} className="vote-button bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-lg">
                   Vote
                 </button>
               )}
@@ -66,7 +66,7 @@ const VotingEventInterface = () => {
           </li>
         ))}
       </ul>
-      {hasUserVoted && <div>You have already voted</div>}
+      {hasUserVoted && <div className="text-center mt-4 text-green-600">You have already voted</div>}
     </div>
   );
 };

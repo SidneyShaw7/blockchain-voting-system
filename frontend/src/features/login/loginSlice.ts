@@ -3,7 +3,9 @@ import { login, logout } from './loginThunks';
 import { AuthResponse, AsyncState } from '../../types';
 import { createAsyncReducers } from '../../utils/reducerUtils';
 
-interface LoginState extends AsyncState<AuthResponse> {}
+interface LoginState extends AsyncState<AuthResponse> {
+  isAuthenticated: boolean;
+}
 
 const initialState: LoginState = {
   isProcessing: false,
@@ -11,6 +13,7 @@ const initialState: LoginState = {
   isError: false,
   errorMessage: undefined,
   data: null,
+  isAuthenticated: false,
 };
 
 const { pending, rejected } = createAsyncReducers<AuthResponse>();
@@ -29,8 +32,8 @@ const loginSlice = createSlice({
         state.isSuccess = true;
         state.isError = false;
         state.data = action.payload;
+        state.isAuthenticated = true;
         console.log('Login fulfilled, state:', state);
-
       })
       .addCase(login.rejected, rejected)
       .addCase(logout.pending, pending)
@@ -38,6 +41,7 @@ const loginSlice = createSlice({
         state.isProcessing = false;
         state.isSuccess = false;
         state.data = null;
+        state.isAuthenticated = false;
       })
       .addCase(logout.rejected, rejected);
   },

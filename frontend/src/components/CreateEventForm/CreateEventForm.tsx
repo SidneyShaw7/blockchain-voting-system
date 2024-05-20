@@ -10,6 +10,12 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { error as showError } from '../../features/alert';
 
+const predefinedOptions = [
+  { option: 'Yes, I approve', voters: [], votes: 0 },
+  { option: 'No, I reject', voters: [], votes: 0 },
+  { option: 'Abstain', voters: [], votes: 0 },
+];
+
 const CreateEventForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,7 +39,7 @@ const CreateEventForm = () => {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control: methods.control,
     name: 'options',
   });
@@ -51,6 +57,14 @@ const CreateEventForm = () => {
 
   const { watch } = methods;
   const eventType = watch('eventType');
+
+  useEffect(() => {
+    if (eventType === EventType.General) {
+      replace(predefinedOptions);
+    } else {
+      replace([]);
+    }
+  }, [eventType, replace]);
 
   const onSubmit = (data: VotingEventFormValues) => {
     dispatch(createEvent(data));

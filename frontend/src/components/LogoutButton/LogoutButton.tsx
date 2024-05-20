@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toggleSidebar } from '../../features/sidebar';
 import { error as showError } from '../../features/alert/alertSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 export const LogoutButton = () => {
   const dispatch = useDispatch();
@@ -25,5 +26,9 @@ export const LogoutButton = () => {
     }
   };
 
-  return <button onClick={handleLogout}>Logout</button>;
+  return (
+    <button onClick={handleLogout}>
+      <LogoutIcon />
+    </button>
+  );
 };
