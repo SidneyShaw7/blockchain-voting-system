@@ -4,7 +4,9 @@ import jwt from 'jsonwebtoken';
 import { LoginCredentials, UserResponse } from '../types';
 import { ErrorWithStatus } from '../utils/custom.errors';
 
-export const loginUser = async (credentials: LoginCredentials): Promise<{ token: string; user: UserResponse }> => {
+export const loginUser = async (
+  credentials: LoginCredentials
+): Promise<{ token: string; refreshToken: string; user: UserResponse }> => {
   const { email, username, password } = credentials;
   const user = await UserModel.findOne({
     $or: [{ email }, { username }],
@@ -20,7 +22,9 @@ export const loginUser = async (credentials: LoginCredentials): Promise<{ token:
   }
 
   const secret = process.env.JWT_SECRET;
-  if (!secret) {
+  const refreshSecret = process.env.JWT_REFRESH_SECRET!;
+
+  if (!secret || !refreshSecret) {
     throw new ErrorWithStatus(
       'JWT secret is not defined. Server unable to process requests requiring authentication.',
       500,
@@ -36,5 +40,7 @@ export const loginUser = async (credentials: LoginCredentials): Promise<{ token:
     lastName: user.lastName,
   };
   const token = jwt.sign({ id: user._id }, secret, { expiresIn: '1h' });
-  return { token, user: userResponse };
+  const refreshToken = jwt.sign({ id: user._id }, refreshSecret, { expiresIn: '7d' });
+
+  return { token, refreshToken, user: userResponse };
 };

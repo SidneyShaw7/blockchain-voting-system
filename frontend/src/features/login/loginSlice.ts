@@ -22,6 +22,11 @@ const loginSlice = createSlice({
   name: 'login',
   initialState,
   reducers: {
+    refreshToken: (state, action: PayloadAction<string>) => {
+      if (state.data) {
+        state.data.token = action.payload;
+      }
+    },
     logout: () => initialState,
   },
   extraReducers: (builder) => {
@@ -46,5 +51,7 @@ const loginSlice = createSlice({
       .addCase(logout.rejected, rejected);
   },
 });
+
+export const { refreshToken } = loginSlice.actions;
 
 export default loginSlice.reducer;

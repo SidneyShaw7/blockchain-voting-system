@@ -9,7 +9,14 @@ export const loginUserController = async (req: Request, res: Response, next: Nex
   const credentials = req.body as LoginCredentials;
 
   try {
-    const { token, user } = await loginUser(credentials);
+    const { token, refreshToken, user } = await loginUser(credentials);
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      sameSite: 'strict' as const,
+    });
 
     res.cookie('token', token, {
       httpOnly: true,
@@ -39,6 +46,13 @@ export const loginUserController = async (req: Request, res: Response, next: Nex
 
 export const logoutUserController = async (_req: Request, res: Response) => {
   res.cookie('token', '', {
+    httpOnly: true,
+    expires: new Date(0),
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict' as const,
+  });
+
+  res.cookie('refreshToken', '', {
     httpOnly: true,
     expires: new Date(0),
     secure: process.env.NODE_ENV === 'production',
