@@ -24,9 +24,8 @@ api.interceptors.response.use(
       if (error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         try {
-          const { data } = await axios.post(`${apiUrl}/refresh-token`, {}, { withCredentials: true });
-          store.dispatch(refreshToken(data.accessToken));
-          originalRequest.headers['Authorization'] = `Bearer ${data.accessToken}`;
+          await axios.post(`${apiUrl}/refresh-token`, {}, { withCredentials: true });
+          store.dispatch(refreshToken());
           return axios(originalRequest);
         } catch (error) {
           store.dispatch(logout());

@@ -2,10 +2,13 @@ import { ReactNode, useEffect } from 'react';
 import { Alert } from '../AlertComponent';
 import { Sidebar } from '../Sidebar';
 // import ToggleButton from '../ToggleButton/ToggleButton';
-import { useSelector, RootState } from '../../store';
+import { useSelector, RootState, useDispatch } from '../../store';
 import { LogoutButton } from '../LogoutButton';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useNavigate } from 'react-router-dom';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+import { toggleSidebar } from '../../features/sidebar';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -16,6 +19,8 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const lastName = useSelector((state: RootState) => state.login.data?.user.lastName);
   const isAuthenticated = useSelector((state: RootState) => state.login.isAuthenticated);
   const navigate = useNavigate();
+  const isSidebarOpen = useSelector((state: RootState) => state.sidebar.isOpen);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -25,31 +30,39 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar />
+      {/* <Sidebar /> */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white shadow p-1.5 flex justify-end items-center">
+        <header className="bg-white shadow p-1.5 flex justify-between items-center">
+          <div className="text-left">
+            <button className="ml-3" onClick={() => dispatch(toggleSidebar())}>
+              {isSidebarOpen ? <CloseIcon /> : <MenuIcon />}
+            </button>
+          </div>
           <div className="text-right">
             <p className="text-xl font-semibold mr-3">
               {firstName} {lastName}
-              <span className="ml-4">
+              <span className="ml-3">
                 <button>
                   <SettingsIcon />
                 </button>
               </span>
-              <span className="ml-4">
+              <span className="ml-3">
                 <LogoutButton />
               </span>
             </p>
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto p-4">
-          <Alert />
-          <div>{children}</div>
-        </main>
-        {/* <footer className="bg-white shadow p-2 text-center">
+        <div className="flex flex-1 overflow-hidden">
+          <Sidebar />
+          <main className="flex-1 overflow-y-auto p-4">
+            <Alert />
+            <span>{children}</span>
+          </main>
+          {/* <footer className="bg-white shadow p-2 text-center">
           footer info, links, social media icons
           <p>© 2024 Secure Voting System. All rights reserved.</p>
         </footer> */}
+        </div>
       </div>
     </div>
   );

@@ -22,11 +22,7 @@ const loginSlice = createSlice({
   name: 'login',
   initialState,
   reducers: {
-    refreshToken: (state, action: PayloadAction<string>) => {
-      if (state.data) {
-        state.data.token = action.payload;
-      }
-    },
+    refreshToken: () => {},
     logout: () => initialState,
   },
   extraReducers: (builder) => {

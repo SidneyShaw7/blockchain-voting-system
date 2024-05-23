@@ -3,8 +3,8 @@ import { useLocation, NavLink } from 'react-router-dom';
 // import { useState } from 'react';
 // import { LogoutButton } from '../LogoutButton';
 import { toggleSidebar } from '../../features/sidebar';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
+// import MenuIcon from '@mui/icons-material/Menu';
+// import CloseIcon from '@mui/icons-material/Close';
 import HomeIcon from '@mui/icons-material/Home';
 import EventIcon from '@mui/icons-material/Event';
 import CreateIcon from '@mui/icons-material/Create';
@@ -42,11 +42,11 @@ const Sidebar = () => {
       aria-hidden={!isOpen}
     >
       <div>
-        <div className="bg-[#00478F] text-white p-2 flex justify-between items-center">
+        {/* <div className="bg-[#00478F] text-white p-2 flex justify-between items-center">
           <button className="ml-2" onClick={() => dispatch(toggleSidebar())}>
             {isOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
-        </div>
+        </div> */}
         <ul className="list-none p-4">
           {navItems.map(({ path, label, Icon }) => (
             <li key={path} className="mb-4 flex items-center">

@@ -1,10 +1,11 @@
+import { config, corsConfig } from './api/config';
+
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import helmet from 'helmet';
 import { loginRouter, registerRouter, votingEventRouter } from './api/routes';
 import { logger } from './api/middleware';
-import { config, corsConfig } from './api/config';
 import { errorMiddleware } from './api/middleware';
 import { ErrorWithStatus } from './api/types';
 import cookieParser from 'cookie-parser';

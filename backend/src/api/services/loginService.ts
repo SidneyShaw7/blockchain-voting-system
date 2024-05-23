@@ -1,8 +1,9 @@
 import { UserModel } from '../models/user';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 import { LoginCredentials, UserResponse } from '../types';
 import { ErrorWithStatus } from '../utils/custom.errors';
+import { generateAccessToken, generateRefreshToken } from './tokenService';
 
 export const loginUser = async (
   credentials: LoginCredentials
@@ -21,16 +22,16 @@ export const loginUser = async (
     throw new ErrorWithStatus('Invalid credentials', 401, 'INVALID_CREDENTIALS');
   }
 
-  const secret = process.env.JWT_SECRET;
-  const refreshSecret = process.env.JWT_REFRESH_SECRET!;
+  // const secret = process.env.JWT_SECRET;
+  // const refreshSecret = process.env.JWT_REFRESH_SECRET!;
 
-  if (!secret || !refreshSecret) {
-    throw new ErrorWithStatus(
-      'JWT secret is not defined. Server unable to process requests requiring authentication.',
-      500,
-      'SERVER_CONFIGURATION_ERROR'
-    );
-  }
+  // if (!secret || !refreshSecret) {
+  //   throw new ErrorWithStatus(
+  //     'JWT secret is not defined. Server unable to process requests requiring authentication.',
+  //     500,
+  //     'SERVER_CONFIGURATION_ERROR'
+  //   );
+  // }
 
   const userResponse: UserResponse = {
     id: user._id.toHexString(),
@@ -39,8 +40,10 @@ export const loginUser = async (
     firstName: user.firstName,
     lastName: user.lastName,
   };
-  const token = jwt.sign({ id: user._id }, secret, { expiresIn: '1h' });
-  const refreshToken = jwt.sign({ id: user._id }, refreshSecret, { expiresIn: '7d' });
+  // const token = jwt.sign({ id: user._id }, secret, { expiresIn: '1h' });
+  // const refreshToken = jwt.sign({ id: user._id }, refreshSecret, { expiresIn: '7d' });
+  const token = generateAccessToken(user._id.toHexString());
+  const refreshToken = generateRefreshToken(user._id.toHexString());
 
   return { token, refreshToken, user: userResponse };
 };
