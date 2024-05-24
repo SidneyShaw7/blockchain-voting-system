@@ -23,6 +23,8 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log('Auth state changed:', isAuthenticated);
+
     if (!isAuthenticated) {
       navigate('/login');
     }
@@ -30,7 +32,6 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* <Sidebar /> */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white shadow p-1.5 flex justify-between items-center">
           <div className="text-left">
@@ -38,25 +39,25 @@ const MainLayout = ({ children }: MainLayoutProps) => {
               {isSidebarOpen ? <CloseIcon /> : <MenuIcon />}
             </button>
           </div>
-          <div className="text-right">
+          <div className="flex items-center">
             <p className="text-xl font-semibold mr-3">
               {firstName} {lastName}
-              <span className="ml-3">
-                <button>
-                  <SettingsIcon />
-                </button>
-              </span>
-              <span className="ml-3">
-                <LogoutButton />
-              </span>
             </p>
+            <span className="mr-3">
+              <button>
+                <SettingsIcon />
+              </button>
+            </span>
+            <span className="mr-3">
+              <LogoutButton />
+            </span>
           </div>
         </header>
         <div className="flex flex-1 overflow-hidden">
           <Sidebar />
           <main className="flex-1 overflow-y-auto p-4">
             <Alert />
-            <span>{children}</span>
+            {children}
           </main>
           {/* <footer className="bg-white shadow p-2 text-center">
           footer info, links, social media icons

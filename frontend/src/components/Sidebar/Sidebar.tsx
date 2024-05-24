@@ -1,5 +1,5 @@
 import { RootState, useDispatch, useSelector } from '../../store';
-import { useLocation, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 // import { useState } from 'react';
 // import { LogoutButton } from '../LogoutButton';
 import { toggleSidebar } from '../../features/sidebar';
@@ -10,28 +10,29 @@ import EventIcon from '@mui/icons-material/Event';
 import CreateIcon from '@mui/icons-material/Create';
 import InfoIcon from '@mui/icons-material/Info';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
+// import { toggleSidebar } from '../../features/sidebar';
 
 const Sidebar = () => {
   const isOpen = useSelector((state: RootState) => state.sidebar.isOpen);
   const dispatch = useDispatch();
-  const location = useLocation();
+  // const location = useLocation();
 
   // const [isEventsOpen, setEventsOpen] = useState(false);
 
-  const handleCloseSidebar = () => {
-    if (isOpen) {
-      dispatch(toggleSidebar());
-    }
-  };
+  // const handleCloseSidebar = () => {
+  //   if (isOpen) {
+  //     dispatch(toggleSidebar());
+  //   }
+  // };
 
-  const isActive = (path: string) => location.pathname === path;
+  // const isActive = (path: string) => location.pathname === path;
 
   const navItems = [
     { path: '/home', label: 'Home', Icon: HomeIcon },
     { path: '/events', label: 'Events', Icon: EventIcon },
     { path: '/event/create', label: 'Create', Icon: CreateIcon },
-    { path: '#about', label: 'About', Icon: InfoIcon },
-    { path: '#contact', label: 'Contact', Icon: ContactMailIcon },
+    { path: '/about', label: 'About', Icon: InfoIcon },
+    { path: '/contact', label: 'Contact', Icon: ContactMailIcon },
   ];
 
   return (
@@ -50,14 +51,14 @@ const Sidebar = () => {
         <ul className="list-none p-4">
           {navItems.map(({ path, label, Icon }) => (
             <li key={path} className="mb-4 flex items-center">
-              <NavLink to={path} className={isActive(path) ? 'text-[#FF5D00]' : 'text-[#00478F]'}>
+              <NavLink to={path} className={({ isActive }) => (isActive ? 'text-[#FF5D00]' : 'text-[#00478F]')}>
                 <Icon />
               </NavLink>
               {isOpen && (
                 <NavLink
                   to={path}
-                  className={`ml-2 ${isActive(path) ? 'text-[#FF5D00]' : 'text-[#00478F] hover:text-[#2A231F]'}`}
-                  onClick={handleCloseSidebar}
+                  className={({ isActive }) => `ml-2 ${isActive ? 'text-[#FF5D00]' : 'text-[#00478F] hover:text-[#2A231F]'}`}
+                  onClick={() => dispatch(toggleSidebar())}
                 >
                   {label}
                 </NavLink>

@@ -6,7 +6,7 @@ import { useForm, FormProvider, useFieldArray } from 'react-hook-form';
 import { DateField, InputField, SelectField, CheckboxField } from './helperFieldComponents';
 import { useDispatch, useSelector, RootState } from '../../store';
 import { createEvent, resetEventState } from '../../features/manageEvent';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { error as showError } from '../../features/alert';
 
@@ -20,6 +20,7 @@ const CreateEventForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isSuccess, data, isError, errorMessage } = useSelector((state: RootState) => state.votingEvent);
+  const [shouldNavigate, setShouldNavigate] = useState(false);
 
   const methods = useForm<VotingEventFormValues>({
     resolver: zodResolver(EventSchema),
@@ -45,15 +46,16 @@ const CreateEventForm = () => {
   });
 
   useEffect(() => {
-    if (isSuccess && data) {
+    if (shouldNavigate && isSuccess && data) {
       navigate(`/events/${data.id}`);
       dispatch(resetEventState());
+      setShouldNavigate(false);
     }
     if (isError && errorMessage) {
       console.error(errorMessage);
       dispatch(showError({ message: errorMessage }));
     }
-  }, [dispatch, navigate, isSuccess, data, isError, errorMessage]);
+  }, [dispatch, navigate, isSuccess, data, isError, errorMessage, shouldNavigate]);
 
   const { watch } = methods;
   const eventType = watch('eventType');
@@ -68,6 +70,7 @@ const CreateEventForm = () => {
 
   const onSubmit = (data: VotingEventFormValues) => {
     dispatch(createEvent(data));
+    setShouldNavigate(true);
   };
 
   return (
