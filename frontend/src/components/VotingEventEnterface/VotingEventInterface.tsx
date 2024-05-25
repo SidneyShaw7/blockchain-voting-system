@@ -4,6 +4,8 @@ import { getEvent, voteOnEvent } from '../../features/manageEvent';
 import { OptionDB } from '../../types';
 import { useDispatch, RootState, useSelector } from '../../store';
 import { error as showError } from '../../features/alert/alertSlice';
+import WhereToVoteRoundedIcon from '@mui/icons-material/WhereToVoteRounded';
+// import { green } from '@mui/material/colors';
 
 const VotingEventInterface = () => {
   console.log('VotingEventInterface component re-render');
@@ -48,25 +50,69 @@ const VotingEventInterface = () => {
   const hasUserVoted = userId && event.options.some((option) => option.voters.includes(userId));
   console.log('Has User Voted:', hasUserVoted);
 
+  const getOptionColor = (optionText: string) => {
+    switch (optionText) {
+      case 'Yes, I approve':
+        return 'bg-green-500';
+      case 'No, I reject':
+        return 'bg-red-500';
+      case 'Abstain':
+        return 'bg-orange-500';
+      default:
+        return 'bg-gray-500';
+    }
+  };
+
+  const getOptionPercentage = (optionVotes: number, totalVotes: number) => {
+    return totalVotes ? (optionVotes / totalVotes) * 100 : 0;
+  };
+
+  const totalVotes = event.options.reduce((sum, option) => sum + option.votes, 0);
+
   return (
-    <div className="event-container max-w-4xl mx-auto p-4 bg-white shadow-md rounded-lg">
-      <h1 className="text-3xl font-bold text-center mb-4">{event.title}</h1>
-      <p className="text-lg mb-4">{event.description}</p>
+    <div className="event-container max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+      <h1 className="text-3xl font-bold text-center mb-6">{event.title}</h1>
+      <p className="text-lg mb-6">{event.description}</p>
       <ul className="space-y-4">
-        {event.options.map((option: OptionDB) => (
-          <li key={option.id} className="my-2 bg-gray-100 p-4 rounded-lg shadow">
-            <div className="option-details flex justify-between items-center">
-              <p className="option-text text-lg">{option.name || option.option}</p>
-              {!hasUserVoted && (
-                <button onClick={() => handleVote(option.id)} className="vote-button bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-lg">
-                  Vote
-                </button>
-              )}
-            </div>
-          </li>
-        ))}
+        {event.options.map((option: OptionDB) => {
+          const optionPercentage = getOptionPercentage(option.votes, totalVotes);
+          const isVotedOption = option.voters.includes(userId || '');
+
+          return (
+            <li key={option.id} className="p-4 bg-gray-50 rounded-lg shadow-md">
+              <div className="flex justify-between items-center">
+                <div className="flex-1">
+                  <p className="text-lg font-medium">{option.name || option.option}</p>
+                  {event.resultVisibility && (
+                    <div className="relative w-full h-6 mt-2 bg-gray-200 rounded-full">
+                      <div
+                        className={`absolute top-0 left-0 h-full rounded-full ${getOptionColor(option.option)}`}
+                        style={{ width: `${optionPercentage}%` }}
+                      >
+                        {optionPercentage > 0 && (
+                          <span className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-white">
+                            {optionPercentage.toFixed(2)}%
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {isVotedOption && <WhereToVoteRoundedIcon color="success" className="ml-4" />}
+                {!hasUserVoted && !isVotedOption && (
+                  <button
+                    onClick={() => handleVote(option.id)}
+                    className="ml-4 bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition duration-300"
+                  >
+                    Vote
+                  </button>
+                )}
+              </div>
+            </li>
+          );
+        })}
       </ul>
-      {hasUserVoted && <div className="text-center mt-4 text-green-600">You have already voted</div>}
+      {hasUserVoted && <div className="text-center mt-4 text-green-600 font-semibold">You have already voted</div>}
     </div>
   );
 };
