@@ -1,12 +1,19 @@
-import * as Yup from 'yup';
+import { z } from 'zod';
 
-export const RegistrationSchema = Yup.object().shape({
-  firstName: Yup.string().required('First name is required'),
-  lastName: Yup.string().required('Last name is required'),
-  username: Yup.string().required('Username is required'),
-  email: Yup.string().email('Invalid email').required('Email is required'),
-  password: Yup.string().min(6, 'Password must be at least 6 characters long').required('Password is required'),
-  passwordConfirmation: Yup.string()
-    .oneOf([Yup.ref('password'), undefined], 'Passwords must match')
-    .required('Password confirmation is required'),
-});
+export const RegistrationSchema = z
+  .object({
+    firstName: z.string().nonempty('First name is required'),
+    lastName: z.string().nonempty('Last name is required'),
+    username: z.string().nonempty('Username is required'),
+    email: z.string().email('Invalid email address').nonempty('Email is required'),
+    password: z.string()
+      .min(8, 'Password must be at least 8 characters long')
+      .regex(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/, 'Password must include at least one number, one uppercase letter, and one special character'),
+    passwordConfirmation: z.string()
+      .min(8, 'Password must be at least 8 characters long')
+      .regex(/^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/, 'Password must include at least one number, one uppercase letter, and one special character'),
+  })
+  .refine((data) => data.password === data.passwordConfirmation, {
+    path: ['passwordConfirmation'],
+    message: "Passwords don't match",
+  });

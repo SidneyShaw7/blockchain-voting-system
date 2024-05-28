@@ -12,6 +12,7 @@ const LoginForm = () => {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
+    email: '',
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

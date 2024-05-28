@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { userService } from '../../services';
-import { User, RegistrationForm } from '../../types';
+import { User, RegistrationFormValues } from '../../types';
 import { login } from '../login/loginThunks';
 import { processError } from '../../utils/helpers';
 
-export const register = createAsyncThunk<User, RegistrationForm, { rejectValue: string }>(
+export const register = createAsyncThunk<User, RegistrationFormValues, { rejectValue: string }>(
   'authentication/register',
   async (formData, { rejectWithValue, dispatch }) => {
     try {

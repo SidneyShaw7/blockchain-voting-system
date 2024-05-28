@@ -23,7 +23,7 @@ export interface AuthResponse {
 }
 
 // REGISTRATION FORM MODEL
-export interface RegistrationForm {
+export interface RegistrationFormValues {
   firstName: string;
   lastName: string;
   username: string;

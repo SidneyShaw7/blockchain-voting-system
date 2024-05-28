@@ -1,5 +1,5 @@
 export type { AlertState } from './alert.types';
-export type { LoginCredentials, User, RegistrationForm, AuthResponse } from './user.types';
+export type { LoginCredentials, User, RegistrationFormValues, AuthResponse } from './user.types';
 export type { ErrorWithStatus, FieldsError } from './error.types';
 export type {
   VotingEventFormValues,

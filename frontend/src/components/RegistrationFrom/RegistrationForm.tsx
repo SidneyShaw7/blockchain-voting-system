@@ -1,32 +1,41 @@
+import { useEffect } from 'react';
 import { useDispatch, useSelector, RootState } from '../../store';
-import React, { useState, useEffect } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { register, resetRegistrationState } from '../../features/registration';
 import { useNavigate } from 'react-router-dom';
 import { error as showError } from '../../features/alert';
+import { RegistrationSchema } from './RegistrationSchema';
+import { InputField } from './helperFieldComponents';
+import { RegistrationFormValues } from '../../types';
 
 const RegistrationForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isSuccess, data, isError, errorMessage } = useSelector((state: RootState) => state.registration);
 
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    username: '',
-    password: '',
-    passwordConfirmation: '',
-    email: '',
+  const methods = useForm<RegistrationFormValues>({
+    resolver: zodResolver(RegistrationSchema),
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // const [formData, setFormData] = useState({
+  //   firstName: '',
+  //   lastName: '',
+  //   username: '',
+  //   password: '',
+  //   passwordConfirmation: '',
+  //   email: '',
+  // });
 
-    if (formData.password !== formData.passwordConfirmation) {
-      dispatch(showError({ message: 'Passwords do not match.' }));
-      return;
-    }
-    dispatch(register(formData));
-  };
+  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+
+  //   if (formData.password !== formData.passwordConfirmation) {
+  //     dispatch(showError({ message: 'Passwords do not match.' }));
+  //     return;
+  //   }
+  //   dispatch(register(formData));
+  // };
 
   useEffect(() => {
     if (isSuccess && data) {
@@ -38,9 +47,13 @@ const RegistrationForm = () => {
     }
   }, [dispatch, navigate, isSuccess, data, isError, errorMessage]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormData((prevState) => ({ ...prevState, [name]: value }));
+  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = event.target;
+  //   setFormData((prevState) => ({ ...prevState, [name]: value }));
+  // };
+
+  const onSubmit = (data: RegistrationFormValues) => {
+    dispatch(register(data));
   };
 
   return (
@@ -86,142 +99,62 @@ const RegistrationForm = () => {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} action="#" className="mt-8 grid grid-cols-6 gap-6">
-              <div className="col-span-6 sm:col-span-3">
-                <label htmlFor="FirstName" className="block text-sm font-medium text-gray-700">
-                  First Name
-                </label>
+            <FormProvider {...methods}>
+              <form onSubmit={methods.handleSubmit(onSubmit)} className="mt-8 grid grid-cols-6 gap-6">
+                <InputField label="First Name" name="firstName" />
+                <InputField label="Last Name" name="lastName" />
+                <InputField label="Username" name="username" />
+                <InputField label="Email" name="email" type="email" />
+                <InputField label="Password" name="password" type="password" />
+                <InputField label="Password Confirmation" name="passwordConfirmation" type="password" />
 
-                <input
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  type="text"
-                  id="FirstName"
-                  name="firstName"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm focus:border-[#00478F]"
-                />
-              </div>
+                <div className="col-span-6">
+                  <label htmlFor="MarketingAccept" className="flex gap-4">
+                    <input
+                      type="checkbox"
+                      id="MarketingAccept"
+                      name="marketing_accept"
+                      className="size-5 rounded-md border-gray-200 bg-white shadow-sm"
+                    />
 
-              <div className="col-span-6 sm:col-span-3">
-                <label htmlFor="LastName" className="block text-sm font-medium text-gray-700">
-                  Last Name
-                </label>
+                    <span className="text-sm text-gray-700">I want to receive emails about events, product updates and company announcements.</span>
+                  </label>
+                </div>
 
-                <input
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  type="text"
-                  id="LastName"
-                  name="lastName"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm focus:border-[#00478F]"
-                />
-              </div>
+                <div className="col-span-6">
+                  <p className="text-sm text-gray-500">
+                    By creating an account, you agree to our
+                    <a href="#" className="text-gray-700 underline">
+                      {' '}
+                      terms and conditions{' '}
+                    </a>
+                    and
+                    <a href="#" className="text-gray-700 underline">
+                      {' '}
+                      privacy policy
+                    </a>
+                    .
+                  </p>
+                </div>
 
-              <div className="col-span-6">
-                <label htmlFor="Email" className="block text-sm font-medium text-gray-700">
-                  Username
-                </label>
+                <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
+                  <button
+                    type="submit"
+                    className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
+                  >
+                    Create an account
+                  </button>
 
-                <input
-                  value={formData.username}
-                  onChange={handleChange}
-                  type="text"
-                  id="Username"
-                  name="username"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm focus:border-[#00478F]"
-                />
-              </div>
-
-              <div className="col-span-6">
-                <label htmlFor="Email" className="block text-sm font-medium text-gray-700">
-                  Email
-                </label>
-
-                <input
-                  value={formData.email}
-                  onChange={handleChange}
-                  type="email"
-                  id="Email"
-                  name="email"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm focus:border-[#00478F]"
-                />
-              </div>
-              <div className="col-span-6 sm:col-span-3">
-                <label htmlFor="Password" className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-
-                <input
-                  value={formData.password}
-                  onChange={handleChange}
-                  type="password"
-                  id="Password"
-                  name="password"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm focus:border-[#00478F]"
-                />
-              </div>
-
-              <div className="col-span-6 sm:col-span-3">
-                <label htmlFor="PasswordConfirmation" className="block text-sm font-medium text-gray-700">
-                  Password Confirmation
-                </label>
-
-                <input
-                  value={formData.passwordConfirmation}
-                  onChange={handleChange}
-                  type="password"
-                  id="PasswordConfirmation"
-                  name="passwordConfirmation"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm focus:border-[#00478F]"
-                />
-              </div>
-
-              <div className="col-span-6">
-                <label htmlFor="MarketingAccept" className="flex gap-4">
-                  <input
-                    type="checkbox"
-                    id="MarketingAccept"
-                    name="marketing_accept"
-                    className="size-5 rounded-md border-gray-200 bg-white shadow-sm"
-                  />
-
-                  <span className="text-sm text-gray-700">I want to receive emails about events, product updates and company announcements.</span>
-                </label>
-              </div>
-
-              <div className="col-span-6">
-                <p className="text-sm text-gray-500">
-                  By creating an account, you agree to our
-                  <a href="#" className="text-gray-700 underline">
-                    {' '}
-                    terms and conditions{' '}
-                  </a>
-                  and
-                  <a href="#" className="text-gray-700 underline">
-                    {' '}
-                    privacy policy
-                  </a>
-                  .
-                </p>
-              </div>
-
-              <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
-                <button
-                  type="submit"
-                  className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
-                >
-                  Create an account
-                </button>
-
-                <p className="mt-4 text-sm text-gray-500 sm:mt-0">
-                  Already have an account?
-                  <a href="/login" className="text-gray-700 underline">
-                    {' '}
-                    Log in
-                  </a>
-                </p>
-              </div>
-            </form>
+                  <p className="mt-4 text-sm text-gray-500 sm:mt-0">
+                    Already have an account?
+                    <a href="/login" className="text-gray-700 underline">
+                      {' '}
+                      Log in
+                    </a>
+                  </p>
+                </div>
+              </form>
+            </FormProvider>
           </div>
         </main>
       </div>
