@@ -1,3 +1,3 @@
 export { default as loginReducer } from './loginSlice';
-export { refreshToken } from './loginSlice';
-export { logout } from './loginThunks';
+export { refreshToken, resetLoginState } from './loginSlice';
+export { logout, login } from './loginThunks';

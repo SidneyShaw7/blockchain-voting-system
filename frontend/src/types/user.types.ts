@@ -1,5 +1,6 @@
 export interface LoginCredentials {
-  username: string;
+  username?: string;
+  // usernameOrEmail: string;
   password: string;
   email?: string;
   rememberMe?: boolean;

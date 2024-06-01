@@ -22,6 +22,7 @@ const loginSlice = createSlice({
   name: 'login',
   initialState,
   reducers: {
+    resetLoginState: () => initialState,
     refreshToken: () => {},
     logout: () => initialState,
   },
@@ -48,6 +49,6 @@ const loginSlice = createSlice({
   },
 });
 
-export const { refreshToken } = loginSlice.actions;
+export const { refreshToken, resetLoginState } = loginSlice.actions;
 
 export default loginSlice.reducer;

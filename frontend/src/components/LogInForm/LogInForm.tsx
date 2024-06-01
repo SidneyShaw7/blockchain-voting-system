@@ -1,26 +1,29 @@
 import { useDispatch, useSelector, RootState } from '../../store';
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../../features/login/loginThunks';
+import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { login, resetLoginState } from '../../features/login';
 import { error as showError, success as showSuccess } from '../../features/alert/alertSlice';
+import { LoginSchema, LoginFormValues } from './LoginSchema';
+import { InputField } from '../helpers/helperFieldComponents';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isError, isSuccess, errorMessage } = useSelector((state: RootState) => state.login);
 
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    email: '',
+  const methods = useForm<LoginFormValues>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      usernameOrEmail: '',
+      password: '',
+    },
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    dispatch(login(formData));
-  };
-
   useEffect(() => {
+    dispatch(resetLoginState());
+
     if (isError && errorMessage) {
       dispatch(showError({ message: errorMessage }));
     }
@@ -30,9 +33,13 @@ const LoginForm = () => {
     }
   }, [dispatch, isError, isSuccess, errorMessage, navigate]);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormData((prevState) => ({ ...prevState, [name]: value }));
+  const onSubmit: SubmitHandler<LoginFormValues> = (data) => {
+    const loginData = {
+      username: data.usernameOrEmail.includes('@') ? undefined : data.usernameOrEmail,
+      email: data.usernameOrEmail.includes('@') ? data.usernameOrEmail : undefined,
+      password: data.password,
+    };
+    dispatch(login(loginData));
   };
 
   return (
@@ -45,13 +52,9 @@ const LoginForm = () => {
             <a className="block text-white" href="#">
               <span className="sr-only">Home</span>
               <img src="/src/images/brand_white.png" alt="" className="h-16 sm:h-18" />
-              {/* <svg className="h-8 sm:h-10" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="/src/images/DALL·E 2024-04-08 14.30.37 - Logo design featuring the letters SWS arranged to form a circle shape, without any additional graphic elements like explicit circles or borders. Eac.svg" fill="currentColor" />
-          </svg> */}
             </a>
 
             <h2 className="mt-6 text-2xl font-bold text-white sm:text-3xl md:text-4xl">Login to Secure Voting System</h2>
-
             <p className="mt-4 leading-relaxed text-white/90">Access your voting dashboard.</p>
           </div>
         </section>
@@ -62,66 +65,33 @@ const LoginForm = () => {
               <a className="inline-flex size-16 items-center justify-center rounded-full bg-white text-blue-600 sm:size-20" href="#">
                 <span className="sr-only">Home</span>
                 <img src="/src/images/brand_ing.png" alt="" />
-                {/* <svg className="h-8 sm:h-10" viewBox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="" fill="currentColor" />
-            </svg> */}
               </a>
 
-              {/* <p className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">Welcome back!</p> */}
               <h1 className="mt-2 text-1xl font-bold text-gray-900 sm:text-2xl md:text-3xl">Login to Secure Voting System</h1>
-
               <p className="mt-4 leading-relaxed text-gray-500">Access your voting dashboard.</p>
             </div>
 
-            {/* <div className="hidden lg:relative lg:block lg:p-12">
-              <p className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl block m:hidden">Welcome back!</p>
-            </div> */}
-            <form onSubmit={handleSubmit} action="#" className="mt-8 grid grid-cols-6 gap-6">
-              <div className="col-span-6">
-                <label htmlFor="Username" className="block text-sm font-medium text-gray-700">
-                  Username or email
-                </label>
-                <input
-                  value={formData.username}
-                  onChange={handleChange}
-                  type="text"
-                  id="Username"
-                  name="username"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white shadow-sm focus:border-[#00478F]"
-                />
-              </div>
-
-              <div className="col-span-6">
-                <label htmlFor="Password" className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <input
-                  value={formData.password}
-                  onChange={handleChange}
-                  type="password"
-                  id="Password"
-                  name="password"
-                  className="mt-1 w-full rounded-md border-gray-200 bg-white shadow-sm focus:border-[#00478F]"
-                />
-              </div>
-
-              <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
-                <button
-                  type="submit"
-                  className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
-                >
-                  Log in
-                </button>
-
-                <p className="mt-4 text-sm text-gray-500 sm:mt-0">
-                  Don't have an account?
-                  <a href="/" className="text-gray-700 underline">
-                    {' '}
-                    Sign up
-                  </a>
-                </p>
-              </div>
-            </form>
+            <FormProvider {...methods}>
+              <form onSubmit={methods.handleSubmit(onSubmit)} className="mt-8 grid grid-cols-6 gap-6">
+                <InputField label="Username or Email" name="usernameOrEmail" />
+                <InputField label="Password" name="password" type="password" />
+                <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
+                  <button
+                    type="submit"
+                    className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
+                  >
+                    Log in
+                  </button>
+                  <p className="mt-4 text-sm text-gray-500 sm:mt-0">
+                    Don't have an account?
+                    <a href="/" className="text-gray-700 underline">
+                      {' '}
+                      Sign up
+                    </a>
+                  </p>
+                </div>
+              </form>
+            </FormProvider>
           </div>
         </main>
       </div>

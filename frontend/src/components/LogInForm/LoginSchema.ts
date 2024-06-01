@@ -1,9 +1,8 @@
-import * as Yup from 'yup';
-// import { LoginCredentials } from '../../types';
+import { z } from 'zod';
 
-export const LoginSchema = Yup.object().shape({
-  username: Yup.string().required('Username or Email is required'),
-  password: Yup.string().required('Password is required').min(8, 'Password must be at least 8 characters long'),
-  email: Yup.string().email('Invalid email format').optional(),
-  rememberMe: Yup.boolean(),
+export const LoginSchema = z.object({
+  usernameOrEmail: z.string().min(3, { message: 'Username or email is required' }),
+  password: z.string().min(8, { message: 'Password is required' }),
 });
+
+export type LoginFormValues = z.infer<typeof LoginSchema>;

@@ -31,7 +31,7 @@ export const InputField = ({ label, name, type = 'text' }: InputFieldProps) => {
           />
         )}
       />
-      {errors[name] && <p className="text-red-500 text-xs mt-1">{errors[name]?.message}</p>}
+      {errors[name] && <p className="text-red-500 text-xs mt-1">{(errors[name] as { message: string }).message}</p>}
     </div>
   );
 };

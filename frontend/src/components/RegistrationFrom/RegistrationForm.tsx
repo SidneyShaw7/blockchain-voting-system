@@ -6,7 +6,7 @@ import { register, resetRegistrationState } from '../../features/registration';
 import { useNavigate } from 'react-router-dom';
 import { error as showError } from '../../features/alert';
 import { RegistrationSchema } from './RegistrationSchema';
-import { InputField } from './helperFieldComponents';
+import { InputField } from '../helpers/helperFieldComponents';
 import { RegistrationFormValues } from '../../types';
 
 const RegistrationForm = () => {
@@ -16,26 +16,15 @@ const RegistrationForm = () => {
 
   const methods = useForm<RegistrationFormValues>({
     resolver: zodResolver(RegistrationSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      username: '',
+      password: '',
+      passwordConfirmation: '',
+      email: '',
+    },
   });
-
-  // const [formData, setFormData] = useState({
-  //   firstName: '',
-  //   lastName: '',
-  //   username: '',
-  //   password: '',
-  //   passwordConfirmation: '',
-  //   email: '',
-  // });
-
-  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-
-  //   if (formData.password !== formData.passwordConfirmation) {
-  //     dispatch(showError({ message: 'Passwords do not match.' }));
-  //     return;
-  //   }
-  //   dispatch(register(formData));
-  // };
 
   useEffect(() => {
     if (isSuccess && data) {
@@ -46,11 +35,6 @@ const RegistrationForm = () => {
       dispatch(showError({ message: errorMessage }));
     }
   }, [dispatch, navigate, isSuccess, data, isError, errorMessage]);
-
-  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = event.target;
-  //   setFormData((prevState) => ({ ...prevState, [name]: value }));
-  // };
 
   const onSubmit = (data: RegistrationFormValues) => {
     dispatch(register(data));
