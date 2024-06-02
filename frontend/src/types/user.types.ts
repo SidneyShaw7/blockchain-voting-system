@@ -13,6 +13,7 @@ export interface User {
   email: string;
   firstName?: string;
   lastName?: string;
+  avatar?: File;
 }
 
 // auth response
@@ -31,4 +32,23 @@ export interface RegistrationFormValues {
   email: string;
   password: string;
   passwordConfirmation: string;
+}
+
+export interface UserProfileFormValues {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  currentPassword: string;
+  newPassword?: string;
+  avatar?: File;
+}
+
+export interface UserProfileResponse {
+  id: string;
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  avatar?: string;
 }

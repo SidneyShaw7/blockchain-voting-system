@@ -8,6 +8,7 @@ import { CreateEventForm } from '../components/CreateEventForm';
 import { VotingEventInterface } from '../components/VotingEventEnterface';
 import { UserEvents } from '../components/UserEvents';
 import { PrivateRoute } from '../components/PrivateRoute';
+import { SettingsPage } from '../components/SettingsPage';
 
 function App() {
   return (
@@ -61,6 +62,14 @@ function App() {
               element={
                 <MainLayout>
                   <UserEvents />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <MainLayout>
+                  <SettingsPage />
                 </MainLayout>
               }
             />

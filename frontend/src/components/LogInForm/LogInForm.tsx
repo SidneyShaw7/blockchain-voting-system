@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { login, resetLoginState } from '../../features/login';
-import { error as showError, success as showSuccess } from '../../features/alert/alertSlice';
+import { error as showError } from '../../features/alert/alertSlice';
 import { LoginSchema, LoginFormValues } from './LoginSchema';
 import { InputField } from '../helpers/helperFieldComponents';
 
@@ -22,14 +22,14 @@ const LoginForm = () => {
   });
 
   useEffect(() => {
-    dispatch(resetLoginState());
-
     if (isError && errorMessage) {
       dispatch(showError({ message: errorMessage }));
+      dispatch(resetLoginState());
     }
     if (isSuccess) {
-      dispatch(showSuccess({ message: 'Login successful! Redirecting...' }));
-      setTimeout(() => navigate('/home'), 1500);
+      // dispatch(showSuccess({ message: 'Login successful! Redirecting...' }));
+      // setTimeout(() => navigate('/home'), 1500);
+      navigate('/home');
     }
   }, [dispatch, isError, isSuccess, errorMessage, navigate]);
 

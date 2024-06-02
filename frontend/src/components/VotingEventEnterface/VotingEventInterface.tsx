@@ -5,7 +5,6 @@ import { OptionDB } from '../../types';
 import { useDispatch, RootState, useSelector } from '../../store';
 import { error as showError } from '../../features/alert/alertSlice';
 import WhereToVoteRoundedIcon from '@mui/icons-material/WhereToVoteRounded';
-// import { green } from '@mui/material/colors';
 
 const VotingEventInterface = () => {
   console.log('VotingEventInterface component re-render');

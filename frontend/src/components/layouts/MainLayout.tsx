@@ -44,7 +44,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
               {firstName} {lastName}
             </p>
             <span className="mr-3">
-              <button>
+              <button onClick={() => navigate('/profile')} className={location.pathname === '/profile' ? 'text-[#FF5D00]' : ''}>
                 <SettingsIcon />
               </button>
             </span>
