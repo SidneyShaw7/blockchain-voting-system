@@ -34,6 +34,8 @@ export interface VotingEventFormValues {
   resultVisibility: boolean;
   storageType: StorageType;
   eventType: EventType;
+  createdBy: string;
+  invitedPersons: string[];
 }
 
 export interface VotingEventFormValuesDB extends VotingEventFormValues {
