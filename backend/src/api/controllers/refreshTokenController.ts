@@ -1,6 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-// import jwt from 'jsonwebtoken';
-// import { UserModel } from '../models/user';
 import { ErrorWithStatus } from '../utils/custom.errors';
 import { verifyRefreshToken, generateAccessToken } from '../services/tokenService';
 

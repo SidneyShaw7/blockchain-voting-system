@@ -43,8 +43,11 @@ const userSchema = new mongoose.Schema<User>({
       message: () => 'Password must contain at least one number, one uppercase letter, and one special character.',
     },
   },
+  avatar: {
+    type: String,
+  },
   createdAt: { type: Date, default: Date.now },
-  events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'VotingEvent' }]
+  events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'VotingEvent' }],
 });
 
 userSchema.pre('save', async function (next) {
