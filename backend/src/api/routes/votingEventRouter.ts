@@ -1,5 +1,5 @@
 import express from 'express';
-import { eventValidationRules } from '../validations/votingEventValidations';
+import { eventValidationRules } from '../validations/votingEventValidation';
 import { handleAsync, authenticate } from '../utils';
 import {
   createEventController,

@@ -1,2 +1,3 @@
-export { loginValidationRules } from './loginValidations';
-export { registerValidationRules } from './registerValidations';
+export { loginValidationRules } from './loginValidation';
+export { registerValidationRules } from './registerValidation';
+export { updateUserValidationRules } from './updateUserValidation';
