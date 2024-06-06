@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../app/store';
+import { RootState } from '../../store';
 import { clear } from '../../features/alert';
 import { colorStyles, icons, positionStyle } from './alertStyles';
 
@@ -24,9 +24,7 @@ const AlertComponent = () => {
       style={positionStyle}
       role="alert"
       aria-live="assertive"
-      className={`px-6 py-4 mx-auto my-4 rounded-md text-lg flex items-center max-w-lg ${
-        colorStyles[alert.type || 'info'].background
-      }`}
+      className={`px-6 py-4 mx-auto my-4 rounded-md text-lg flex items-center max-w-lg ${colorStyles[alert.type || 'info'].background}`}
     >
       <svg viewBox="0 0 24 24" className={`w-5 h-5 mr-3 ${colorStyles[alert.type || 'info'].iconFill}`}>
         {icons[alert.type || 'info']}

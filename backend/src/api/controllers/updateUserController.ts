@@ -35,7 +35,7 @@ export const updateUserController = async (req: Request, res: Response, next: Ne
       events: updatedUser.events?.map((event) => event),
     };
 
-    res.json({ message: 'Profile updated successfully', user: userResponse });
+    res.json(userResponse);
   } catch (error) {
     next(
       new ErrorWithStatus('Profile update failed', 500, 'PROFILE_UPDATE_ERROR', {
