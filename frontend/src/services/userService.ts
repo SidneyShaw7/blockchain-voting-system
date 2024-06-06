@@ -1,11 +1,12 @@
 import api from '../api/api';
-import { LoginCredentials, RegistrationFormValues, UserProfileFormValues, UserProfileResponse } from '../types';
+import { LoginCredentials, RegistrationFormValues, UserProfileResponse } from '../types';
+import { UserProfileFormValues } from '../components/SettingsPage/UserProfileSchema';
 
 const userService = {
-  register: (userData: RegistrationFormValues) => api.post('/api/users/register', userData),
-  login: (loginCredentials: LoginCredentials) => api.post('/api/users/login', loginCredentials),
-  logout: () => api.post('/api/users/logout'),
-  refreshToken: () => api.post('/auth/refresh-token'),
+  register: (userData: RegistrationFormValues) => api.post('/api/user/register', userData),
+  login: (loginCredentials: LoginCredentials) => api.post('/api/user/login', loginCredentials),
+  logout: () => api.post('/api/user/logout'),
+  refreshToken: () => api.post('/api/user/refresh-token'),
   updateProfile: (formData: UserProfileFormValues) => {
     const formDataObj = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
@@ -14,7 +15,7 @@ const userService = {
       }
     });
 
-    return api.put<UserProfileResponse>('/api/users/profile', formDataObj, {
+    return api.put<UserProfileResponse>('/api/user/profile', formDataObj, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

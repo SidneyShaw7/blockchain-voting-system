@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
-import { useSelector } from 'react-redux';
-import { RootState, useDispatch } from '../../store';
+import { RootState, useDispatch, useSelector } from '../../store';
 import { updateUserProfile } from '../../features/userProfile';
 import { InputField, FileInputField } from '../helpers/helperFieldComponents';
 import { UserProfileSchema, UserProfileFormValues } from './UserProfileSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { clear } from '../../features/alert/alertSlice';
+// import { clear } from '../../features/alert/alertSlice';
+import { error as showError, success as showSuccess } from '../../features/alert';
 
 const SettingsPage = () => {
   const dispatch = useDispatch();
@@ -20,8 +20,8 @@ const SettingsPage = () => {
     lastName: loginData?.user.lastName || '',
     username: loginData?.user.username || '',
     email: loginData?.user.email || '',
-    currentPassword: '',
-    newPassword: '',
+    password: '',
+    newPassword: undefined,
     avatar: undefined,
   };
 
@@ -32,10 +32,14 @@ const SettingsPage = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch(clear());
+      dispatch(showSuccess({ message: 'Profile updated successfully!' }));
+      // dispatch(clear());
       setIsEditing(false);
     }
-  }, [dispatch, isSuccess]);
+    if (isError && errorMessage) {
+      dispatch(showError({ message: errorMessage }));
+    }
+  }, [dispatch, isSuccess, isError, errorMessage]);
 
   const onSubmit: SubmitHandler<UserProfileFormValues> = (data) => {
     dispatch(updateUserProfile(data));
@@ -44,8 +48,8 @@ const SettingsPage = () => {
   return (
     <div className="max-w-4xl mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">Settings</h1>
-      {isError && <div className="text-red-500 mb-4">{errorMessage}</div>}
-      {isSuccess && <div className="text-green-500 mb-4">Profile updated successfully!</div>}
+      {/* {isError && dispatch(showError({ message: errorMessage }))}
+      {isSuccess && <div className="text-green-500 mb-4">Profile updated successfully!</div>} */}
 
       {!isEditing ? (
         <div>
@@ -83,7 +87,7 @@ const SettingsPage = () => {
             <InputField label="Last Name" name="lastName" />
             <InputField label="Username" name="username" />
             <InputField label="Email" name="email" type="email" />
-            <InputField label="Current Password" name="currentPassword" type="password" />
+            <InputField label="password" name="password" type="password" />
             <InputField label="New Password" name="newPassword" type="password" />
             <FileInputField label="Avatar" name="avatar" />
             <button type="submit" className="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">

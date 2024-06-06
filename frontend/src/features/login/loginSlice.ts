@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { login, logout } from './loginThunks';
-import { AuthResponse, AsyncState } from '../../types';
+import { AuthResponse, AsyncState, User } from '../../types';
 import { createAsyncReducers } from '../../utils/reducerUtils';
 
 interface LoginState extends AsyncState<AuthResponse> {
@@ -25,6 +25,11 @@ const loginSlice = createSlice({
     resetLoginState: () => initialState,
     refreshToken: () => {},
     logout: () => initialState,
+    updatePersistedUserData: (state, action: PayloadAction<User>) => {
+      if (state.data) {
+        state.data.user = action.payload;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -49,6 +54,6 @@ const loginSlice = createSlice({
   },
 });
 
-export const { refreshToken, resetLoginState } = loginSlice.actions;
+export const { refreshToken, resetLoginState, updatePersistedUserData } = loginSlice.actions;
 
 export default loginSlice.reducer;

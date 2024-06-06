@@ -13,7 +13,7 @@ export interface User {
   email: string;
   firstName?: string;
   lastName?: string;
-  avatar?: File;
+  avatar?: string;
 }
 
 // auth response
@@ -39,7 +39,7 @@ export interface UserProfileFormValues {
   lastName: string;
   username: string;
   email: string;
-  currentPassword: string;
+  password: string;
   newPassword?: string;
   avatar?: File;
 }
