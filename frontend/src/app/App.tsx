@@ -8,7 +8,7 @@ import { CreateEventForm } from '../components/CreateEventForm';
 import { VotingEventInterface } from '../components/VotingEventEnterface';
 import { UserEvents } from '../components/UserEvents';
 import { PrivateRoute } from '../components/PrivateRoute';
-import { SettingsPage } from '../components/SettingsPage';
+import { ProfilePage } from '../components/SettingsPage';
 
 function App() {
   return (
@@ -69,7 +69,7 @@ function App() {
               path="/profile"
               element={
                 <MainLayout>
-                  <SettingsPage />
+                  <ProfilePage />
                 </MainLayout>
               }
             />

@@ -74,7 +74,7 @@ const UserEvents = () => {
               <div className="flex justify-end">
                 <button
                   onClick={() => handleViewEvent(event.id)}
-                  className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-300"
+                  className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-6 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
                 >
                   View Event
                 </button>
