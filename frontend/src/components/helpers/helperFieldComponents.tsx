@@ -1,29 +1,15 @@
 import { useFormContext, Controller } from 'react-hook-form';
 
-// interface InputFieldProps {
-//   label: string;
-//   name: string;
-//   type?: string;
-// }
-
 interface BaseFieldProps {
   label: string;
   name: string;
+  onChange?: (file: File) => void;
 }
 
 interface InputFieldProps extends BaseFieldProps {
   type?: string;
   inputType?: 'input' | 'textarea';
 }
-
-// interface SelectFieldProps extends BaseFieldProps {
-//   options: string[];
-// }
-
-// interface OptionFieldProps {
-//   index: number;
-//   remove: (index: number) => void;
-// }
 
 export const InputField = ({ label, name, type = 'text' }: InputFieldProps) => {
   const {
@@ -73,9 +59,12 @@ export const FileInputField = ({ label, name }: BaseFieldProps) => {
         control={control}
         render={({ field }) => (
           <input
-            {...field}
             id={name}
             type="file"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              field.onChange(file);
+            }}
             className={`mt-1 w-full rounded-md border-gray-200 bg-white text-sm text-gray-700 shadow-sm focus:border-[#00478F] ${
               errors[name] ? 'border-red-500' : ''
             }`}

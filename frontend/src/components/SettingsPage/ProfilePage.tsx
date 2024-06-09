@@ -5,7 +5,6 @@ import { updateUserProfile, clearState } from '../../features/userProfile';
 import { InputField, FileInputField } from '../helpers/helperFieldComponents';
 import { UserProfileSchema, UserProfileFormValues } from './UserProfileSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
-// import { clear } from '../../features/alert/alertSlice';
 import { error as showError, success as showSuccess } from '../../features/alert';
 
 const ProfilePage = () => {
@@ -67,7 +66,7 @@ const ProfilePage = () => {
 
       {!isEditing ? (
         <div>
-          <div className="text-l mb-6">
+          <div className="text-l mb-6 space-y-4">
             {loginData?.user.avatar ? (
               <div className="mt-4">
                 {typeof loginData.user.avatar === 'string' ? (
@@ -81,29 +80,31 @@ const ProfilePage = () => {
                 <img src="/src/images/default_avatar.jpeg" alt="Avatar" className="h-20 w-20 rounded-full" />
               </div>
             )}
-            <p>
-              <strong>First Name:</strong> {loginData?.user.firstName}
-            </p>
-            <p>
-              <strong>Last Name:</strong> {loginData?.user.lastName}
-            </p>
-            <p>
-              <strong>Username:</strong> {loginData?.user.username}
-            </p>
-            <p>
-              <strong>Email:</strong> {loginData?.user.email}
-            </p>
-          </div>
+            <div>
+              <p>
+                <strong>First Name:</strong> {loginData?.user.firstName}
+              </p>
+              <p>
+                <strong>Last Name:</strong> {loginData?.user.lastName}
+              </p>
+              <p>
+                <strong>Username:</strong> {loginData?.user.username}
+              </p>
+              <p>
+                <strong>Email:</strong> {loginData?.user.email}
+              </p>
+            </div>
           <button
             onClick={() => setIsEditing(true)}
             className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-6 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
           >
             Edit Profile
           </button>
+          </div>
         </div>
       ) : (
         <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4 sm:w-96">
             <InputField label="First Name" name="firstName" />
             <InputField label="Last Name" name="lastName" />
             <InputField label="Username" name="username" />
@@ -115,7 +116,7 @@ const ProfilePage = () => {
                 <img src={avatarPreview} alt="Avatar Preview" className="h-20 w-20 rounded-full" />
               </div>
             )}
-            <FileInputField label="Avatar" name="avatar" />
+            <FileInputField label="Avatar" name="avatar" onChange={(file) => handleAvatarChange(file)} />
             <button
               type="submit"
               className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-6 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
