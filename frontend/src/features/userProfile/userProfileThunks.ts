@@ -3,7 +3,7 @@ import userService from '../../services/userService';
 import { UserProfileResponse } from '../../types';
 import { processError } from '../../utils/helpers';
 import { updatePersistedUserData } from '../login';
-import { UserProfileFormValues } from '../../components/SettingsPage';
+import { UserProfileFormValues } from '../../components/ProfilePage';
 
 export const updateUserProfile = createAsyncThunk<UserProfileResponse, UserProfileFormValues, { rejectValue: string }>(
   'userProfile/update',

@@ -8,7 +8,7 @@ import { CreateEventForm } from '../components/CreateEventForm';
 import { VotingEventInterface } from '../components/VotingEventEnterface';
 import { UserEvents } from '../components/UserEvents';
 import { PrivateRoute } from '../components/PrivateRoute';
-import { ProfilePage } from '../components/SettingsPage';
+import { ProfilePage } from '../components/ProfilePage';
 
 function App() {
   return (

@@ -4,3 +4,8 @@
 body {
   font-family: 'Nunito', sans-serif;
 }
+
+.textField:focus {
+  outline-color: '#FF0000' !important;
+  border-color: '#FF0000' !important;
+}

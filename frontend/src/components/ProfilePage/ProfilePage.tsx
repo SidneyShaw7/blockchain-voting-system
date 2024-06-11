@@ -109,7 +109,7 @@ const ProfilePage = () => {
             <InputField label="Last Name" name="lastName" />
             <InputField label="Username" name="username" />
             <InputField label="Email" name="email" type="email" />
-            <InputField label="password" name="password" type="password" />
+            <InputField label="Password" name="password" type="password" />
             <InputField label="New Password" name="newPassword" type="password" />
             {avatarPreview && (
               <div className="mb-4">

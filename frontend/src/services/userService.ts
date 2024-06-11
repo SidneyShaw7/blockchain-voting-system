@@ -1,6 +1,6 @@
 import api from '../api/api';
 import { LoginCredentials, RegistrationFormValues, UserProfileResponse } from '../types';
-import { UserProfileFormValues } from '../components/SettingsPage/UserProfileSchema';
+import { UserProfileFormValues } from '../components/ProfilePage/UserProfileSchema';
 
 const userService = {
   register: (userData: RegistrationFormValues) => api.post('/api/user/register', userData),
