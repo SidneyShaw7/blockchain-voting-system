@@ -9,6 +9,7 @@ import { VotingEventInterface } from '../components/VotingEventEnterface';
 import { UserEvents } from '../components/UserEvents';
 import { PrivateRoute } from '../components/PrivateRoute';
 import { ProfilePage } from '../components/ProfilePage';
+import { OrganizationsPage } from '../components/OrganizationsPage';
 
 function App() {
   return (
@@ -70,6 +71,14 @@ function App() {
               element={
                 <MainLayout>
                   <ProfilePage />
+                </MainLayout>
+              }
+            />
+            <Route
+              path="/organizations"
+              element={
+                <MainLayout>
+                  <OrganizationsPage />
                 </MainLayout>
               }
             />

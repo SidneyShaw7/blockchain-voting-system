@@ -1,7 +1,6 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Alert } from '../AlertComponent';
 import { Sidebar } from '../Sidebar';
-// import ToggleButton from '../ToggleButton/ToggleButton';
 import { useSelector, RootState, useDispatch } from '../../store';
 import { LogoutButton } from '../LogoutButton';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -9,6 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { toggleSidebar } from '../../features/sidebar';
+import Menu from '@mui/material/Menu';
+import { StyledIconButton, StyledMenuItem, StyledToggleButton } from './styledComponents';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -21,6 +22,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const navigate = useNavigate();
   const isSidebarOpen = useSelector((state: RootState) => state.sidebar.isOpen);
   const dispatch = useDispatch();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
     console.log('Auth state changed:', isAuthenticated);
@@ -30,25 +32,61 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     }
   }, [isAuthenticated, navigate]);
 
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleMenuClick = (path: string) => {
+    navigate(path);
+    handleMenuClose();
+  };
+
+  const isCurrentPage = (path: string) => location.pathname === path;
+
   return (
     <div className="flex h-screen bg-gray-100">
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white shadow p-1.5 flex justify-between items-center">
+        <header className="bg-white shadow p-1 flex justify-between items-center">
           <div className="text-left">
-            <button className="ml-3" onClick={() => dispatch(toggleSidebar())}>
+            <StyledToggleButton onClick={() => dispatch(toggleSidebar())} className={isSidebarOpen ? 'active' : ''}>
               {isSidebarOpen ? <CloseIcon /> : <MenuIcon />}
-            </button>
+            </StyledToggleButton>
           </div>
           <div className="flex items-center">
-            <p className="text-xl font-semibold mr-3">
+            <p className="text-xl font-semibold mr-2">
               {firstName} {lastName}
             </p>
-            <span className="mr-3">
-              <button onClick={() => navigate('/profile')} className={location.pathname === '/profile' ? 'text-[#FF5D00]' : ''}>
+            <span>
+              <StyledIconButton
+                onClick={handleMenuOpen}
+                className={
+                  isCurrentPage('/profile') || isCurrentPage('/organizations') || isCurrentPage('/billing') || isCurrentPage('/history')
+                    ? 'active'
+                    : ''
+                }
+              >
                 <SettingsIcon />
-              </button>
+              </StyledIconButton>
+              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+                <StyledMenuItem className={isCurrentPage('/profile') ? 'active' : ''} onClick={() => handleMenuClick('/profile')}>
+                  Profile
+                </StyledMenuItem>
+                <StyledMenuItem className={isCurrentPage('/organizations') ? 'active' : ''} onClick={() => handleMenuClick('/organizations')}>
+                  Organizations
+                </StyledMenuItem>
+                <StyledMenuItem className={isCurrentPage('/billing') ? 'active' : ''} onClick={() => handleMenuClick('/billing')}>
+                  Billing
+                </StyledMenuItem>
+                <StyledMenuItem className={isCurrentPage('/history') ? 'active' : ''} onClick={() => handleMenuClick('/history')}>
+                  History
+                </StyledMenuItem>
+              </Menu>
             </span>
-            <span className="mr-3">
+            <span>
               <LogoutButton />
             </span>
           </div>

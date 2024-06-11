@@ -5,6 +5,7 @@ import { toggleSidebar } from '../../features/sidebar';
 import { error as showError } from '../../features/alert/alertSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { StyledIconButton } from './styledComponent';
 
 export const LogoutButton = () => {
   const dispatch = useDispatch();
@@ -27,8 +28,8 @@ export const LogoutButton = () => {
   };
 
   return (
-    <button onClick={handleLogout}>
+    <StyledIconButton onClick={handleLogout}>
       <LogoutIcon />
-    </button>
+    </StyledIconButton>
   );
 };

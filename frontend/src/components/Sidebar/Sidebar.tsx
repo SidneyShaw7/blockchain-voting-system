@@ -6,6 +6,7 @@ import EventIcon from '@mui/icons-material/Event';
 import CreateIcon from '@mui/icons-material/Create';
 import InfoIcon from '@mui/icons-material/Info';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
+import { StyledIconButton } from './styledComponents';
 
 const Sidebar = () => {
   const isOpen = useSelector((state: RootState) => state.sidebar.isOpen);
@@ -19,6 +20,8 @@ const Sidebar = () => {
     { path: '/contact', label: 'Contact', Icon: ContactMailIcon },
   ];
 
+  const isCurrentPage = (path: string) => location.pathname === path;
+
   return (
     <div
       className={`${
@@ -27,11 +30,13 @@ const Sidebar = () => {
       aria-hidden={!isOpen}
     >
       <div>
-        <ul className="list-none p-4">
+        <ul className="list-none p-1">
           {navItems.map(({ path, label, Icon }) => (
-            <li key={path} className="mb-4 flex items-center">
+            <li key={path} className=" flex items-center">
               <NavLink to={path} className={({ isActive }) => (isActive ? 'text-[#FF5D00]' : 'text-[#00478F]')}>
-                <Icon />
+                <StyledIconButton className={isCurrentPage(path) ? 'active' : ''}>
+                  <Icon />
+                </StyledIconButton>
               </NavLink>
               {isOpen && (
                 <NavLink

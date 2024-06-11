@@ -146,14 +146,6 @@ const UserEvents = () => {
                   <SearchIcon />
                 </InputAdornment>
               ),
-              style: {
-                outline: 'none',
-              },
-            }}
-            inputProps={{
-              style: {
-                outline: 'none',
-              },
             }}
           />
           {/* </div> */}

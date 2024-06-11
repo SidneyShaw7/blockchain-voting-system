@@ -13,3 +13,4 @@ export type {
 } from './event.types';
 export { StorageType, EventType } from './event.types';
 export type { AsyncState } from './generic.types';
+export type { OrganizationFormValues, OrganizationResponse } from './organization.types';
