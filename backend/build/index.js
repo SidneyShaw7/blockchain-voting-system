@@ -71,5 +71,6 @@ app.get('/ping', (_req, res) => {
 app.use('/api/user', routes_1.registerRouter, routes_1.loginRouter, routes_1.userRouter);
 // app.use('/api/users', loginRouter);
 app.use('/api/events', routes_1.votingEventRouter);
+app.use('/api/organizations', routes_1.organizationRouter);
 app.use(middleware_2.errorMiddleware);
 exports.default = app;

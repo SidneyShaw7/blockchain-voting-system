@@ -4,7 +4,7 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import helmet from 'helmet';
-import { loginRouter, registerRouter, votingEventRouter, userRouter } from './api/routes';
+import { loginRouter, registerRouter, votingEventRouter, userRouter, organizationRouter } from './api/routes';
 import { logger } from './api/middleware';
 import { errorMiddleware } from './api/middleware';
 import { ErrorWithStatus } from './api/types';
@@ -75,6 +75,7 @@ app.get('/ping', (_req, res) => {
 app.use('/api/user', registerRouter, loginRouter, userRouter);
 // app.use('/api/users', loginRouter);
 app.use('/api/events', votingEventRouter);
+app.use('/api/organizations', organizationRouter);
 app.use(errorMiddleware);
 
 export default app;
