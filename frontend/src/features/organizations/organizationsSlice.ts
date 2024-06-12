@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { OrganizationResponse, AsyncState } from '../../types';
-import { getOrganizations, updateOrganization } from './organizationsThunks';
+import { getOrganizations, updateOrganization, addOrganization } from './organizationsThunks';
 
 interface OrganizationsState extends AsyncState<OrganizationResponse[]> {
   data: OrganizationResponse[];
@@ -27,6 +27,22 @@ const organizationsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(addOrganization.pending, (state) => {
+        state.isProcessing = true;
+        state.isSuccess = false;
+        state.isError = false;
+        state.errorMessage = undefined;
+      })
+      .addCase(addOrganization.fulfilled, (state, action: PayloadAction<OrganizationResponse>) => {
+        state.isProcessing = false;
+        state.isSuccess = true;
+        state.data.push(action.payload);
+      })
+      .addCase(addOrganization.rejected, (state, action) => {
+        state.isProcessing = false;
+        state.isError = true;
+        state.errorMessage = action.payload;
+      })
       .addCase(getOrganizations.pending, (state) => {
         state.isProcessing = true;
         state.isSuccess = false;

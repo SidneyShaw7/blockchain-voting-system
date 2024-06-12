@@ -78,10 +78,10 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                 <StyledMenuItem className={isCurrentPage('/organizations') ? 'active' : ''} onClick={() => handleMenuClick('/organizations')}>
                   Organizations
                 </StyledMenuItem>
-                <StyledMenuItem className={isCurrentPage('/billing') ? 'active' : ''} onClick={() => handleMenuClick('/billing')}>
+                <StyledMenuItem disabled className={isCurrentPage('/billing') ? 'active' : ''} onClick={() => handleMenuClick('/billing')}>
                   Billing
                 </StyledMenuItem>
-                <StyledMenuItem className={isCurrentPage('/history') ? 'active' : ''} onClick={() => handleMenuClick('/history')}>
+                <StyledMenuItem disabled className={isCurrentPage('/history') ? 'active' : ''} onClick={() => handleMenuClick('/history')}>
                   History
                 </StyledMenuItem>
               </Menu>
