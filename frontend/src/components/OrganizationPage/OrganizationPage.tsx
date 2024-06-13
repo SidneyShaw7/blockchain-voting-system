@@ -7,10 +7,13 @@ import { OrganizationResponse } from '../../types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { OrganizationSchema, OrganizationFormValues } from './OrganizationSchema';
 import { error as showError, success as showSuccess } from '../../features/alert';
+import Modal from '../common';
 
 const OrganizationsPage = () => {
   const dispatch = useDispatch();
   const { data: organizations, isError, isSuccess, errorMessage } = useSelector((state: RootState) => state.organizations);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [organizationToDelete, setOrganizationToDelete] = useState<OrganizationResponse | null>(null);
 
   const [isEditing, setIsEditing] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
@@ -36,8 +39,10 @@ const OrganizationsPage = () => {
   useEffect(() => {
     if (isSuccess && isAdding) {
       dispatch(showSuccess({ message: 'Organization added successfully!' }));
-    } else if (isSuccess) {
-      // dispatch(showSuccess({ message: 'Organization updated successfully!' }));
+    } else if (isSuccess && !isAdding && !isEditing) {
+      dispatch(showSuccess({ message: 'Organization updated successfully!' }));
+    } else if (isSuccess && !isAdding && isEditing) {
+      dispatch(showSuccess({ message: 'Organization deleted successfully!' }));
     }
     if (isError && errorMessage) {
       dispatch(showError({ message: errorMessage }));
@@ -47,7 +52,7 @@ const OrganizationsPage = () => {
       setIsEditing(false);
       setIsAdding(false);
     }
-  }, [dispatch, isSuccess, isError, errorMessage, isAdding]);
+  }, [dispatch, isSuccess, isError, errorMessage, isAdding, isEditing]);
 
   const onSubmit: SubmitHandler<OrganizationFormValues> = (data) => {
     console.log('Form data:', data); // Debugging: Log form data
@@ -59,9 +64,15 @@ const OrganizationsPage = () => {
     }
   };
 
+  const handleDelete = () => {
+    if (organizationToDelete) {
+      dispatch(deleteOrganization(organizationToDelete.id));
+      setIsModalOpen(false);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Organisations</h1>
       {!isEditing && !isAdding && (
         <div>
           {organizations.length === 0 ? (
@@ -73,22 +84,23 @@ const OrganizationsPage = () => {
             </div>
           ) : (
             <div>
+              <h1 className="text-3xl font-bold mb-6">Organisations</h1>
               {organizations.map((org: OrganizationResponse) => (
                 <div key={org.id} className="mb-4 border p-4 rounded">
                   <p>
-                    <strong>Organization Name:</strong> {org.name}
+                    <strong>Organization:</strong> {org.name}
                   </p>
                   <p>
-                    <strong>User's Role:</strong> {org.role}
+                    <strong>Role:</strong> {org.role}
                   </p>
                   <p>
-                    <strong>Number of Users:</strong> {org.userCount}
-                  </p>
-                  <p>
-                    <strong>Billing Address:</strong> {org.billingInfo}
+                    <strong>Users:</strong> {org.userCount}
                   </p>
                   <p>
                     <strong>Billing Email:</strong> {org.billingEmail}
+                  </p>
+                  <p>
+                    <strong>Billing Address:</strong> {org.billingInfo}
                   </p>
                   <button
                     onClick={() => {
@@ -125,7 +137,7 @@ const OrganizationsPage = () => {
             <InputField label="Description" name="description" inputType="textarea" />
             <FileInputField label="Logo" name="logo" />
             <InputField label="Role" name="role" />
-            <InputField label="Billing Info" name="billingInfo" />
+            <InputField label="Billing Address" name="billingAddress" />
             <InputField label="Billing Email" name="billingEmail" />
             <button type="submit" className="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
               Save Changes

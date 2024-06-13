@@ -9,7 +9,7 @@ import { VotingEventInterface } from '../components/VotingEventEnterface';
 import { UserEvents } from '../components/UserEvents';
 import { PrivateRoute } from '../components/PrivateRoute';
 import { ProfilePage } from '../components/ProfilePage';
-import { OrganizationsPage } from '../components/OrganizationsPage';
+import { OrganizationPage } from '../components/OrganizationPage';
 
 function App() {
   return (
@@ -78,7 +78,7 @@ function App() {
               path="/organizations"
               element={
                 <MainLayout>
-                  <OrganizationsPage />
+                  <OrganizationPage />
                 </MainLayout>
               }
             />
