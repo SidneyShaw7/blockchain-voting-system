@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { OrganizationValues } from '../../types';
+import { addIdVirtual } from '../../utils';
 
 const OrganizationSchema = new Schema<OrganizationValues>(
   {
@@ -15,5 +16,7 @@ const OrganizationSchema = new Schema<OrganizationValues>(
   },
   { timestamps: true }
 );
+
+addIdVirtual(OrganizationSchema);
 
 export const OrganizationModel = mongoose.model<OrganizationValues & Document>('Organization', OrganizationSchema);

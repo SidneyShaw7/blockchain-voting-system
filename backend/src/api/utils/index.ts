@@ -4,3 +4,4 @@ export { ErrorWithStatus } from './custom.errors';
 export { default as handleAsync } from './asyncHandling';
 export { authenticate } from './authenticationHandling';
 export { handleError } from './errorHandling';
+export { default as addIdVirtual } from './addIdVitrual';

@@ -11,6 +11,7 @@ export interface OrganizationValues extends Document {
   billingInfo: string;
   billingEmail: string;
   createdBy: Types.ObjectId | User;
+  createdAt?: Date;
 }
 
 export interface OrganizationResponse {

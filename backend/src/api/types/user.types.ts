@@ -1,7 +1,8 @@
 import { Types } from 'mongoose';
+import { OrganizationValues } from './organization.types';
 
-export interface User {
-  id?: Types.ObjectId;
+export interface User extends Document {
+  id: Types.ObjectId;
   firstName: string;
   lastName: string;
   username: string;
@@ -10,10 +11,18 @@ export interface User {
   createdAt?: Date;
   avatar?: Buffer | string;
   events?: Types.ObjectId[];
+  organizations?: Types.ObjectId[];
 }
 
-export interface UserProfileValues extends User {
+export interface UserProfileValues {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  password: string;
   newPassword?: string;
+  avatar?: string;
+  organizations?: OrganizationValues[];
 }
 
 export interface UserResponse {
@@ -24,6 +33,7 @@ export interface UserResponse {
   email: string;
   avatar?: string;
   events?: string[];
+  organizations?: OrganizationValues[];
 }
 
 export interface UserRegistration {

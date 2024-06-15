@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { UserResponse } from '../types';
+import { UserResponse, UserProfileValues } from '../types';
 import { updateUser } from '../services';
 import { ErrorWithStatus, handleValidationErrors } from '../utils';
 
@@ -12,7 +12,7 @@ export const updateUserController = async (req: Request, res: Response, next: Ne
   const { firstName, lastName, username, email, password, newPassword } = req.body;
   const avatar = req.file?.path;
 
-  const updatedData = {
+  const updatedData: UserProfileValues = {
     firstName,
     lastName,
     username,

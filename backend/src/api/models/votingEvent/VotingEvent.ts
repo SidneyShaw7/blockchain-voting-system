@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
-import mongooseLeanVirtuals from 'mongoose-lean-virtuals';
+// import mongooseLeanVirtuals from 'mongoose-lean-virtuals';
 import { Option, StorageType, EventType } from '../../types/event.types';
 import logger from '../../middleware/logger';
 import { capitalize } from '../../utils';
+import { addIdVirtual } from '../../utils';
 
 // mngoose schema for an option in the voting event
 const optionSchema = new mongoose.Schema<Option>({
@@ -32,11 +33,13 @@ const optionSchema = new mongoose.Schema<Option>({
 });
 
 // virtual 'id' field to optionSchema for client side easy using
-optionSchema.virtual('id').get(function () {
-  return this._id.toHexString();
-});
-optionSchema.set('toJSON', { virtuals: true });
-optionSchema.set('toObject', { virtuals: true });
+// optionSchema.virtual('id').get(function () {
+//   return this.id.toHexString();
+// });
+// optionSchema.set('toJSON', { virtuals: true });
+// optionSchema.set('toObject', { virtuals: true });
+
+addIdVirtual(optionSchema);
 
 // mongoose schema for a voting event
 const votingEventSchema = new mongoose.Schema({
@@ -110,13 +113,15 @@ const votingEventSchema = new mongoose.Schema({
 });
 
 //  virtual 'id' field to votingEventSchema for client side easy using
-votingEventSchema.virtual('id').get(function () {
-  return this._id.toHexString();
-});
-votingEventSchema.set('toJSON', { virtuals: true });
-votingEventSchema.set('toObject', { virtuals: true });
+// votingEventSchema.virtual('id').get(function () {
+//   return this._id.toHexString();
+// });
+// votingEventSchema.set('toJSON', { virtuals: true });
+// votingEventSchema.set('toObject', { virtuals: true });
 
-votingEventSchema.plugin(mongooseLeanVirtuals); // installing plugin for just getting id instead of _id for my frontend; crazy insane
+// votingEventSchema.plugin(mongooseLeanVirtuals); // installing plugin for just getting id instead of _id for my frontend; crazy insane
+
+addIdVirtual(votingEventSchema);
 
 votingEventSchema.pre('save', function (next) {
   if (this.isModified('title')) {

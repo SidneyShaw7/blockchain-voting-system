@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import { User } from '../../types/user.types';
 import logger from '../../middleware/logger';
@@ -47,7 +47,8 @@ const userSchema = new mongoose.Schema<User>({
     type: String,
   },
   createdAt: { type: Date, default: Date.now },
-  events: [{ type: mongoose.Schema.Types.ObjectId, ref: 'VotingEvent' }],
+  events: [{ type: Schema.Types.ObjectId, ref: 'VotingEvent' }],
+  organizations: [{ type: Schema.Types.ObjectId, ref: 'Organization' }],
 });
 
 userSchema.pre('save', async function (next) {
