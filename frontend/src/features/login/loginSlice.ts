@@ -16,7 +16,7 @@ const initialState: LoginState = {
   isAuthenticated: false,
 };
 
-const { pending, rejected } = createAsyncReducers<AuthResponse>();
+const { pending, fulfilled, rejected } = createAsyncReducers<AuthResponse>();
 
 const loginSlice = createSlice({
   name: 'login',
@@ -35,12 +35,8 @@ const loginSlice = createSlice({
     builder
       .addCase(login.pending, pending)
       .addCase(login.fulfilled, (state, action: PayloadAction<AuthResponse>) => {
-        state.isProcessing = false;
-        state.isSuccess = true;
-        state.isError = false;
-        state.data = action.payload;
+        fulfilled(state, action);
         state.isAuthenticated = true;
-        console.log('Login fulfilled, state:', state);
       })
       .addCase(login.rejected, rejected)
       .addCase(logout.pending, pending)

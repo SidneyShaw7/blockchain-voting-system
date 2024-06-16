@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { register } from './registrationThunks';
-import { User } from '../../types';
-import { AsyncState } from '../../types';
+import { User, AsyncState } from '../../types';
 import { createAsyncReducers } from '../../utils/reducerUtils';
 
 const initialState: AsyncState<User | null> = {

@@ -38,3 +38,14 @@ export const updateOrganization = createAsyncThunk<OrganizationResponse, { id: s
     }
   }
 );
+
+export const deleteOrganization = createAsyncThunk<void, string, { rejectValue: string }>(
+  'organizations/delete',
+  async (organizationId, { rejectWithValue }) => {
+    try {
+      await organizationService.deleteOrganization(organizationId);
+    } catch (error) {
+      return rejectWithValue(processError(error));
+    }
+  }
+);

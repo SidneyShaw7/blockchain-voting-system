@@ -31,6 +31,10 @@ const organizationsService = {
       },
     });
   },
+
+  deleteOrganization: (id: string) => {
+    return api.delete<void>(`/api/organizations/${id}`);
+  },
 };
 
 export default organizationsService;

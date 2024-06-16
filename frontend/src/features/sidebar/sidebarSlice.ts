@@ -16,12 +16,6 @@ const sidebarSlice = createSlice({
       state.isOpen = !state.isOpen;
     },
   },
-  //   extraReducers: (builder) => {
-  //     // future handling asynchronous or external state changes, migth needed
-  //     builder.addDefaultCase((state, action) => {
-  //       // default case for any unhandled actions
-  //     });
-  //   },
 });
 
 export const { toggleSidebar } = sidebarSlice.actions;
