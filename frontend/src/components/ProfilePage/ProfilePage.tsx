@@ -6,6 +6,7 @@ import { InputField, FileInputField } from '../helpers/helperFieldComponents';
 import { UserProfileSchema, UserProfileFormValues } from './UserProfileSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { error as showError, success as showSuccess } from '../../features/alert';
+import { Button } from '../Button';
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
@@ -94,12 +95,13 @@ const ProfilePage = () => {
                 <strong>Email:</strong> {loginData?.user.email}
               </p>
             </div>
-          <button
-            onClick={() => setIsEditing(true)}
-            className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-6 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
-          >
-            Edit Profile
-          </button>
+            <button
+              onClick={() => setIsEditing(true)}
+              className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-6 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
+            >
+              Edit Profile
+            </button>
+            <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
           </div>
         </div>
       ) : (
@@ -117,19 +119,20 @@ const ProfilePage = () => {
               </div>
             )}
             <FileInputField label="Avatar" name="avatar" onChange={(file) => handleAvatarChange(file)} />
-            <button
+            {/* <button
               type="submit"
               className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-6 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
             >
               Save Changes
-            </button>{' '}
-            <button
+            </button>{' '} */}
+            <Button onClick={methods.handleSubmit(onSubmit)}>Save Changes</Button> <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+            {/* <button
               type="button"
               onClick={() => setIsEditing(false)}
               className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-6 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
             >
               Cancel
-            </button>
+            </button> */}
           </form>
         </FormProvider>
       )}

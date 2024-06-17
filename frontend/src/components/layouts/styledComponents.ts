@@ -13,16 +13,16 @@ export const StyledToggleButton = styled(IconButton)<{ active?: boolean }>(() =>
 export const StyledIconButton = styled(IconButton)(() => ({
   color: '#000',
   '&.active': {
-    color: '#FF5D00',
+    color: '#ff6747',
   },
 }));
 
 export const StyledMenuItem = styled(MenuItem)(() => ({
   '&.active': {
-    backgroundColor: '#FF5D00',
+    backgroundColor: '#ff6747',
     color: '#fff',
     '&:hover': {
-      backgroundColor: '#FF5D00',
+      backgroundColor: '#ff6747',
     },
   },
 }));

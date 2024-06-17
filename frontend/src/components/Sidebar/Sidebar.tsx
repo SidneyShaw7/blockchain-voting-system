@@ -33,7 +33,7 @@ const Sidebar = () => {
         <ul className="list-none p-1">
           {navItems.map(({ path, label, Icon }) => (
             <li key={path} className=" flex items-center">
-              <NavLink to={path} className={({ isActive }) => (isActive ? 'text-[#FF5D00]' : 'text-[#00478F]')}>
+              <NavLink to={path} className={({ isActive }) => (isActive ? 'text-[#ff6747]' : 'text-[#00478F]')}>
                 <StyledIconButton className={isCurrentPage(path) ? 'active' : ''}>
                   <Icon />
                 </StyledIconButton>
@@ -41,7 +41,7 @@ const Sidebar = () => {
               {isOpen && (
                 <NavLink
                   to={path}
-                  className={({ isActive }) => `ml-2 ${isActive ? 'text-[#FF5D00]' : 'text-[#00478F] hover:text-[#2A231F]'}`}
+                  className={({ isActive }) => `ml-2 ${isActive ? 'text-[#ff6747]' : 'text-[#00478F] hover:text-[#2A231F]'}`}
                   onClick={() => dispatch(toggleSidebar())}
                 >
                   {label}

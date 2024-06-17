@@ -14,6 +14,6 @@ export const StyledIconButton = styled(IconButton)(() => ({
   margin: '4px',
   color: '#00478F',
   '&.active': {
-    color: '#FF5D00',
+    color: '#ff6747',
   },
 }));

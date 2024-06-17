@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { OrganizationSchema, OrganizationFormValues } from './OrganizationSchema';
 import { error as showError, success as showSuccess } from '../../features/alert';
 import { Modal } from '../common';
+import { Button } from '../Button';
 
 const OrganizationsPage = () => {
   const dispatch = useDispatch();
@@ -78,12 +79,7 @@ const OrganizationsPage = () => {
           {organizations.length === 0 ? (
             <div>
               <p className="text-gray-500">No organizations yet.</p>
-              <button
-                onClick={() => setIsAdding(true)}
-                className="inline-block shrink-0 rounded-md border border-[#FF5733] bg-[#FF5733] px-1 py-1 text-m font-medium text-white transition hover:bg-[#ff370c] hover:text-white focus:outline-none focus:ring active:text-[#ff370c] shadow-[4.0px_8.0px_8.0px_rgba(0,0,0,0.38)]"
-              >
-                + Add Organization
-              </button>
+              <Button onClick={() => setIsAdding(true)}>+ Add Organization</Button>
             </div>
           ) : (
             <div>
@@ -106,7 +102,7 @@ const OrganizationsPage = () => {
                     <strong>Billing Address:</strong> {org.billingInfo}
                   </p>
                   <div className="flex space-x-2">
-                    <button
+                    {/* <button
                       onClick={() => {
                         setSelectedOrganization(org);
                         setIsEditing(true);
@@ -123,7 +119,24 @@ const OrganizationsPage = () => {
                       className="mt-2 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded"
                     >
                       Edit
-                    </button>
+                    </button> */}
+                    <Button
+                      onClick={() => {
+                        setSelectedOrganization(org);
+                        setIsEditing(true);
+                        methods.reset({
+                          name: org.name,
+                          location: org.location,
+                          description: org.description,
+                          logo: undefined,
+                          role: org.role,
+                          billingInfo: org.billingInfo,
+                          billingEmail: org.billingEmail,
+                        });
+                      }}
+                    >
+                      Edit
+                    </Button>
                     <button
                       onClick={() => {
                         setOrganizationToDelete(org);
@@ -136,19 +149,20 @@ const OrganizationsPage = () => {
                   </div>
                 </div>
               ))}
-              <button
+              {/* <button
                 onClick={() => setIsAdding(true)}
                 className="inline-block shrink-0 rounded-md border border-[#FF5733] bg-[#FF5733] px-1 py-1 text-m font-medium text-white transition hover:bg-transparent hover:text-[#FF5733] focus:outline-none focus:ring active:text-[#FF5733]"
               >
                 + Add Organization
-              </button>
+              </button> */}
+              <Button onClick={() => setIsAdding(true)}>+ Add Organization</Button>
             </div>
           )}
         </div>
       )}
       {(isEditing || isAdding) && (
         <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4 sm:w-96">
             <InputField label="Organization Name" name="name" />
             <InputField label="Location" name="location" />
             <InputField label="Description" name="description" inputType="textarea" />
@@ -156,13 +170,14 @@ const OrganizationsPage = () => {
             <InputField label="Role" name="role" />
             <InputField label="Billing Info" name="billingInfo" />
             <InputField label="Billing Email" name="billingEmail" />
-            <button
+            {/* <button
               type="submit"
               className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
             >
               Save Changes
-            </button>
-            <button
+            </button> */}
+            <Button onClick={methods.handleSubmit(onSubmit)}>Save Changes</Button>{' '}
+            {/* <button
               type="button"
               onClick={() => {
                 setIsEditing(false);
@@ -172,7 +187,16 @@ const OrganizationsPage = () => {
               className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
             >
               Cancel
-            </button>
+            </button> */}
+            <Button
+              onClick={() => {
+                setIsEditing(false);
+                setIsAdding(false);
+                methods.reset();
+              }}
+            >
+              Cancel
+            </Button>
           </form>
         </FormProvider>
       )}
