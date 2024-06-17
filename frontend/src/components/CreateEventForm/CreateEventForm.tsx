@@ -9,6 +9,7 @@ import { createEvent, resetEventState } from '../../features/manageEvent';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { error as showError } from '../../features/alert';
+import { AddButton, DeleteButton } from '../Buttons';
 
 const predefinedOptions = [
   { option: 'Yes, I approve', voters: [], votes: 0 },
@@ -84,33 +85,31 @@ const CreateEventForm = () => {
 
           {fields.map((field, index) =>
             eventType === EventType.Candidate ? (
-              <div key={field.id} className="border-b border-gray-300 py-4">
+              <div key={field.id} className=" py-2">
                 <InputField label="Candidate Name" name={`options.${index}.name`} />
                 <InputField label="Candidate Bio" name={`options.${index}.bio`} inputType="textarea" />
-                <button type="button" onClick={() => remove(index)}>
+                <DeleteButton type="button" onClick={() => remove(index)}>
                   Remove Candidate
-                </button>
+                </DeleteButton>
               </div>
             ) : (
               <div key={field.id}>
                 <InputField label="Option Description" name={`options.${index}.option`} />
-                <button type="button" onClick={() => remove(index)} className="mt-2 bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded">
+                <DeleteButton type="button" onClick={() => remove(index)}>
                   Remove Option
-                </button>
+                </DeleteButton>
               </div>
             )
           )}
-          <button
-            type="button"
+          <AddButton
             onClick={() =>
               append(
                 eventType === EventType.Candidate ? { name: '', bio: '', option: '', voters: [], votes: 0 } : { option: '', voters: [], votes: 0 }
               )
             }
-            className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-6 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
           >
             Add {eventType === EventType.Candidate ? 'Candidate' : 'Option'}
-          </button>
+          </AddButton>
 
           <DateField name="startDate" label="Start date:" />
           <DateField name="endDate" label="End date:" />
@@ -123,7 +122,7 @@ const CreateEventForm = () => {
           <button
             type="submit"
             disabled={methods.formState.isSubmitting}
-            className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
+            className="inline-block shrink-0 rounded-md border border-[#ff6747] bg-[#ff6747] px-3 py-2 text-m font-medium text-white transition hover:bg-[#ff370c] hover:text-white focus:outline-none focus:ring active:text-[#ff370c] shadow-[2.0px_6.0px_6.0px_rgba(0,0,0,0.38)] hover:shadow-[3.0px_7.0px_7.0px_rgba(0,0,0,0.38)]"
           >
             Submit
           </button>

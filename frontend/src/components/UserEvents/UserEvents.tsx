@@ -8,13 +8,10 @@ import NewReleasesIcon from '@mui/icons-material/NewReleases';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import Tooltip from '@mui/material/Tooltip';
-import Button from '@mui/material/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
+import { ViewButton, FilterButton, SortButton } from '../Buttons';
 
 const UserEvents = () => {
   const dispatch = useDispatch();
@@ -23,13 +20,8 @@ const UserEvents = () => {
   const { data: events, isProcessing, isError, errorMessage } = useSelector((state: RootState) => state.userEvents);
   const userId = useSelector((state: RootState) => state.login.data?.user.id);
 
-  // const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
-  // const [showVoted, setShowVoted] = useState<boolean | null>(null);
-  // const [searchQuery, setSearchQuery] = useState('');
-  // const [sortAnchorEl, setSortAnchorEl] = useState<null | HTMLElement>(null);
-  // const [showAnchorEl, setShowAnchorEl] = useState<null | HTMLElement>(null);
-  const [sortAnchorEl, setSortAnchorEl] = useState<null | HTMLElement>(null);
-  const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null);
+  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
+  const [showVoted, setShowVoted] = useState<'all' | 'voted' | 'notVoted'>('all');
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -52,63 +44,80 @@ const UserEvents = () => {
     navigate(`/events/${eventId}`);
   };
 
-  const handleSortClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setSortAnchorEl(event.currentTarget);
+  const handleSortChange = (order: 'newest' | 'oldest') => {
+    setSortOrder(order);
   };
 
-  const handleSortClose = () => {
-    setSortAnchorEl(null);
-  };
-
-  const handleFilterClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setFilterAnchorEl(event.currentTarget);
-  };
-
-  const handleFilterClose = () => {
-    setFilterAnchorEl(null);
+  const handleFilterChange = (filter: 'all' | 'voted' | 'notVoted') => {
+    setShowVoted(filter);
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
-  const filteredEvents = events.filter(
-    (event) => event.title.toLowerCase().includes(searchTerm.toLowerCase()) || event.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const sortedEvents = [...events].sort((a, b) => {
+    if (sortOrder === 'newest') {
+      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+    } else {
+      return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+    }
+  });
+
+  const filteredEvents = sortedEvents.filter((event) => {
+    const matchesSearch =
+      event.title.toLowerCase().includes(searchTerm.toLowerCase()) || event.description.toLowerCase().includes(searchTerm.toLowerCase());
+    if (showVoted === 'all') return matchesSearch;
+    const hasUserVoted = userId && event.options.some((option) => option.voters.includes(userId));
+    if (showVoted === 'voted') return matchesSearch && hasUserVoted;
+    if (showVoted === 'notVoted') return matchesSearch && !hasUserVoted;
+    return matchesSearch;
+  });
 
   return (
     <div className="max-w-6xl mx-auto p-4">
       <ThemeProvider theme={theme}>
         <div className="flex justify-between mb-6">
           <div className="flex space-x-4">
-            {/* <div className="relative inline-block"> */}
-            <Button
-              size="small"
-              variant="contained"
-              onClick={handleSortClick}
-              sx={{ fontSize: '1em', textTransform: 'none', backgroundColor: '#00478F' }}
-              endIcon={<ExpandMoreIcon />}
-            >
-              Sort by
-            </Button>
-            <Menu anchorEl={sortAnchorEl} open={Boolean(sortAnchorEl)} onClose={handleSortClose}>
-              <MenuItem onClick={handleSortClose}>Newest</MenuItem>
-              <MenuItem onClick={handleSortClose}>Oldest</MenuItem>
-            </Menu>
-            <Button
-              size="small"
-              variant="contained"
-              onClick={handleFilterClick}
-              sx={{ fontSize: '1em', textTransform: 'none', backgroundColor: '#00478F', marginLeft: 2 }}
-              endIcon={<ExpandMoreIcon />}
-            >
-              Show
-            </Button>
-            <Menu anchorEl={filterAnchorEl} open={Boolean(filterAnchorEl)} onClose={handleFilterClose}>
-              <MenuItem onClick={handleFilterClose}>All</MenuItem>
-              <MenuItem onClick={handleFilterClose}>Voted</MenuItem>
-              <MenuItem onClick={handleFilterClose}>Not Voted</MenuItem>
-            </Menu>
+            <div>
+              <SortButton
+                onClick={() => handleSortChange('newest')}
+                isActive={sortOrder === 'newest'}
+                className={sortOrder === 'newest' ? 'bg-[#00478F] text-[#ff6747]' : ''}
+              >
+                Newest
+              </SortButton>
+              <SortButton
+                onClick={() => handleSortChange('oldest')}
+                isActive={sortOrder === 'oldest'}
+                className={sortOrder === 'oldest' ? 'bg-[#00478F]  text-[#ff6747]' : ''}
+              >
+                Oldest
+              </SortButton>
+            </div>
+            <div>
+              <FilterButton
+                onClick={() => handleFilterChange('all')}
+                isActive={showVoted === 'all'}
+                className={showVoted === 'all' ? 'bg-[#00478F] text-[#ff6747]' : ''}
+              >
+                All
+              </FilterButton>
+              <FilterButton
+                onClick={() => handleFilterChange('voted')}
+                isActive={showVoted === 'voted'}
+                className={showVoted === 'voted' ? 'bg-[#00478F]  text-[#ff6747]' : ''}
+              >
+                Voted
+              </FilterButton>
+              <FilterButton
+                onClick={() => handleFilterChange('notVoted')}
+                isActive={showVoted === 'notVoted'}
+                className={showVoted === 'notVoted' ? 'bg-[#00478F]  text-[#ff6747]' : ''}
+              >
+                Not Voted
+              </FilterButton>
+            </div>
           </div>
           <TextField
             className="textField"
@@ -118,6 +127,7 @@ const UserEvents = () => {
             placeholder="Search events"
             sx={{
               '& .MuiOutlinedInput-root': {
+                borderRadius: '0px',
                 '& fieldset': {
                   borderColor: '#00478F',
                 },
@@ -148,7 +158,6 @@ const UserEvents = () => {
               ),
             }}
           />
-          {/* </div> */}
         </div>
       </ThemeProvider>
       <ul className="space-y-6">
@@ -157,7 +166,10 @@ const UserEvents = () => {
           const isAdmin = event.createdBy === userId;
 
           return (
-            <li key={event.id} className="relative border border-gray-300 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
+            <li
+              key={event.id}
+              className="relative bg-[#EAEFF2] border border-gray-300 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
+            >
               <div className="absolute top-2 right-2">
                 {isAdmin && (
                   <Tooltip title="Admin">
@@ -186,12 +198,7 @@ const UserEvents = () => {
               </div>
               <p className="text-gray-500 mb-4">Votes: {event.options.reduce((sum, option) => sum + option.votes, 0)}</p>
               <div className="flex justify-end">
-                <button
-                  onClick={() => handleViewEvent(event.id)}
-                  className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-6 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
-                >
-                  View Event
-                </button>
+                <ViewButton onClick={() => handleViewEvent(event.id)}>View Event</ViewButton>
               </div>
             </li>
           );

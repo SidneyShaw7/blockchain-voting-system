@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { OrganizationSchema, OrganizationFormValues } from './OrganizationSchema';
 import { error as showError, success as showSuccess } from '../../features/alert';
 import { Modal } from '../common';
-import { Button } from '../Button';
+import { AddButton, EditButton, CancelButton, DeleteButton } from '../Buttons';
 
 const OrganizationsPage = () => {
   const dispatch = useDispatch();
@@ -77,50 +77,40 @@ const OrganizationsPage = () => {
       {!isEditing && !isAdding && (
         <div>
           {organizations.length === 0 ? (
-            <div>
+            <div className="flex">
               <p className="text-gray-500">No organizations yet.</p>
-              <Button onClick={() => setIsAdding(true)}>+ Add Organization</Button>
+              <AddButton onClick={() => setIsAdding(true)}>+ Add Organization</AddButton>
             </div>
           ) : (
             <div>
               <h1 className="text-3xl font-bold mb-6">Organizations</h1>
               {organizations.map((org: OrganizationResponse) => (
-                <div key={org.id} className="mb-4 border p-4 rounded">
-                  <p>
-                    <strong>Organization:</strong> {org.name}
-                  </p>
-                  <p>
-                    <strong>Role:</strong> {org.role}
-                  </p>
-                  <p>
-                    <strong>Users:</strong> {org.userCount}
-                  </p>
-                  <p>
-                    <strong>Billing Email:</strong> {org.billingEmail}
-                  </p>
-                  <p>
-                    <strong>Billing Address:</strong> {org.billingInfo}
-                  </p>
-                  <div className="flex space-x-2">
-                    {/* <button
-                      onClick={() => {
-                        setSelectedOrganization(org);
-                        setIsEditing(true);
-                        methods.reset({
-                          name: org.name,
-                          location: org.location,
-                          description: org.description,
-                          logo: undefined,
-                          role: org.role,
-                          billingInfo: org.billingInfo,
-                          billingEmail: org.billingEmail,
-                        });
-                      }}
-                      className="mt-2 bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded"
-                    >
-                      Edit
-                    </button> */}
-                    <Button
+                <div>
+                  <div
+                    key={org.id}
+                    className="relative bg-[#EAEFF2] border border-gray-300 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p>
+                          <strong>Organization:</strong> {org.name}
+                        </p>
+                        <p>
+                          <strong>Role:</strong> {org.role}
+                        </p>
+                        <p>
+                          <strong>Users:</strong> {org.userCount}
+                        </p>
+                        <p>
+                          <strong>Billing Email:</strong> {org.billingEmail}
+                        </p>
+                        <p>
+                          <strong>Billing Address:</strong> {org.billingInfo}
+                        </p>
+                      </div>
+                      <div></div>
+                    </div>
+                    <EditButton
                       onClick={() => {
                         setSelectedOrganization(org);
                         setIsEditing(true);
@@ -136,32 +126,20 @@ const OrganizationsPage = () => {
                       }}
                     >
                       Edit
-                    </Button>
-                    <button
-                      onClick={() => {
-                        setOrganizationToDelete(org);
-                        setIsModalOpen(true);
-                      }}
-                      className="mt-2 bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded"
-                    >
-                      Delete
-                    </button>
+                    </EditButton>
                   </div>
                 </div>
               ))}
-              {/* <button
-                onClick={() => setIsAdding(true)}
-                className="inline-block shrink-0 rounded-md border border-[#FF5733] bg-[#FF5733] px-1 py-1 text-m font-medium text-white transition hover:bg-transparent hover:text-[#FF5733] focus:outline-none focus:ring active:text-[#FF5733]"
-              >
+              <AddButton className="mt-3" onClick={() => setIsAdding(true)}>
                 + Add Organization
-              </button> */}
-              <Button onClick={() => setIsAdding(true)}>+ Add Organization</Button>
+              </AddButton>
             </div>
           )}
         </div>
       )}
       {(isEditing || isAdding) && (
         <FormProvider {...methods}>
+          <h1 className="text-3xl font-bold mb-6">Organization</h1>
           <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4 sm:w-96">
             <InputField label="Organization Name" name="name" />
             <InputField label="Location" name="location" />
@@ -170,33 +148,28 @@ const OrganizationsPage = () => {
             <InputField label="Role" name="role" />
             <InputField label="Billing Info" name="billingInfo" />
             <InputField label="Billing Email" name="billingEmail" />
-            {/* <button
-              type="submit"
-              className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
-            >
-              Save Changes
-            </button> */}
-            <Button onClick={methods.handleSubmit(onSubmit)}>Save Changes</Button>{' '}
-            {/* <button
-              type="button"
-              onClick={() => {
-                setIsEditing(false);
-                setIsAdding(false);
-                methods.reset();
-              }}
-              className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
-            >
-              Cancel
-            </button> */}
-            <Button
+            <CancelButton
               onClick={() => {
                 setIsEditing(false);
                 setIsAdding(false);
                 methods.reset();
               }}
             >
-              Cancel
-            </Button>
+              Back
+            </CancelButton>{' '}
+            <AddButton onClick={methods.handleSubmit(onSubmit)}>Save</AddButton>
+            <div>
+              {isEditing && (
+                <DeleteButton
+                  onClick={() => {
+                    setOrganizationToDelete(selectedOrganization);
+                    setIsModalOpen(true);
+                  }}
+                >
+                  Delete organization
+                </DeleteButton>
+              )}
+            </div>
           </form>
         </FormProvider>
       )}

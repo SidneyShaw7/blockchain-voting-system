@@ -1,12 +1,15 @@
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getEvent, voteOnEvent } from '../../features/manageEvent';
 import { OptionDB } from '../../types';
 import { useDispatch, RootState, useSelector } from '../../store';
 import { error as showError } from '../../features/alert/alertSlice';
 import WhereToVoteRoundedIcon from '@mui/icons-material/WhereToVoteRounded';
+import { CancelButton } from '../Buttons';
 
 const VotingEventInterface = () => {
+  const navigate = useNavigate();
+
   const { eventId } = useParams<{ eventId?: string }>();
   const dispatch = useDispatch();
   const { data: event, isProcessing } = useSelector((state: RootState) => state.votingEvent);
@@ -38,13 +41,10 @@ const VotingEventInterface = () => {
   }
 
   if (!event) {
-    return console.log(event), (<div>No event found.</div>);
+    return <div>No event found.</div>;
   }
 
-  console.log('User ID:', userId);
-  console.log('Event options:', event.options);
   const hasUserVoted = userId && event.options.some((option) => option.voters.includes(userId));
-  console.log('Has User Voted:', hasUserVoted);
 
   const getOptionColor = (optionText: string) => {
     switch (optionText) {
@@ -64,6 +64,10 @@ const VotingEventInterface = () => {
   };
 
   const totalVotes = event.options.reduce((sum, option) => sum + option.votes, 0);
+
+  const handleNavigateBack = () => {
+    navigate(`/events`);
+  };
 
   return (
     <div className="event-container max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
@@ -108,7 +112,14 @@ const VotingEventInterface = () => {
           );
         })}
       </ul>
-      {hasUserVoted && <div className="text-center mt-4 text-green-600 font-semibold">You have already voted</div>}
+      {hasUserVoted && (
+        <div className=" flex items-center justify-between mt-4">
+          <CancelButton className="text-left" onClick={handleNavigateBack}>
+            Back
+          </CancelButton>
+          <span className="flex-grow text-right text-green-600 font-semibold">You have already voted</span>
+        </div>
+      )}
     </div>
   );
 };
