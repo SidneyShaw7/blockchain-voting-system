@@ -21,6 +21,7 @@ const userService = {
       },
     });
   },
+  getUsers: (userIds: string[]) => api.post('/api/user/getUsers', { userIds }),
 };
 
 export default userService;

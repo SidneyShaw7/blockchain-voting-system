@@ -77,7 +77,7 @@ const CreateEventForm = () => {
   return (
     <FormProvider {...methods}>
       <div className="w-full max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-        <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Create Voting Event</h1>
+        <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">Create a Ballot</h1>
         <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-6">
           <InputField label="Event Title" name="title" />
           <InputField label="Description" name="description" inputType="textarea" />

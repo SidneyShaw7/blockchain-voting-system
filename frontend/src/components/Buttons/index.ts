@@ -5,4 +5,5 @@ export { default as DeleteButton } from './DeleteButton';
 export { default as SortButton } from './SortButton';
 export { default as FilterButton } from './FilterButton';
 export { default as ViewButton } from './ViewButton';
+export { default as GreenButton } from './GreenButton';
 

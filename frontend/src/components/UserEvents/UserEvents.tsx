@@ -37,7 +37,7 @@ const UserEvents = () => {
   }
 
   if (!events || events.length === 0) {
-    return <div className="text-gray-500 text-center mt-4">No events found.</div>;
+    return <div className="text-gray-500 text-center mt-4">No ballots found.</div>;
   }
 
   const handleViewEvent = (eventId: string) => {
@@ -198,7 +198,7 @@ const UserEvents = () => {
               </div>
               <p className="text-gray-500 mb-4">Votes: {event.options.reduce((sum, option) => sum + option.votes, 0)}</p>
               <div className="flex justify-end">
-                <ViewButton onClick={() => handleViewEvent(event.id)}>View Event</ViewButton>
+                <ViewButton onClick={() => handleViewEvent(event.id)}>View Ballot</ViewButton>
               </div>
             </li>
           );

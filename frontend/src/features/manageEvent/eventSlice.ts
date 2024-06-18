@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createEvent, deleteEvent, getEvent, voteOnEvent, updateEvent } from './eventThunks';
+import { createEvent, deleteEvent, getEvent, voteOnEvent, updateEvent, inviteUser, deleteUserFromEvent } from './eventThunks';
 import { VotingEventFormValuesDB } from '../../types';
 import { AsyncState } from '../../types';
 import { createAsyncReducers } from '../../utils/reducerUtils';
@@ -53,7 +53,21 @@ const eventSlice = createSlice({
         state.isProcessing = false;
         state.isSuccess = true;
       })
-      .addCase(voteOnEvent.rejected, rejected);
+      .addCase(voteOnEvent.rejected, rejected)
+      // invite user
+      .addCase(inviteUser.pending, pending)
+      .addCase(inviteUser.fulfilled, (state) => {
+        state.isProcessing = false;
+        state.isSuccess = true;
+      })
+      .addCase(inviteUser.rejected, rejected)
+      // delete user from event
+      .addCase(deleteUserFromEvent.pending, pending)
+      .addCase(deleteUserFromEvent.fulfilled, (state) => {
+        state.isProcessing = false;
+        state.isSuccess = true;
+      })
+      .addCase(deleteUserFromEvent.rejected, rejected);
   },
 });
 

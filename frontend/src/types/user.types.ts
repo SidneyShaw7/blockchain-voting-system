@@ -52,3 +52,10 @@ export interface UserProfileResponse {
   email: string;
   avatar?: string;
 }
+
+export interface SimpleUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}

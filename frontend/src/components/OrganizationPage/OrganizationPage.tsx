@@ -77,9 +77,11 @@ const OrganizationsPage = () => {
       {!isEditing && !isAdding && (
         <div>
           {organizations.length === 0 ? (
-            <div className="flex">
+            <div>
               <p className="text-gray-500">No organizations yet.</p>
-              <AddButton onClick={() => setIsAdding(true)}>+ Add Organization</AddButton>
+              <AddButton className="mt-4" onClick={() => setIsAdding(true)}>
+                + Add Organization
+              </AddButton>
             </div>
           ) : (
             <div>
@@ -108,7 +110,6 @@ const OrganizationsPage = () => {
                           <strong>Billing Address:</strong> {org.billingInfo}
                         </p>
                       </div>
-                      <div></div>
                     </div>
                     <EditButton
                       onClick={() => {
@@ -124,13 +125,20 @@ const OrganizationsPage = () => {
                           billingEmail: org.billingEmail,
                         });
                       }}
+                      className='mt-3'
                     >
                       Edit
                     </EditButton>
                   </div>
                 </div>
               ))}
-              <AddButton className="mt-3" onClick={() => setIsAdding(true)}>
+              <AddButton
+                className="mt-3"
+                onClick={() => {
+                  setIsEditing(true);
+                  methods.reset({ name: '', location: '', description: '', logo: undefined, role: '', billingInfo: '', billingEmail: '' });
+                }}
+              >
                 + Add Organization
               </AddButton>
             </div>

@@ -75,3 +75,25 @@ export const getAllEvents = createAsyncThunk<VotingEventFormValuesDB[], void, { 
     }
   }
 );
+
+export const inviteUser = createAsyncThunk<void, { eventId: string; email: string }, { rejectValue: string }>(
+  'event/inviteUser',
+  async ({ eventId, email }, { rejectWithValue }) => {
+    try {
+      await eventService.inviteUser(eventId, email);
+    } catch (error) {
+      return rejectWithValue(processError(error));
+    }
+  }
+);
+
+export const deleteUserFromEvent = createAsyncThunk<void, { eventId: string; userId: string }, { rejectValue: string }>(
+  'event/deleteUserFromEvent',
+  async ({ eventId, userId }, { rejectWithValue }) => {
+    try {
+      await eventService.deleteUserFromEvent(eventId, userId);
+    } catch (error) {
+      return rejectWithValue(processError(error));
+    }
+  }
+);
