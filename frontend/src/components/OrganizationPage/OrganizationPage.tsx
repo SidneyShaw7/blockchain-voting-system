@@ -87,55 +87,53 @@ const OrganizationsPage = () => {
             <div>
               <h1 className="text-3xl font-bold mb-6">Organizations</h1>
               {organizations.map((org: OrganizationResponse) => (
-                <div>
-                  <div
-                    key={org.id}
-                    className="relative bg-[#EAEFF2] border border-gray-300 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p>
-                          <strong>Organization:</strong> {org.name}
-                        </p>
-                        <p>
-                          <strong>Role:</strong> {org.role}
-                        </p>
-                        <p>
-                          <strong>Users:</strong> {org.userCount}
-                        </p>
-                        <p>
-                          <strong>Billing Email:</strong> {org.billingEmail}
-                        </p>
-                        <p>
-                          <strong>Billing Address:</strong> {org.billingInfo}
-                        </p>
-                      </div>
+                <div
+                  key={org.id}
+                  className="relative bg-[#EAEFF2] border border-gray-300 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p>
+                        <strong>Organization:</strong> {org.name}
+                      </p>
+                      <p>
+                        <strong>Role:</strong> {org.role}
+                      </p>
+                      <p>
+                        <strong>Users:</strong> {org.userCount}
+                      </p>
+                      <p>
+                        <strong>Billing Email:</strong> {org.billingEmail}
+                      </p>
+                      <p>
+                        <strong>Billing Address:</strong> {org.billingInfo}
+                      </p>
                     </div>
-                    <EditButton
-                      onClick={() => {
-                        setSelectedOrganization(org);
-                        setIsEditing(true);
-                        methods.reset({
-                          name: org.name,
-                          location: org.location,
-                          description: org.description,
-                          logo: undefined,
-                          role: org.role,
-                          billingInfo: org.billingInfo,
-                          billingEmail: org.billingEmail,
-                        });
-                      }}
-                      className='mt-3'
-                    >
-                      Edit
-                    </EditButton>
                   </div>
+                  <EditButton
+                    onClick={() => {
+                      setSelectedOrganization(org);
+                      setIsEditing(true);
+                      methods.reset({
+                        name: org.name,
+                        location: org.location,
+                        description: org.description,
+                        logo: undefined,
+                        role: org.role,
+                        billingInfo: org.billingInfo,
+                        billingEmail: org.billingEmail,
+                      });
+                    }}
+                    className="mt-3"
+                  >
+                    Edit
+                  </EditButton>
                 </div>
               ))}
               <AddButton
                 className="mt-3"
                 onClick={() => {
-                  setIsEditing(true);
+                  setIsAdding(true);
                   methods.reset({ name: '', location: '', description: '', logo: undefined, role: '', billingInfo: '', billingEmail: '' });
                 }}
               >
@@ -156,18 +154,20 @@ const OrganizationsPage = () => {
             <InputField label="Role" name="role" />
             <InputField label="Billing Info" name="billingInfo" />
             <InputField label="Billing Email" name="billingEmail" />
-            <CancelButton
-              onClick={() => {
-                setIsEditing(false);
-                setIsAdding(false);
-                methods.reset();
-              }}
-            >
-              Back
-            </CancelButton>{' '}
-            <AddButton onClick={methods.handleSubmit(onSubmit)}>Save</AddButton>
-            <div>
-              {isEditing && (
+            <div className="flex space-x-4">
+              <CancelButton
+                onClick={() => {
+                  setIsEditing(false);
+                  setIsAdding(false);
+                  methods.reset();
+                }}
+              >
+                Back
+              </CancelButton>
+              <AddButton onClick={methods.handleSubmit(onSubmit)}>Save</AddButton>
+            </div>
+            {isEditing && !isAdding && (
+              <div className="mt-3">
                 <DeleteButton
                   onClick={() => {
                     setOrganizationToDelete(selectedOrganization);
@@ -176,8 +176,8 @@ const OrganizationsPage = () => {
                 >
                   Delete organization
                 </DeleteButton>
-              )}
-            </div>
+              </div>
+            )}
           </form>
         </FormProvider>
       )}

@@ -5,14 +5,14 @@ import { OptionDB } from '../../types';
 import { useDispatch, RootState, useSelector } from '../../store';
 import { error as showError } from '../../features/alert/alertSlice';
 import DoneIcon from '@mui/icons-material/Done';
-import { CancelButton, AddButton, ViewButton, GreenButton } from '../Buttons';
+import { CancelButton, ViewButton, GreenButton, DisabledButton } from '../Buttons';
 import InviteUserModal from './InviteUserModal';
 import ViewUsersModal from './ViewUsersModal';
+import ConfirmVoteModal from './ConfirmVoteModal';
 import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 
 const VotingEventInterface = () => {
   const navigate = useNavigate();
-
   const { eventId } = useParams<{ eventId?: string }>();
   const dispatch = useDispatch();
   const { data: event, isProcessing } = useSelector((state: RootState) => state.votingEvent);
@@ -20,6 +20,8 @@ const VotingEventInterface = () => {
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isViewUsersModalOpen, setIsViewUsersModalOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isVotingPeriodOver, setIsVotingPeriodOver] = useState(false);
 
   useEffect(() => {
     if (eventId) {
@@ -27,11 +29,20 @@ const VotingEventInterface = () => {
     }
   }, [dispatch, eventId]);
 
+  useEffect(() => {
+    if (event) {
+      const now = new Date();
+      const endDate = new Date(event.endDate);
+      setIsVotingPeriodOver(now > endDate);
+    }
+  }, [event]);
+
   const handleVote = async () => {
     if (eventId && selectedOption) {
       try {
         await dispatch(voteOnEvent({ eventId, optionId: selectedOption })).unwrap();
         dispatch(getEvent(eventId));
+        setIsConfirmModalOpen(false);
       } catch (error) {
         console.error('Failed to vote on event:', error);
         dispatch(showError({ message: 'Failed to vote on event.' }));
@@ -40,6 +51,22 @@ const VotingEventInterface = () => {
       console.error('Event ID or selected option is undefined.');
       dispatch(showError({ message: 'Event ID or selected option is undefined.' }));
     }
+  };
+
+  const handleConfirmVote = () => {
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleCancelVote = () => {
+    setIsConfirmModalOpen(false);
+  };
+
+  const handleNavigateBack = () => {
+    navigate(`/events`);
+  };
+
+  const handleUserInvited = () => {
+    dispatch(getEvent(eventId!)); // Refresh event details
   };
 
   if (isProcessing) {
@@ -51,30 +78,7 @@ const VotingEventInterface = () => {
   }
 
   const hasUserVoted = userId && event.options.some((option) => option.voters.includes(userId));
-
-  const getOptionColor = (optionText: string) => {
-    switch (optionText) {
-      case 'Yes, I approve':
-        return 'bg-green-500';
-      case 'No, I reject':
-        return 'bg-red-500';
-      case 'Abstain':
-        return 'bg-orange-500';
-      default:
-        return 'bg-gray-500';
-    }
-  };
-
-  const getOptionPercentage = (optionVotes: number, totalVotes: number) => {
-    return totalVotes ? (optionVotes / totalVotes) * 100 : 0;
-  };
-
-  const totalVotes = event.options.reduce((sum, option) => sum + option.votes, 0);
   const isAdmin = userId && event.createdBy === userId;
-
-  const handleNavigateBack = () => {
-    navigate(`/events`);
-  };
 
   return (
     <div className="event-container max-w-3xl mx-auto p-8 bg-white shadow-lg rounded-lg">
@@ -84,12 +88,11 @@ const VotingEventInterface = () => {
       <FormControl component="fieldset">
         <RadioGroup value={selectedOption} onChange={(e) => setSelectedOption(e.target.value)}>
           {event.options.map((option: OptionDB) => {
-            const optionPercentage = getOptionPercentage(option.votes, totalVotes);
             const isVotedOption = option.voters.includes(userId || '');
 
             return (
               <div key={option.id} className="p-1 mb-1 flex items-center justify-between">
-                {!hasUserVoted ? (
+                {!hasUserVoted && !isVotingPeriodOver ? (
                   <FormControlLabel
                     value={option.id}
                     control={<Radio color="primary" />}
@@ -101,45 +104,52 @@ const VotingEventInterface = () => {
                     {isVotedOption && <DoneIcon color="success" className="ml-4" />}
                   </>
                 )}
-                {event.resultVisibility && (
-                  <div className="flex-1 ml-4 relative h-6 rounded-full overflow-hidden">
-                    <div className={`absolute top-0 left-0 h-full ${getOptionColor(option.option)}`} style={{ width: `${optionPercentage}%` }}>
-                      {optionPercentage > 0 && (
-                        <span className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-white">
-                          {optionPercentage.toFixed(2)}%
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
             );
           })}
         </RadioGroup>
       </FormControl>
-      {!hasUserVoted && selectedOption && (
-        <div className="flex  mt-6">
-          <GreenButton onClick={handleVote}>Vote</GreenButton>
+      {!hasUserVoted && selectedOption && !isVotingPeriodOver && (
+        <div className="flex justify-center mt-6">
+          <GreenButton onClick={handleConfirmVote} className="ml-4">
+            Vote
+          </GreenButton>
         </div>
       )}
       {isAdmin && (
         <>
           <div className="flex space-x-4 mt-6">
             <ViewButton onClick={() => setIsViewUsersModalOpen(true)}>Users</ViewButton>
-            <AddButton onClick={() => setIsInviteModalOpen(true)}>+ Add Users</AddButton>
+            <DisabledButton onClick={() => setIsInviteModalOpen(true)} disabled={isVotingPeriodOver}>
+              + Add Users
+            </DisabledButton>
           </div>
-          <InviteUserModal eventId={event.id} isOpen={isInviteModalOpen} onClose={() => setIsInviteModalOpen(false)} />
+          <InviteUserModal
+            eventId={event.id}
+            isOpen={isInviteModalOpen}
+            onClose={() => setIsInviteModalOpen(false)}
+            onUserInvited={handleUserInvited}
+          />
           <ViewUsersModal
             eventId={event.id}
             userIds={event.invitedPersons}
             isOpen={isViewUsersModalOpen}
             onClose={() => setIsViewUsersModalOpen(false)}
+            canDelete={!isVotingPeriodOver}
+            voters={event.options.flatMap((option) => option.voters)}
           />
         </>
       )}
       <div className="flex items-center justify-between mt-6">
         <CancelButton onClick={handleNavigateBack}>Back</CancelButton>
       </div>
+
+      <ConfirmVoteModal
+        isOpen={isConfirmModalOpen}
+        onClose={handleCancelVote}
+        onConfirm={handleVote}
+        selectedOption={event.options.find((option) => option.id === selectedOption)?.option || ''}
+      />
     </div>
   );
 };
