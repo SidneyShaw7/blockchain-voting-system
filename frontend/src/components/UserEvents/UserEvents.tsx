@@ -4,7 +4,6 @@ import { getAllEvents } from '../../features/manageEvent';
 import { useNavigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './styles';
-import NewReleasesIcon from '@mui/icons-material/NewReleases';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import Tooltip from '@mui/material/Tooltip';
@@ -12,6 +11,7 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import { ViewButton, FilterButton, SortButton } from '../Buttons';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 const UserEvents = () => {
   const dispatch = useDispatch();
@@ -182,7 +182,7 @@ const UserEvents = () => {
                   </Tooltip>
                 ) : (
                   <Tooltip title="Awaiting vote">
-                    <NewReleasesIcon className="text-yellow-500" />
+                    <AccessTimeIcon className="text-yellow-500" />
                   </Tooltip>
                 )}
               </div>
@@ -194,7 +194,7 @@ const UserEvents = () => {
               </div>
               <div className="flex justify-between text-gray-500 mb-2">
                 <span>Type: {event.eventType}</span>
-                <span>Storage: {event.storageType}</span>
+                {isAdmin && <span>Storage: {event.storageType}</span>}
               </div>
               <p className="text-gray-500 mb-4">Votes: {event.options.reduce((sum, option) => sum + option.votes, 0)}</p>
               <div className="flex justify-end">

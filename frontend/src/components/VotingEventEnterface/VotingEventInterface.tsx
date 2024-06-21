@@ -66,7 +66,7 @@ const VotingEventInterface = () => {
   };
 
   const handleUserInvited = () => {
-    dispatch(getEvent(eventId!)); // Refresh event details
+    dispatch(getEvent(eventId!));
   };
 
   if (isProcessing) {
@@ -82,9 +82,10 @@ const VotingEventInterface = () => {
 
   return (
     <div className="event-container max-w-3xl mx-auto p-8 bg-white shadow-lg rounded-lg">
+      {isVotingPeriodOver && <div className="text-red-600 mb-3 text-center font-semibold">This voting is over</div>}
+      {!isVotingPeriodOver && hasUserVoted && <div className="text-green-600 mb-3 text-center font-semibold">You have already voted</div>}
       <h1 className="text-3xl font-bold text-center mb-4 text-blue-900">{event.title}</h1>
       <p className="text-lg mb-4 text-gray-700">{event.description}</p>
-      {hasUserVoted && <div className="text-green-600 mb-3 text-center font-semibold">You have already voted</div>}
       <FormControl component="fieldset">
         <RadioGroup value={selectedOption} onChange={(e) => setSelectedOption(e.target.value)}>
           {event.options.map((option: OptionDB) => {
@@ -92,12 +93,19 @@ const VotingEventInterface = () => {
 
             return (
               <div key={option.id} className="p-1 mb-1 flex items-center justify-between">
-                {!hasUserVoted && !isVotingPeriodOver ? (
-                  <FormControlLabel
-                    value={option.id}
-                    control={<Radio color="primary" />}
-                    label={<span className="text-lg">{option.name || option.option}</span>}
-                  />
+                {!isVotingPeriodOver && !hasUserVoted ? (
+                  <>
+                    <FormControlLabel
+                      value={option.id}
+                      control={<Radio color="primary" />}
+                      label={<span className="text-lg">{option.name || option.option}</span>}
+                    />
+                    {selectedOption === option.id && (
+                      <GreenButton onClick={handleConfirmVote} className="ml-4">
+                        Vote
+                      </GreenButton>
+                    )}
+                  </>
                 ) : (
                   <>
                     <div className="text-lg font-medium flex-1">{option.name || option.option}</div>
@@ -109,13 +117,6 @@ const VotingEventInterface = () => {
           })}
         </RadioGroup>
       </FormControl>
-      {!hasUserVoted && selectedOption && !isVotingPeriodOver && (
-        <div className="flex justify-center mt-6">
-          <GreenButton onClick={handleConfirmVote} className="ml-4">
-            Vote
-          </GreenButton>
-        </div>
-      )}
       {isAdmin && (
         <>
           <div className="flex space-x-4 mt-6">

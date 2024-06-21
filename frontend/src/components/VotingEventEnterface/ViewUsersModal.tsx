@@ -42,7 +42,6 @@ const ViewUsersModal = ({ eventId, userIds, isOpen, onClose, canDelete, voters }
       await dispatch(deleteUserFromEvent({ eventId, userId })).unwrap();
       console.log('Deleted user:', userId);
       alert('User removed from event successfully!');
-      // Update the userIds list to reflect the deletion
       const updatedUserIds = userIds.filter((id) => id !== userId);
       fetchUsers(updatedUserIds);
       setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));

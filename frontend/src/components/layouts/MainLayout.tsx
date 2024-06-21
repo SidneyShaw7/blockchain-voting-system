@@ -23,6 +23,16 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const isSidebarOpen = useSelector((state: RootState) => state.sidebar.isOpen);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isScreenSmall, setIsScreenSmall] = useState(window.innerWidth < 500);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsScreenSmall(window.innerWidth < 500);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     console.log('Auth state changed:', isAuthenticated);
@@ -52,7 +62,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white shadow p-1 flex justify-between items-center">
           <div className="text-left">
-            <StyledToggleButton onClick={() => dispatch(toggleSidebar())} className={isSidebarOpen ? 'active' : ''}>
+            <StyledToggleButton onClick={() => dispatch(toggleSidebar())} className={isSidebarOpen ? 'active' : ''} disabled={isScreenSmall}>
               {isSidebarOpen ? <CloseIcon /> : <MenuIcon />}
             </StyledToggleButton>
           </div>

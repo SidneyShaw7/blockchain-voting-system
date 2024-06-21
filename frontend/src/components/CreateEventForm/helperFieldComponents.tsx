@@ -2,6 +2,7 @@ import { useFormContext, Controller } from 'react-hook-form';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { SelectFieldProps, BaseFieldProps, OptionFieldProps } from '../../types';
+import { DeleteButton } from '../Buttons';
 
 export const InputField = ({ label, name, inputType = 'input' }: BaseFieldProps & { inputType?: 'input' | 'textarea' }) => {
   const {
@@ -104,3 +105,18 @@ export const OptionField = ({ index, remove }: OptionFieldProps) => {
     </div>
   );
 };
+
+export const CandidateFields = ({ field, index, remove }: OptionFieldProps) => (
+  <div key={field.id} className="py-2">
+    <InputField label="Candidate Name" name={`options.${index}.name`} />
+    <InputField label="Candidate Bio" name={`options.${index}.bio`} inputType="textarea" />
+    <DeleteButton onClick={() => remove(index)}>Remove Candidate</DeleteButton>
+  </div>
+);
+
+export const OptionFields = ({ field, index, remove }: OptionFieldProps) => (
+  <div key={field.id}>
+    <InputField label="Option Description" name={`options.${index}.option`} />
+    <DeleteButton onClick={() => remove(index)}>Remove Option</DeleteButton>
+  </div>
+);

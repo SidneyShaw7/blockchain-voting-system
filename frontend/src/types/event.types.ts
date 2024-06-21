@@ -59,6 +59,7 @@ export interface SelectFieldProps extends BaseFieldProps {
 }
 
 export interface OptionFieldProps {
+  field: OptionDB;
   index: number;
   remove: (index: number) => void;
 }

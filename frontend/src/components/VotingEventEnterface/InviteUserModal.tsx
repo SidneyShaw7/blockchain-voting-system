@@ -16,20 +16,24 @@ const InviteUserModal = ({
   onClose: () => void;
   onUserInvited: () => void;
 }) => {
-  const [email, setEmail] = useState('');
+  const [emails, setEmails] = useState('');
   const dispatch = useDispatch();
 
   const handleInvite = async () => {
-    if (email) {
+    const emailList = emails
+      .split(',')
+      .map((email) => email.trim())
+      .filter((email) => email !== '');
+    if (emailList.length > 0) {
       try {
-        await dispatch(inviteUser({ eventId, email })).unwrap();
-        setEmail('');
-        alert('User invited successfully!');
-        onUserInvited(); // Callback to refresh the event details
+        await Promise.all(emailList.map((email) => dispatch(inviteUser({ eventId, email })).unwrap()));
+        setEmails('');
+        alert('Users invited successfully!');
+        onUserInvited();
         onClose();
       } catch (error) {
-        console.error('Failed to invite user:', error);
-        alert('Failed to invite user.');
+        console.error('Failed to invite users:', error);
+        alert('Failed to invite users.');
       }
     }
   };
@@ -39,10 +43,17 @@ const InviteUserModal = ({
       <Box sx={modalStyle}>
         <div className="flex justify-center items-center mb-3">
           <Typography variant="h6" component="h2">
-            Invite User
+            Invite Users
           </Typography>
         </div>
-        <TextField label="User Email" value={email} onChange={(e) => setEmail(e.target.value)} variant="outlined" fullWidth margin="normal" />
+        <TextField
+          placeholder="User Emails (comma separated)"
+          value={emails}
+          onChange={(e) => setEmails(e.target.value)}
+          variant="outlined"
+          fullWidth
+          margin="normal"
+        />
         <div className="flex justify-between mt-3">
           <CancelButton onClick={onClose}>Back</CancelButton>
           <AddButton onClick={handleInvite}>+ Invite</AddButton>

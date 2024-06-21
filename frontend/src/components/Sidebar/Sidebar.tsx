@@ -6,6 +6,7 @@ import EventIcon from '@mui/icons-material/Event';
 import CreateIcon from '@mui/icons-material/Create';
 import InfoIcon from '@mui/icons-material/Info';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
+import Tooltip from '@mui/material/Tooltip';
 import { StyledIconButton } from './styledComponents';
 
 const Sidebar = () => {
@@ -14,7 +15,7 @@ const Sidebar = () => {
 
   const navItems = [
     { path: '/home', label: 'Home', Icon: HomeIcon },
-    { path: '/events', label: 'Events', Icon: EventIcon },
+    { path: '/events', label: 'Ballots', Icon: EventIcon },
     { path: '/event/create', label: 'Create', Icon: CreateIcon },
     { path: '/about', label: 'About', Icon: InfoIcon },
     { path: '/contact', label: 'Contact', Icon: ContactMailIcon },
@@ -32,12 +33,14 @@ const Sidebar = () => {
       <div>
         <ul className="list-none p-1">
           {navItems.map(({ path, label, Icon }) => (
-            <li key={path} className=" flex items-center">
-              <NavLink to={path} className={({ isActive }) => (isActive ? 'text-[#ff6747]' : 'text-[#00478F]')}>
-                <StyledIconButton className={isCurrentPage(path) ? 'active' : ''}>
-                  <Icon />
-                </StyledIconButton>
-              </NavLink>
+            <li key={path} className="flex items-center">
+              <Tooltip title={label} placement="right">
+                <NavLink to={path} className={({ isActive }) => (isActive ? 'text-[#ff6747]' : 'text-[#00478F]')}>
+                  <StyledIconButton className={isCurrentPage(path) ? 'active' : ''}>
+                    <Icon />
+                  </StyledIconButton>
+                </NavLink>
+              </Tooltip>
               {isOpen && (
                 <NavLink
                   to={path}
