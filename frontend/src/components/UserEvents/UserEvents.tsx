@@ -12,6 +12,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import { ViewButton, FilterButton, SortButton } from '../Buttons';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import LockClockIcon from '@mui/icons-material/LockClock';
 
 const UserEvents = () => {
   const dispatch = useDispatch();
@@ -164,6 +165,8 @@ const UserEvents = () => {
         {filteredEvents.map((event) => {
           const hasUserVoted = userId && event.options.some((option) => option.voters.includes(userId));
           const isAdmin = event.createdBy === userId;
+          const now = new Date();
+          const isVotingPeriodOver = new Date(event.endDate) < now;
 
           return (
             <li
@@ -179,6 +182,10 @@ const UserEvents = () => {
                 {hasUserVoted ? (
                   <Tooltip title="Voted">
                     <TaskAltIcon className="text-green-500" />
+                  </Tooltip>
+                ) : isVotingPeriodOver ? (
+                  <Tooltip title="Voting period over">
+                    <LockClockIcon className="text-black-500" />
                   </Tooltip>
                 ) : (
                   <Tooltip title="Awaiting vote">

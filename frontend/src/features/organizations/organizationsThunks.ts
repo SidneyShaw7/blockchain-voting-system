@@ -49,3 +49,25 @@ export const deleteOrganization = createAsyncThunk<void, string, { rejectValue: 
     }
   }
 );
+
+export const inviteUserToOrganization = createAsyncThunk<void, { organizationId: string; email: string }, { rejectValue: string }>(
+  'organizations/inviteUser',
+  async ({ organizationId, email }, { rejectWithValue }) => {
+    try {
+      await organizationService.inviteUserToOrganization(organizationId, email);
+    } catch (error) {
+      return rejectWithValue(processError(error));
+    }
+  }
+);
+
+export const removeUserFromOrganization = createAsyncThunk<void, { organizationId: string; userId: string }, { rejectValue: string }>(
+  'organizations/removeUser',
+  async ({ organizationId, userId }, { rejectWithValue }) => {
+    try {
+      await organizationService.removeUserFromOrganization(organizationId, userId);
+    } catch (error) {
+      return rejectWithValue(processError(error));
+    }
+  }
+);

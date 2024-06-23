@@ -5,10 +5,13 @@ import { getOrganizations, updateOrganization, resetOrganizationState, addOrgani
 import { InputField, FileInputField } from '../helpers/helperFieldComponents';
 import { OrganizationResponse } from '../../types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { OrganizationSchema, OrganizationFormValues } from './OrganizationSchema';
+import { OrganizationSchema } from './OrganizationSchema';
 import { error as showError, success as showSuccess } from '../../features/alert';
+import { OrganizationFormValues } from './OrganizationSchema';
 import { Modal } from '../common';
-import { AddButton, EditButton, CancelButton, DeleteButton } from '../Buttons';
+import { AddButton, EditButton, CancelButton, DeleteButton, ViewButton } from '../Buttons';
+import InviteUserModal from './InviteUserModal';
+import ViewUsersModal from './ViewUsersModal';
 
 const OrganizationsPage = () => {
   const dispatch = useDispatch();
@@ -19,6 +22,8 @@ const OrganizationsPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [selectedOrganization, setSelectedOrganization] = useState<OrganizationResponse | null>(null);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [isViewUsersModalOpen, setIsViewUsersModalOpen] = useState(false);
 
   const methods = useForm<OrganizationFormValues>({
     resolver: zodResolver(OrganizationSchema),
@@ -128,13 +133,31 @@ const OrganizationsPage = () => {
                   >
                     Edit
                   </EditButton>
+                  <ViewButton
+                    onClick={() => {
+                      setSelectedOrganization(org);
+                      setIsViewUsersModalOpen(true);
+                    }}
+                  >
+                    View Users
+                  </ViewButton>
+                  <ViewButton onClick={() => setIsInviteModalOpen(true)}>Invite Users</ViewButton>
                 </div>
               ))}
               <AddButton
                 className="mt-3"
                 onClick={() => {
                   setIsAdding(true);
-                  methods.reset({ name: '', location: '', description: '', logo: undefined, role: '', billingInfo: '', billingEmail: '' });
+                  methods.reset({
+                    name: '',
+                    location: '',
+                    description: '',
+                    logo: undefined,
+                    role: '',
+                    billingInfo: '',
+                    billingEmail: '',
+                    userIds: [],
+                  });
                 }}
               >
                 + Add Organization
@@ -181,6 +204,19 @@ const OrganizationsPage = () => {
           </form>
         </FormProvider>
       )}
+      <InviteUserModal
+        organizationId={selectedOrganization?.id ?? ''}
+        isOpen={isInviteModalOpen}
+        onClose={() => setIsInviteModalOpen(false)}
+        onUserInvited={() => dispatch(getOrganizations())}
+      />
+      <ViewUsersModal
+        organizationId={selectedOrganization?.id ?? ''}
+        userIds={selectedOrganization?.userIds ?? []}
+        isOpen={isViewUsersModalOpen}
+        onClose={() => setIsViewUsersModalOpen(false)}
+        canDelete={!isEditing && !isAdding}
+      />
       <Modal
         title="Delete Organization"
         message={`Are you sure you want to delete the organization "${organizationToDelete?.name}"?`}

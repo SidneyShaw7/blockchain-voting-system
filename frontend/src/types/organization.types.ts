@@ -4,11 +4,12 @@ export interface OrganizationFormValues {
   description?: string;
   logo?: File;
   role: string;
+  billingInfo: string;
+  billingEmail: string;
 }
 
 export interface OrganizationResponse extends OrganizationFormValues {
   id: string;
   userCount: number;
-  billingInfo: string;
-  billingEmail: string;
+  userIds: string[];
 }
