@@ -71,7 +71,7 @@ const CreateEventForm = () => {
   }, [eventType, replace]);
 
   const onSubmit = (data: VotingEventFormValues) => {
-    console.log('Form data before submit:', data); 
+    console.log('Form data before submit:', data);
     dispatch(createEvent(data));
     setShouldNavigate(true);
   };

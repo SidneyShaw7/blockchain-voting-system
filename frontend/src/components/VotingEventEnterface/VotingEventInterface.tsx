@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getEvent, voteOnEvent } from '../../features/manageEvent';
-import { OptionDB } from '../../types';
+import { getEvent, voteOnEvent, deleteUserFromEvent } from '../../features/manageEvent';
+import { OptionDB, SimpleUser, VotingEventFormValuesDB } from '../../types';
 import { useDispatch, RootState, useSelector } from '../../store';
 import { error as showError } from '../../features/alert/alertSlice';
 import DoneIcon from '@mui/icons-material/Done';
@@ -10,6 +10,7 @@ import InviteUserModal from './InviteUserModal';
 import ViewUsersModal from './ViewUsersModal';
 import ConfirmVoteModal from './ConfirmVoteModal';
 import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
+import userService from '../../services/userService';
 
 const VotingEventInterface = () => {
   const navigate = useNavigate();
@@ -22,12 +23,30 @@ const VotingEventInterface = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isVotingPeriodOver, setIsVotingPeriodOver] = useState(false);
+  const [users, setUsers] = useState<SimpleUser[]>([]);
+
+  const fetchUsers = useCallback(async (userIds: string[]) => {
+    try {
+      const response = await userService.getUsers(userIds);
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Failed to fetch users:', error);
+    }
+  }, []);
 
   useEffect(() => {
     if (eventId) {
-      dispatch(getEvent(eventId));
+      const fetchEventAndUsers = async () => {
+        const eventAction = await dispatch(getEvent(eventId));
+        const eventDetails = eventAction.payload as VotingEventFormValuesDB;
+        if (eventDetails) {
+          const allUserIds = [eventDetails.createdBy, ...eventDetails.invitedPersons];
+          fetchUsers(allUserIds);
+        }
+      };
+      fetchEventAndUsers();
     }
-  }, [dispatch, eventId]);
+  }, [dispatch, eventId, fetchUsers]);
 
   useEffect(() => {
     if (event) {
@@ -66,7 +85,28 @@ const VotingEventInterface = () => {
   };
 
   const handleUserInvited = () => {
-    dispatch(getEvent(eventId!));
+    if (eventId) {
+      dispatch(getEvent(eventId)).then((action) => {
+        const eventDetails = action.payload as VotingEventFormValuesDB;
+        if (eventDetails) {
+          const allUserIds = [eventDetails.createdBy, ...eventDetails.invitedPersons];
+          fetchUsers(allUserIds);
+        }
+      });
+    }
+  };
+
+  const handleRemoveUser = async (userIdToRemove: string) => {
+    if (eventId) {
+      try {
+        await dispatch(deleteUserFromEvent({ eventId, userId: userIdToRemove })).unwrap();
+        const updatedUserIds = users.filter((user) => user.id !== userIdToRemove).map((user) => user.id);
+        fetchUsers(updatedUserIds);
+      } catch (error) {
+        console.error('Failed to remove user from event:', error);
+        dispatch(showError({ message: 'Failed to remove user from event.' }));
+      }
+    }
   };
 
   if (isProcessing) {
@@ -98,7 +138,12 @@ const VotingEventInterface = () => {
                     <FormControlLabel
                       value={option.id}
                       control={<Radio color="primary" />}
-                      label={<span className="text-lg">{option.name || option.option}</span>}
+                      label={
+                        <div>
+                          <span className="text-lg">{option.name || option.option}</span>
+                          {option.bio && <div className="text-sm text-gray-600">{option.bio}</div>}
+                        </div>
+                      }
                     />
                     {selectedOption === option.id && (
                       <GreenButton onClick={handleConfirmVote} className="ml-4">
@@ -108,7 +153,10 @@ const VotingEventInterface = () => {
                   </>
                 ) : (
                   <>
-                    <div className="text-lg font-medium flex-1">{option.name || option.option}</div>
+                    <div className="text-lg font-medium flex-1">
+                      {option.name || option.option}
+                      {option.bio && <div className="text-sm text-gray-600">{option.bio}</div>}
+                    </div>
                     {isVotedOption && <DoneIcon color="success" className="ml-4" />}
                   </>
                 )}
@@ -133,11 +181,12 @@ const VotingEventInterface = () => {
           />
           <ViewUsersModal
             eventId={event.id}
-            userIds={event.invitedPersons}
+            users={users}
             isOpen={isViewUsersModalOpen}
             onClose={() => setIsViewUsersModalOpen(false)}
             canDelete={!isVotingPeriodOver}
             voters={event.options.flatMap((option) => option.voters)}
+            onRemoveUser={handleRemoveUser}
           />
         </>
       )}
@@ -149,7 +198,11 @@ const VotingEventInterface = () => {
         isOpen={isConfirmModalOpen}
         onClose={handleCancelVote}
         onConfirm={handleVote}
-        selectedOption={event.options.find((option) => option.id === selectedOption)?.option || ''}
+        selectedOption={
+          event.options.find((option) => option.id === selectedOption)?.name ||
+          event.options.find((option) => option.id === selectedOption)?.option ||
+          ''
+        }
       />
     </div>
   );

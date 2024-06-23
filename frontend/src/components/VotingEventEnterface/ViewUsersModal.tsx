@@ -1,82 +1,45 @@
-import { useEffect, useState, useCallback } from 'react';
-import { useDispatch } from '../../store';
-import { deleteUserFromEvent } from '../../features/manageEvent';
-import { Modal, Box, Typography } from '@mui/material';
-import userService from '../../services/userService';
+import { Modal, Box, Typography, List, ListItem } from '@mui/material';
 import { SimpleUser } from '../../types';
-import { DeleteButton, CancelButton } from '../../components/Buttons';
 import { modalStyle } from './modalStyle';
+import { CancelButton, DeleteButton } from '../../components/Buttons';
 
 interface ViewUsersModalProps {
   eventId: string;
-  userIds: string[];
+  users: SimpleUser[];
   isOpen: boolean;
   onClose: () => void;
   canDelete: boolean;
   voters: string[];
+  onRemoveUser: (userId: string) => void;
 }
 
-const ViewUsersModal = ({ eventId, userIds, isOpen, onClose, canDelete, voters }: ViewUsersModalProps) => {
-  const [users, setUsers] = useState<SimpleUser[]>([]);
-  const dispatch = useDispatch();
-
-  const fetchUsers = useCallback(async (ids: string[]) => {
-    try {
-      console.log('Fetching users with IDs:', ids);
-      const response = await userService.getUsers(ids);
-      console.log('Fetched users:', response.data);
-      setUsers(response.data);
-    } catch (error) {
-      console.error('Failed to fetch users:', error);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isOpen) {
-      fetchUsers(userIds);
-    }
-  }, [isOpen, userIds, fetchUsers]);
-
-  const handleDeleteUser = async (userId: string) => {
-    try {
-      await dispatch(deleteUserFromEvent({ eventId, userId })).unwrap();
-      console.log('Deleted user:', userId);
-      alert('User removed from event successfully!');
-      const updatedUserIds = userIds.filter((id) => id !== userId);
-      fetchUsers(updatedUserIds);
-      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
-    } catch (error) {
-      console.error('Failed to remove user from event:', error);
-      alert('Failed to remove user from event.');
-    }
-  };
-
-  useEffect(() => {
-    console.log('User IDs have changed:', userIds);
-  }, [userIds]);
-
+const ViewUsersModal = ({ users, isOpen, onClose, canDelete, voters, onRemoveUser }: ViewUsersModalProps) => {
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Box sx={modalStyle}>
-        <div className="flex justify-center items-center mb-4">
-          <Typography variant="h6" component="h2">
-            Manage Users
-          </Typography>
-        </div>
-        <ul>
+        <Typography variant="h6" component="h2" className="mb-4 flex justify-center">
+          Users
+        </Typography>
+        <List>
           {users.map((user) => (
-            <li key={user.id} className="flex justify-between items-center mb-2">
+            <ListItem key={user.id} className="flex justify-between items-center">
               <div>
-                <p>
+                <Typography>
                   {user.firstName} {user.lastName}
-                </p>
-                <p>{user.email}</p>
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  {user.email}
+                </Typography>
               </div>
-              {canDelete && !voters.includes(user.id) && <DeleteButton onClick={() => handleDeleteUser(user.id)}>Remove</DeleteButton>}
-            </li>
+              {canDelete && !voters.includes(user.id) && (
+                <Box sx={{ ml: 'auto' }}>
+                  <DeleteButton onClick={() => onRemoveUser(user.id)}>Remove</DeleteButton>
+                </Box>
+              )}
+            </ListItem>
           ))}
-        </ul>
-        <div className="flex justify-start mt-4">
+        </List>
+        <div className="flex justify-between mt-3">
           <CancelButton onClick={onClose}>Back</CancelButton>
         </div>
       </Box>
