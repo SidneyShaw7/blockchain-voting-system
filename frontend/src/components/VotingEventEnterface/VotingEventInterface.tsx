@@ -5,8 +5,7 @@ import { OptionDB, SimpleUser, VotingEventFormValuesDB } from '../../types';
 import { useDispatch, RootState, useSelector } from '../../store';
 import { error as showError } from '../../features/alert/alertSlice';
 import DoneIcon from '@mui/icons-material/Done';
-import { CancelButton, ViewButton, GreenButton, DisabledButton } from '../Buttons';
-import InviteUserModal from './InviteUserModal';
+import { CancelButton, ViewButton, GreenButton } from '../Buttons';
 import ViewUsersModal from './ViewUsersModal';
 import ConfirmVoteModal from './ConfirmVoteModal';
 import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
@@ -18,7 +17,6 @@ const VotingEventInterface = () => {
   const dispatch = useDispatch();
   const { data: event, isProcessing } = useSelector((state: RootState) => state.votingEvent);
   const userId = useSelector((state: RootState) => state.login.data?.user.id);
-  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isViewUsersModalOpen, setIsViewUsersModalOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -41,6 +39,9 @@ const VotingEventInterface = () => {
         const eventDetails = eventAction.payload as VotingEventFormValuesDB;
         if (eventDetails) {
           const allUserIds = [eventDetails.createdBy, ...eventDetails.invitedPersons];
+          console.log(allUserIds);
+          console.log(eventAction);
+          console.log(eventDetails.createdBy);
           fetchUsers(allUserIds);
         }
       };
@@ -165,35 +166,27 @@ const VotingEventInterface = () => {
           })}
         </RadioGroup>
       </FormControl>
-      {isAdmin && (
-        <>
-          <div className="flex space-x-4 mt-6">
-            <ViewButton onClick={() => setIsViewUsersModalOpen(true)}>Users</ViewButton>
-            <DisabledButton onClick={() => setIsInviteModalOpen(true)} disabled={isVotingPeriodOver}>
-              + Add Users
-            </DisabledButton>
-          </div>
-          <InviteUserModal
-            eventId={event.id}
-            isOpen={isInviteModalOpen}
-            onClose={() => setIsInviteModalOpen(false)}
-            onUserInvited={handleUserInvited}
-          />
-          <ViewUsersModal
-            eventId={event.id}
-            users={users}
-            isOpen={isViewUsersModalOpen}
-            onClose={() => setIsViewUsersModalOpen(false)}
-            canDelete={!isVotingPeriodOver}
-            voters={event.options.flatMap((option) => option.voters)}
-            onRemoveUser={handleRemoveUser}
-          />
-        </>
-      )}
-      <div className="flex items-center justify-between mt-6">
+      <div className="flex items-center  mt-6">
         <CancelButton onClick={handleNavigateBack}>Back</CancelButton>
+        {isAdmin && (
+          <>
+            <div className="flex space-x-4">
+              <ViewButton onClick={() => setIsViewUsersModalOpen(true)}>Users</ViewButton>
+            </div>
+            <ViewUsersModal
+              eventId={event.id}
+              users={users}
+              isOpen={isViewUsersModalOpen}
+              onClose={() => setIsViewUsersModalOpen(false)}
+              canDelete={!isVotingPeriodOver}
+              voters={event.options.flatMap((option) => option.voters)}
+              onRemoveUser={handleRemoveUser}
+              onUserInvited={handleUserInvited}
+              adminId={event.createdBy}
+            />
+          </>
+        )}
       </div>
-
       <ConfirmVoteModal
         isOpen={isConfirmModalOpen}
         onClose={handleCancelVote}

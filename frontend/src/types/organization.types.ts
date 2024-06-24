@@ -11,5 +11,6 @@ export interface OrganizationFormValues {
 export interface OrganizationResponse extends OrganizationFormValues {
   id: string;
   userCount: number;
-  userIds: string[];
+  createdBy: string;
+  invitedPersons: string[];
 }

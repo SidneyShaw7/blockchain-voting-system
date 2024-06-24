@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
 import { RootState, useDispatch, useSelector } from '../../store';
 import { getOrganizations, updateOrganization, resetOrganizationState, addOrganization, deleteOrganization } from '../../features/organizations';
 import { InputField, FileInputField } from '../helpers/helperFieldComponents';
-import { OrganizationResponse } from '../../types';
+import { OrganizationResponse, SimpleUser } from '../../types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { OrganizationSchema } from './OrganizationSchema';
 import { error as showError, success as showSuccess } from '../../features/alert';
 import { OrganizationFormValues } from './OrganizationSchema';
 import { Modal } from '../common';
 import { AddButton, EditButton, CancelButton, DeleteButton, ViewButton } from '../Buttons';
-import InviteUserModal from './InviteUserModal';
+import userService from '../../services/userService';
 import ViewUsersModal from './ViewUsersModal';
 
 const OrganizationsPage = () => {
@@ -18,12 +18,11 @@ const OrganizationsPage = () => {
   const { data: organizations, isError, isSuccess, errorMessage } = useSelector((state: RootState) => state.organizations);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [organizationToDelete, setOrganizationToDelete] = useState<OrganizationResponse | null>(null);
-
   const [isEditing, setIsEditing] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [selectedOrganization, setSelectedOrganization] = useState<OrganizationResponse | null>(null);
-  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isViewUsersModalOpen, setIsViewUsersModalOpen] = useState(false);
+  const [users, setUsers] = useState<SimpleUser[]>([]);
 
   const methods = useForm<OrganizationFormValues>({
     resolver: zodResolver(OrganizationSchema),
@@ -38,9 +37,31 @@ const OrganizationsPage = () => {
     },
   });
 
+  const fetchUsers = useCallback(async (userIds: string[]) => {
+    try {
+      console.log('Fetching users with IDs:', userIds);
+      const response = await userService.getUsers(userIds);
+      console.log('Fetched users:', response.data);
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Failed to fetch users:', error);
+    }
+  }, []);
+
   useEffect(() => {
     dispatch(getOrganizations());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (selectedOrganization) {
+      const allUserIds = [selectedOrganization.createdBy, ...(selectedOrganization.invitedPersons || [])];
+      console.log('Fetching users for organization:', selectedOrganization, 'with user IDs:', allUserIds);
+      console.log(allUserIds);
+      console.log(selectedOrganization.invitedPersons);
+      console.log(selectedOrganization.createdBy);
+      fetchUsers(allUserIds);
+    }
+  }, [selectedOrganization, fetchUsers]);
 
   useEffect(() => {
     if (isSuccess && isAdding) {
@@ -75,6 +96,11 @@ const OrganizationsPage = () => {
       dispatch(deleteOrganization(organizationToDelete.id));
       setIsModalOpen(false);
     }
+  };
+
+  const handleViewUsers = (organization: OrganizationResponse) => {
+    setSelectedOrganization(organization);
+    setIsViewUsersModalOpen(true);
   };
 
   return (
@@ -133,15 +159,10 @@ const OrganizationsPage = () => {
                   >
                     Edit
                   </EditButton>
-                  <ViewButton
-                    onClick={() => {
-                      setSelectedOrganization(org);
-                      setIsViewUsersModalOpen(true);
-                    }}
-                  >
-                    View Users
+                  {'  '}
+                  <ViewButton onClick={() => handleViewUsers(org)} className="mt-3">
+                    Users
                   </ViewButton>
-                  <ViewButton onClick={() => setIsInviteModalOpen(true)}>Invite Users</ViewButton>
                 </div>
               ))}
               <AddButton
@@ -156,7 +177,6 @@ const OrganizationsPage = () => {
                     role: '',
                     billingInfo: '',
                     billingEmail: '',
-                    userIds: [],
                   });
                 }}
               >
@@ -204,18 +224,14 @@ const OrganizationsPage = () => {
           </form>
         </FormProvider>
       )}
-      <InviteUserModal
-        organizationId={selectedOrganization?.id ?? ''}
-        isOpen={isInviteModalOpen}
-        onClose={() => setIsInviteModalOpen(false)}
-        onUserInvited={() => dispatch(getOrganizations())}
-      />
       <ViewUsersModal
         organizationId={selectedOrganization?.id ?? ''}
-        userIds={selectedOrganization?.userIds ?? []}
+        users={users}
         isOpen={isViewUsersModalOpen}
         onClose={() => setIsViewUsersModalOpen(false)}
-        canDelete={!isEditing && !isAdding}
+        canDelete={true}
+        adminId={selectedOrganization?.createdBy ?? ''}
+        onUserInvited={() => fetchUsers([selectedOrganization!.createdBy, ...(selectedOrganization!.invitedPersons || [])])}
       />
       <Modal
         title="Delete Organization"
