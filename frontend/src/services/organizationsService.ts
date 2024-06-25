@@ -11,13 +11,13 @@ const organizationsService = {
       }
     });
 
-    return api.post<OrganizationResponse>('/api/organizations/add', formDataObj, {
+    return api.post<OrganizationResponse>('/api/organizations/create', formDataObj, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
   },
-  updateOrganization: (id: string, formData: OrganizationFormValues) => {
+  updateOrganization: (organizationId: string, formData: OrganizationFormValues) => {
     const formDataObj = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
@@ -25,15 +25,15 @@ const organizationsService = {
       }
     });
 
-    return api.put<OrganizationResponse>(`/api/organizations/${id}`, formDataObj, {
+    return api.put<OrganizationResponse>(`/api/organizations/${organizationId}`, formDataObj, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
   },
 
-  deleteOrganization: (id: string) => {
-    return api.delete<void>(`/api/organizations/${id}`);
+  deleteOrganization: (organizationId: string) => {
+    return api.delete<void>(`/api/organizations/${organizationId}`);
   },
 
   inviteUserToOrganization: (organizationId: string, email: string) => {
@@ -42,6 +42,10 @@ const organizationsService = {
 
   removeUserFromOrganization: (organizationId: string, userId: string) => {
     return api.delete<void>(`/api/organizations/${organizationId}/users/${userId}`);
+  },
+
+  leaveOrganization: (organizationId: string) => {
+    return api.post<void>(`/api/organizations/${organizationId}/leave`);
   },
 };
 

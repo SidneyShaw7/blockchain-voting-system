@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useDispatch } from '../../store';
 import { inviteUserToOrganization, removeUserFromOrganization } from '../../features/organizations';
-import { Modal, Box, Typography, List, ListItem, TextField, IconButton } from '@mui/material';
+import { Modal, Box, Typography, List, ListItem, TextField } from '@mui/material';
 import { SimpleUser } from '../../types';
-import { CancelButton, AddButton } from '../Buttons';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { CancelButton, AddButton, DeleteButton } from '../Buttons';
 import { modalStyle } from './modalStyle';
+import { error as showError, success as showSuccess } from '../../features/alert/alertSlice';
 
 interface ViewUsersModalProps {
   organizationId: string;
@@ -29,14 +29,17 @@ const ViewUsersModal = ({ organizationId, users, isOpen, onClose, canDelete, adm
       .filter((email) => email !== '');
     if (emailList.length > 0) {
       try {
+        console.log(organizationId);
         await Promise.all(emailList.map((email) => dispatch(inviteUserToOrganization({ organizationId, email })).unwrap()));
         setEmails('');
-        alert('Users invited successfully!');
+        // alert('Users invited successfully!');
+        dispatch(showSuccess({ message: 'Users invited successfully!' }));
         onUserInvited();
         setIsAddingUsers(false);
       } catch (error) {
         console.error('Failed to invite users:', error);
-        alert('Failed to invite users.');
+        // alert('Failed to invite users.');
+        dispatch(showError({ message: 'Failed to invite users.' }));
       }
     }
   };
@@ -89,15 +92,11 @@ const ViewUsersModal = ({ organizationId, users, isOpen, onClose, canDelete, adm
                   </div>
                   <div className="ml-auto">
                     {user.id === adminId ? (
-                      <Typography className="ml-2" variant="body2" color="textSecondary">
+                      <Typography mr={1} variant="body2" color="textSecondary">
                         Admin
                       </Typography>
                     ) : (
-                      canDelete && (
-                        <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteUser(user.id)}>
-                          <DeleteIcon />
-                        </IconButton>
-                      )
+                      canDelete && <DeleteButton onClick={() => handleDeleteUser(user.id)}>Remove</DeleteButton>
                     )}
                   </div>
                 </ListItem>

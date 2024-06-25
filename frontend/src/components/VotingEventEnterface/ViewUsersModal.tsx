@@ -3,8 +3,9 @@ import { useDispatch } from '../../store';
 import { inviteUser } from '../../features/manageEvent';
 import { Modal, Box, Typography, List, ListItem, TextField } from '@mui/material';
 import { SimpleUser } from '../../types';
-import { CancelButton, AddButton, DeleteButton } from '../Buttons';
+import { CancelButton, AddButton, DeleteButton, DisabledButton } from '../Buttons';
 import { modalStyle } from './modalStyle';
+import { error as showError, success as showSuccess } from '../../features/alert/alertSlice';
 
 interface ViewUsersModalProps {
   eventId: string;
@@ -15,10 +16,22 @@ interface ViewUsersModalProps {
   voters: string[];
   onRemoveUser: (userId: string) => void;
   onUserInvited: () => void;
-  adminId: string; // Add adminId prop
+  adminId: string;
+  isVotingPeriodOver: boolean;
 }
 
-const ViewUsersModal = ({ eventId, users, isOpen, onClose, canDelete, voters, onRemoveUser, onUserInvited, adminId }: ViewUsersModalProps) => {
+const ViewUsersModal = ({
+  eventId,
+  users,
+  isOpen,
+  onClose,
+  canDelete,
+  voters,
+  onRemoveUser,
+  onUserInvited,
+  adminId,
+  isVotingPeriodOver,
+}: ViewUsersModalProps) => {
   const [isAddingUsers, setIsAddingUsers] = useState(false);
   const [emails, setEmails] = useState('');
   const dispatch = useDispatch();
@@ -32,12 +45,14 @@ const ViewUsersModal = ({ eventId, users, isOpen, onClose, canDelete, voters, on
       try {
         await Promise.all(emailList.map((email) => dispatch(inviteUser({ eventId, email })).unwrap()));
         setEmails('');
-        alert('Users invited successfully!');
+        // alert('Users invited successfully!');
+        dispatch(showSuccess({ message: 'Users invited successfully!' }));
         onUserInvited();
         setIsAddingUsers(false);
       } catch (error) {
         console.error('Failed to invite users:', error);
-        alert('Failed to invite users.');
+        dispatch(showError({ message: 'Failed to invite users.' }));
+        // alert('Failed to invite users.');
       }
     }
   };
@@ -81,7 +96,7 @@ const ViewUsersModal = ({ eventId, users, isOpen, onClose, canDelete, voters, on
                   </div>
                   <div className="ml-auto">
                     {user.id === adminId ? (
-                      <Typography className="ml-2" variant="body2" color="textSecondary">
+                      <Typography mr={1} variant="body2" color="textSecondary">
                         Admin
                       </Typography>
                     ) : (
@@ -93,7 +108,9 @@ const ViewUsersModal = ({ eventId, users, isOpen, onClose, canDelete, voters, on
             </List>
             <div className="flex justify-between mt-3">
               <CancelButton onClick={onClose}>Back</CancelButton>
-              <AddButton onClick={() => setIsAddingUsers(true)}>+ Add Users</AddButton>
+              <DisabledButton onClick={() => setIsAddingUsers(true)} disabled={isVotingPeriodOver}>
+                + Add Users
+              </DisabledButton>
             </div>
           </>
         )}

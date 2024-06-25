@@ -71,3 +71,14 @@ export const removeUserFromOrganization = createAsyncThunk<void, { organizationI
     }
   }
 );
+
+export const leaveOrganization = createAsyncThunk<void, string, { rejectValue: string }>(
+  'organizations/leave',
+  async (organizationId, { rejectWithValue }) => {
+    try {
+      await organizationService.leaveOrganization(organizationId);
+    } catch (error) {
+      return rejectWithValue(processError(error));
+    }
+  }
+);

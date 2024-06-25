@@ -39,9 +39,6 @@ const VotingEventInterface = () => {
         const eventDetails = eventAction.payload as VotingEventFormValuesDB;
         if (eventDetails) {
           const allUserIds = [eventDetails.createdBy, ...eventDetails.invitedPersons];
-          console.log(allUserIds);
-          console.log(eventAction);
-          console.log(eventDetails.createdBy);
           fetchUsers(allUserIds);
         }
       };
@@ -183,6 +180,7 @@ const VotingEventInterface = () => {
               onRemoveUser={handleRemoveUser}
               onUserInvited={handleUserInvited}
               adminId={event.createdBy}
+              isVotingPeriodOver={isVotingPeriodOver}
             />
           </>
         )}
