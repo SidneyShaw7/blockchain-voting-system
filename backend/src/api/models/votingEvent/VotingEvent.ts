@@ -1,12 +1,11 @@
 import mongoose from 'mongoose';
 // import mongooseLeanVirtuals from 'mongoose-lean-virtuals';
-import { Option, StorageType, EventType } from '../../types/event.types';
+import { StorageType, EventType } from '../../types/event.types';
 import logger from '../../middleware/logger';
 import { capitalize } from '../../utils';
 import { addIdVirtual } from '../../utils';
 
-// mngoose schema for an option in the voting event
-const optionSchema = new mongoose.Schema<Option>({
+const optionSchema = new mongoose.Schema({
   name: {
     type: String,
     set: capitalize,
@@ -17,7 +16,9 @@ const optionSchema = new mongoose.Schema<Option>({
   },
   option: {
     type: String,
-    required: true,
+    required: function () {
+      return this.parent().eventType === 'General';
+    },
     trim: true,
   },
   votes: {
@@ -32,16 +33,8 @@ const optionSchema = new mongoose.Schema<Option>({
   ],
 });
 
-// virtual 'id' field to optionSchema for client side easy using
-// optionSchema.virtual('id').get(function () {
-//   return this.id.toHexString();
-// });
-// optionSchema.set('toJSON', { virtuals: true });
-// optionSchema.set('toObject', { virtuals: true });
-
 addIdVirtual(optionSchema);
 
-// mongoose schema for a voting event
 const votingEventSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -71,11 +64,6 @@ const votingEventSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  // voterEligibility: {
-  //   type: String,
-  //   required: true,
-  //   trim: true,
-  // },
   votingMethod: {
     type: String,
     required: true,
@@ -111,15 +99,6 @@ const votingEventSchema = new mongoose.Schema({
     },
   ],
 });
-
-//  virtual 'id' field to votingEventSchema for client side easy using
-// votingEventSchema.virtual('id').get(function () {
-//   return this._id.toHexString();
-// });
-// votingEventSchema.set('toJSON', { virtuals: true });
-// votingEventSchema.set('toObject', { virtuals: true });
-
-// votingEventSchema.plugin(mongooseLeanVirtuals); // installing plugin for just getting id instead of _id for my frontend; crazy insane
 
 addIdVirtual(votingEventSchema);
 

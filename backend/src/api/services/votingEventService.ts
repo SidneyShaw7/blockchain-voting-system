@@ -78,7 +78,7 @@ export const getEventById = async (eventId: string): Promise<LeanVotingEvent> =>
   if (!eventId) {
     throw new ErrorWithStatus('Event ID is required', 400, 'EVENT_ID_REQUIRED');
   }
-  const event = await VotingEvent.findById(eventId).lean<LeanVotingEvent>({ virtuals: true }); // to eunsure I get events and options ids
+  const event = await VotingEvent.findById(eventId).lean<LeanVotingEvent>({ virtuals: true });
   if (!event) {
     throw new ErrorWithStatus('Event not found', 404, 'EVENT_NOT_FOUND');
   }
@@ -86,8 +86,10 @@ export const getEventById = async (eventId: string): Promise<LeanVotingEvent> =>
   return event;
 };
 
-export const getAllEvents = async (): Promise<LeanVotingEvent[]> => {
-  return VotingEvent.find().lean<LeanVotingEvent[]>({ virtuals: true });
+export const getAllEvents = async (userId: string): Promise<LeanVotingEvent[]> => {
+  return VotingEvent.find({
+    $or: [{ createdBy: userId }, { invitedPersons: userId }],
+  }).lean<LeanVotingEvent[]>({ virtuals: true });
 };
 
 export const deleteEventById = async (eventId: string): Promise<LeanVotingEvent | null> => {
@@ -131,4 +133,39 @@ export const voteOnEvent = async (eventId: string, optionId: string, userId: str
   } finally {
     session.endSession();
   }
+};
+
+export const inviteUserToEvent = async (eventId: string, email: string): Promise<void> => {
+  const user = await UserModel.findOne({ email });
+  if (!user) {
+    throw new ErrorWithStatus('User not found', 404, 'USER_NOT_FOUND');
+  }
+
+  const event = await VotingEvent.findById(eventId);
+  if (!event) {
+    throw new ErrorWithStatus('Event not found', 404, 'EVENT_NOT_FOUND');
+  }
+
+  if (event.invitedPersons.includes(user._id)) {
+    throw new ErrorWithStatus('User already invited', 400, 'USER_ALREADY_INVITED');
+  }
+
+  event.invitedPersons.push(user._id);
+  await event.save();
+};
+
+export const removeUserFromEvent = async (eventId: string, userId: string): Promise<void> => {
+  const event = await VotingEvent.findById(eventId);
+  if (!event) {
+    throw new ErrorWithStatus('Event not found', 404, 'EVENT_NOT_FOUND');
+  }
+
+  const userObjectId = new mongoose.Types.ObjectId(userId);
+  const userIndex = event.invitedPersons.indexOf(userObjectId);
+  if (userIndex === -1) {
+    throw new ErrorWithStatus('User not found in event', 404, 'USER_NOT_FOUND_IN_EVENT');
+  }
+
+  event.invitedPersons.splice(userIndex, 1);
+  await event.save();
 };

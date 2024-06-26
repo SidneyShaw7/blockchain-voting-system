@@ -1,7 +1,8 @@
 import { UserModel } from '../models/user';
-import { UserProfileValues, UserResponse } from '../types';
+import { UserProfileValues, UserResponse, SimpleUser } from '../types';
 import bcrypt from 'bcryptjs';
 import { ErrorWithStatus } from '../utils';
+import { Types } from 'mongoose';
 
 export const updateUser = async (userId: string, formData: UserProfileValues): Promise<UserResponse> => {
   const { firstName, lastName, username, email, password, newPassword, avatar } = formData;
@@ -41,4 +42,29 @@ export const updateUser = async (userId: string, formData: UserProfileValues): P
   };
 
   return userResponse;
+};
+
+export const getUsers = async (userIds: string[]): Promise<SimpleUser[]> => {
+  try {
+    const validUserIds = userIds.map((id) => {
+      if (!Types.ObjectId.isValid(id)) {
+        throw new Error(`Invalid ObjectId: ${id}`);
+      }
+      return new Types.ObjectId(id);
+    });
+
+    const users = await UserModel.find({ _id: { $in: validUserIds } })
+      .select('firstName lastName email')
+      .lean<{ _id: Types.ObjectId; firstName: string; lastName: string; email: string }[]>();
+
+    return users.map((user) => ({
+      id: user._id.toHexString(),
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+    }));
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    throw new Error('Failed to fetch users');
+  }
 };

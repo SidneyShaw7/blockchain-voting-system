@@ -1,10 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
-import { getOrganizations, updateOrganization, addOrganization, deleteOrganization } from '../services';
+import {
+  getOrganizations,
+  updateOrganization,
+  addOrganization,
+  deleteOrganization,
+  addUserToOrganization,
+  removeUserFromOrganization,
+  leaveOrganization,
+} from '../services';
 import { handleValidationErrors, ErrorWithStatus, checkUserAuthentication } from '../utils';
 
 export const addOrganizationController = async (req: Request, res: Response, next: NextFunction) => {
-  console.log('Request body:', req.body);
-  console.log('User ID:', req.user._id.toString());
   handleValidationErrors(req);
   checkUserAuthentication(req);
 
@@ -18,18 +24,7 @@ export const addOrganizationController = async (req: Request, res: Response, nex
     const newOrganization = await addOrganization(userId, data);
     res.status(201).json({
       message: 'Organization created successfully',
-      organization: {
-        id: newOrganization.id,
-        name: newOrganization.name,
-        location: newOrganization.location,
-        description: newOrganization.description,
-        logo: newOrganization.logo,
-        role: newOrganization.role,
-        userCount: newOrganization.userCount,
-        billingInfo: newOrganization.billingInfo,
-        billingEmail: newOrganization.billingEmail,
-        createdBy: newOrganization.createdBy,
-      },
+      organization: newOrganization,
     });
   } catch (error) {
     next(
@@ -39,6 +34,7 @@ export const addOrganizationController = async (req: Request, res: Response, nex
     );
   }
 };
+
 export const getOrganizationsController = async (req: Request, res: Response, next: NextFunction) => {
   handleValidationErrors(req);
   checkUserAuthentication(req);
@@ -92,9 +88,9 @@ export const deleteOrganizationController = async (req: Request, res: Response, 
 
   try {
     const userId = req.user._id.toString();
-    const { id } = req.params;
+    const { organizationId } = req.params;
 
-    const deletedOrganization = await deleteOrganization(id, userId);
+    const deletedOrganization = await deleteOrganization(organizationId, userId);
     res.status(200).json({
       message: 'Organization deleted successfully',
       organization: deletedOrganization,
@@ -102,6 +98,63 @@ export const deleteOrganizationController = async (req: Request, res: Response, 
   } catch (error) {
     next(
       new ErrorWithStatus('Failed to delete organization', 500, 'DELETE_ORGANIZATION_ERROR', {
+        detail: error instanceof Error ? error.message : 'Unknown error',
+      })
+    );
+  }
+};
+
+export const addUserToOrganizationController = async (req: Request, res: Response, next: NextFunction) => {
+  handleValidationErrors(req);
+  checkUserAuthentication(req);
+
+  try {
+    const { organizationId } = req.params;
+    const { email, role } = req.body; // role is added to the request body
+
+    await addUserToOrganization(organizationId, email, role);
+    res.status(200).json({ message: 'User added to organization successfully' });
+  } catch (error) {
+    next(
+      new ErrorWithStatus('Failed to add user to organization', 500, 'ADD_USER_TO_ORGANIZATION_ERROR', {
+        detail: error instanceof Error ? error.message : 'Unknown error',
+      })
+    );
+  }
+};
+
+export const removeUserFromOrganizationController = async (req: Request, res: Response, next: NextFunction) => {
+  handleValidationErrors(req);
+  checkUserAuthentication(req);
+
+  try {
+    const { organizationId } = req.params;
+    const { userId } = req.body;
+
+    await removeUserFromOrganization(organizationId, userId);
+    res.status(200).json({ message: 'User removed from organization successfully' });
+  } catch (error) {
+    next(
+      new ErrorWithStatus('Failed to remove user from organization', 500, 'REMOVE_USER_FROM_ORGANIZATION_ERROR', {
+        detail: error instanceof Error ? error.message : 'Unknown error',
+      })
+    );
+  }
+};
+
+export const leaveOrganizationController = async (req: Request, res: Response, next: NextFunction) => {
+  handleValidationErrors(req);
+  checkUserAuthentication(req);
+
+  try {
+    const userId = req.user._id.toString();
+    const { organizationId } = req.params;
+
+    await leaveOrganization(organizationId, userId);
+    res.status(200).json({ message: 'Left organization successfully' });
+  } catch (error) {
+    next(
+      new ErrorWithStatus('Failed to leave organization', 500, 'LEAVE_ORGANIZATION_ERROR', {
         detail: error instanceof Error ? error.message : 'Unknown error',
       })
     );

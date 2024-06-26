@@ -1,17 +1,20 @@
 import { Types, Document } from 'mongoose';
-import { User } from './';
+
+export interface UserRole {
+  userId: Types.ObjectId;
+  role: string;
+}
 
 export interface OrganizationValues extends Document {
   name: string;
   location: string;
   description: string;
   logo?: string;
-  role: string;
   userCount: number;
   billingInfo: string;
   billingEmail: string;
-  createdBy: Types.ObjectId | User;
-  createdAt?: Date;
+  createdBy: Types.ObjectId;
+  users: UserRole[];
 }
 
 export interface OrganizationResponse {
@@ -24,11 +27,8 @@ export interface OrganizationResponse {
   userCount: number;
   billingInfo: string;
   billingEmail: string;
-  createdBy: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  };
+  createdBy: Types.ObjectId;
+  invitedPersons: Types.ObjectId[];
 }
 
 export interface OrganizationInput {

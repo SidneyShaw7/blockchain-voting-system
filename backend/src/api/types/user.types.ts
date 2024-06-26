@@ -49,3 +49,10 @@ export interface LoginCredentials {
   username?: string;
   password: string;
 }
+
+export interface SimpleUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}

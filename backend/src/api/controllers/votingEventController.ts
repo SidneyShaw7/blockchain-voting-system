@@ -1,6 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-// import { VotingEventFormValuesDB } from '../types';
-import { createVotingEvent, getEventById, getAllEvents, deleteEventById, updateVotingEvent, voteOnEvent } from '../services';
+import {
+  createVotingEvent,
+  getEventById,
+  getAllEvents,
+  deleteEventById,
+  updateVotingEvent,
+  voteOnEvent,
+  inviteUserToEvent,
+  removeUserFromEvent,
+} from '../services';
 import { ErrorWithStatus, handleValidationErrors, checkUserAuthentication } from '../utils';
 
 export const createEventController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -71,9 +79,10 @@ export const getEventController = async (req: Request, res: Response, next: Next
   }
 };
 
-export const getAllEventsController = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const getAllEventsController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const events = await getAllEvents();
+    const userId = req.user._id.toString();
+    const events = await getAllEvents(userId);
     res.json(events);
   } catch (error) {
     next(
@@ -111,6 +120,38 @@ export const voteOnEventController = async (req: Request, res: Response, next: N
   } catch (error) {
     next(
       new ErrorWithStatus('Failed to vote on event', 500, 'VOTE_FAILED', {
+        detail: error instanceof Error ? error.message : 'Unknown error',
+      })
+    );
+  }
+};
+
+export const inviteUserController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  handleValidationErrors(req);
+  checkUserAuthentication(req);
+
+  try {
+    const { eventId } = req.params;
+    const { email } = req.body;
+    await inviteUserToEvent(eventId, email);
+    res.status(200).json({ message: 'User invited successfully' });
+  } catch (error) {
+    next(
+      new ErrorWithStatus('Failed to invite user', 500, 'INVITE_USER_FAILED', {
+        detail: error instanceof Error ? error.message : 'Unknown error',
+      })
+    );
+  }
+};
+
+export const deleteUserController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { eventId, userId } = req.params;
+    await removeUserFromEvent(eventId, userId);
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    next(
+      new ErrorWithStatus('Failed to delete user from event', 500, 'DELETE_USER_FAILED', {
         detail: error instanceof Error ? error.message : 'Unknown error',
       })
     );

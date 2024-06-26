@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { UserResponse, UserProfileValues } from '../types';
-import { updateUser } from '../services';
+import { updateUser, getUsers } from '../services';
 import { ErrorWithStatus, handleValidationErrors } from '../utils';
 
 export const updateUserController = async (req: Request, res: Response, next: NextFunction) => {
@@ -42,5 +42,15 @@ export const updateUserController = async (req: Request, res: Response, next: Ne
         detail: error instanceof Error ? error.message : 'Unknown profile update error',
       })
     );
+  }
+};
+
+export const getUsersController = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const userIds = req.body.userIds;
+    const users = await getUsers(userIds);
+    res.json(users);
+  } catch (error) {
+    next(error);
   }
 };
