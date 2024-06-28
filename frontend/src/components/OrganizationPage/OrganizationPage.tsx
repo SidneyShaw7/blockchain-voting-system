@@ -1,29 +1,21 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
 import { RootState, useDispatch, useSelector } from '../../store';
-import {
-  getOrganizations,
-  updateOrganization,
-  resetOrganizationState,
-  addOrganization,
-  deleteOrganization,
-  leaveOrganization,
-} from '../../features/organizations';
+import { getOrganizations, updateOrganization, resetOrganizationState, addOrganization, deleteOrganization } from '../../features/organizations';
 import { InputField, FileInputField } from '../helpers/helperFieldComponents';
-import { OrganizationResponse, SimpleUser } from '../../types';
+import { OrganizationResponse, SimpleUser, OrganizationFormValues } from '../../types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { OrganizationSchema } from './OrganizationSchema';
 import { error as showError, success as showSuccess } from '../../features/alert';
-import { OrganizationFormValues } from './OrganizationSchema';
 import { Modal } from '../common';
-import { AddButton, EditButton, CancelButton, DeleteButton, ViewButton, LeaveButton } from '../Buttons';
+import { AddButton, EditButton, CancelButton, DeleteButton, ViewButton } from '../Buttons';
 import userService from '../../services/userService';
 import ViewUsersModal from './ViewUsersModal';
 
 const OrganizationsPage = () => {
   const dispatch = useDispatch();
   const { data: organizations, isError, isSuccess, errorMessage } = useSelector((state: RootState) => state.organizations);
-  const currentUser = useSelector((state: RootState) => state.login.data?.user);
+  const currentUser = useSelector((state: RootState) => state.login.data?.user) as SimpleUser | undefined;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [organizationToDelete, setOrganizationToDelete] = useState<OrganizationResponse | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -39,17 +31,15 @@ const OrganizationsPage = () => {
       location: '',
       description: '',
       logo: undefined,
-      role: '',
       billingInfo: '',
       billingEmail: '',
+      users: [],
     },
   });
 
   const fetchUsers = useCallback(async (userIds: string[]) => {
     try {
-      console.log('Fetching users with IDs:', userIds);
       const response = await userService.getUsers(userIds);
-      console.log('Fetched users:', response.data);
       setUsers(response.data);
     } catch (error) {
       console.error('Failed to fetch users:', error);
@@ -62,19 +52,20 @@ const OrganizationsPage = () => {
 
   useEffect(() => {
     if (selectedOrganization) {
-      const allUserIds = [selectedOrganization.createdBy, ...(selectedOrganization.invitedPersons || [])];
-      console.log('Fetching users for organization:', selectedOrganization, 'with user IDs:', allUserIds);
+      const allUserIds = [selectedOrganization.createdBy, ...selectedOrganization.users.map((u) => u.userId)];
       fetchUsers(allUserIds);
     }
   }, [selectedOrganization, fetchUsers]);
 
   useEffect(() => {
-    if (isSuccess && isAdding) {
-      dispatch(showSuccess({ message: 'Organization added successfully!' }));
-    } else if (isSuccess && isEditing) {
-      dispatch(showSuccess({ message: 'Organization updated successfully!' }));
-    } else if (isSuccess && !isAdding && !isEditing && organizationToDelete) {
-      dispatch(showSuccess({ message: 'Organization deleted successfully!' }));
+    if (isSuccess) {
+      if (isAdding) {
+        dispatch(showSuccess({ message: 'Organization added successfully!' }));
+      } else if (isEditing) {
+        dispatch(showSuccess({ message: 'Organization updated successfully!' }));
+      } else if (organizationToDelete) {
+        dispatch(showSuccess({ message: 'Organization deleted successfully!' }));
+      }
     }
 
     if (isError && errorMessage) {
@@ -89,10 +80,12 @@ const OrganizationsPage = () => {
   }, [dispatch, isSuccess, isError, errorMessage, isAdding, isEditing, organizationToDelete]);
 
   const onSubmit: SubmitHandler<OrganizationFormValues> = (data) => {
+    const updatedUsers = [...(data.users ?? []), { userId: currentUser!.id, role: 'admin' }];
+
     if (selectedOrganization) {
-      dispatch(updateOrganization({ id: selectedOrganization.id, formData: data }));
+      dispatch(updateOrganization({ id: selectedOrganization.id, formData: { ...data, users: updatedUsers } }));
     } else {
-      dispatch(addOrganization(data));
+      dispatch(addOrganization({ ...data, users: updatedUsers }));
     }
   };
 
@@ -108,9 +101,24 @@ const OrganizationsPage = () => {
     setIsViewUsersModalOpen(true);
   };
 
-  const handleLeaveOrganization = (organizationId: string) => {
-    dispatch(leaveOrganization(organizationId));
+  const handleEdit = (org: OrganizationResponse) => {
+    setSelectedOrganization(org);
+    console.log(org);
+    setIsEditing(true);
+    methods.reset({
+      name: org.name,
+      location: org.location,
+      description: org.description,
+      logo: undefined,
+      billingInfo: org.billingInfo,
+      billingEmail: org.billingEmail,
+      users: org.users,
+    });
   };
+
+  if (!currentUser) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -128,7 +136,6 @@ const OrganizationsPage = () => {
               <h1 className="text-3xl font-bold mb-6">Organizations</h1>
               {organizations.map((org: OrganizationResponse) => {
                 const isAdmin = currentUser && org.createdBy === currentUser.id;
-                const isMember = currentUser && org.invitedPersons.includes(currentUser.id);
                 return (
                   <div
                     key={org.id}
@@ -138,9 +145,6 @@ const OrganizationsPage = () => {
                       <div>
                         <p>
                           <strong>Organization:</strong> {org.name}
-                        </p>
-                        <p>
-                          <strong>Role:</strong> {org.role}
                         </p>
                         <p>
                           <strong>Users:</strong> {org.userCount}
@@ -155,33 +159,9 @@ const OrganizationsPage = () => {
                     </div>
                     {isAdmin && (
                       <>
-                        <EditButton
-                          onClick={() => {
-                            setSelectedOrganization(org);
-                            setIsEditing(true);
-                            methods.reset({
-                              name: org.name,
-                              location: org.location,
-                              description: org.description,
-                              logo: undefined,
-                              role: org.role,
-                              billingInfo: org.billingInfo,
-                              billingEmail: org.billingEmail,
-                            });
-                          }}
-                          className="mt-3"
-                        >
+                        <EditButton onClick={() => handleEdit(org)} className="mt-3 mr-2">
                           Edit
                         </EditButton>
-                        {'  '}
-                      </>
-                    )}
-                    {isMember && !isAdmin && (
-                      <>
-                        <LeaveButton onClick={() => handleLeaveOrganization(org.id)} className="mt-3">
-                          Leave Organization
-                        </LeaveButton>
-                        {'  '}
                       </>
                     )}
                     <ViewButton onClick={() => handleViewUsers(org)} className="mt-3">
@@ -199,9 +179,9 @@ const OrganizationsPage = () => {
                     location: '',
                     description: '',
                     logo: undefined,
-                    role: '',
                     billingInfo: '',
                     billingEmail: '',
+                    users: [],
                   });
                 }}
               >
@@ -214,12 +194,11 @@ const OrganizationsPage = () => {
       {(isEditing || isAdding) && (
         <FormProvider {...methods}>
           <h1 className="text-3xl font-bold mb-6">Organization</h1>
-          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4 sm:w-96">
+          <form className="space-y-4 sm:w-96">
             <InputField label="Organization Name" name="name" />
             <InputField label="Location" name="location" />
             <InputField label="Description" name="description" inputType="textarea" />
             <FileInputField label="Logo" name="logo" />
-            <InputField label="Role" name="role" />
             <InputField label="Billing Info" name="billingInfo" />
             <InputField label="Billing Email" name="billingEmail" />
             <div className="flex space-x-4">
@@ -251,12 +230,15 @@ const OrganizationsPage = () => {
       )}
       <ViewUsersModal
         organizationId={selectedOrganization?.id ?? ''}
+        organizationName={selectedOrganization?.name ?? ''}
         users={users}
         isOpen={isViewUsersModalOpen}
         onClose={() => setIsViewUsersModalOpen(false)}
         canDelete={currentUser?.id === selectedOrganization?.createdBy}
         adminId={selectedOrganization?.createdBy ?? ''}
-        onUserInvited={() => fetchUsers([selectedOrganization!.createdBy, ...(selectedOrganization!.invitedPersons || [])])}
+        onUserInvited={() => fetchUsers([selectedOrganization!.createdBy, ...(selectedOrganization!.users.map((u) => u.userId) ?? [])])}
+        currentUser={currentUser}
+        organization={selectedOrganization}
       />
       <Modal
         title="Delete Organization"

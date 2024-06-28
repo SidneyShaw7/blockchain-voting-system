@@ -7,4 +7,5 @@ export {
   deleteOrganization,
   inviteUserToOrganization,
   removeUserFromOrganization,
+  leaveOrganization,
 } from './organizationsThunks';

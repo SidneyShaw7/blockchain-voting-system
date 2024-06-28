@@ -3,14 +3,14 @@ export interface OrganizationFormValues {
   location: string;
   description?: string;
   logo?: File;
-  role: string;
   billingInfo: string;
   billingEmail: string;
+  users: { userId: string; role: string }[];
 }
 
 export interface OrganizationResponse extends OrganizationFormValues {
   id: string;
   userCount: number;
   createdBy: string;
-  invitedPersons: string[];
+  // users: { userId: string; role: string }[];
 }

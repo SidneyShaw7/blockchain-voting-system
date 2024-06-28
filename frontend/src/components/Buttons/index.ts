@@ -7,4 +7,4 @@ export { default as FilterButton } from './FilterButton';
 export { default as ViewButton } from './ViewButton';
 export { default as GreenButton } from './GreenButton';
 export { default as DisabledButton } from './DisabledButton';
-
+export { default as LeaveButton } from './LeaveButton';

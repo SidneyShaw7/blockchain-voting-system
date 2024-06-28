@@ -45,14 +45,12 @@ const ViewUsersModal = ({
       try {
         await Promise.all(emailList.map((email) => dispatch(inviteUser({ eventId, email })).unwrap()));
         setEmails('');
-        // alert('Users invited successfully!');
         dispatch(showSuccess({ message: 'Users invited successfully!' }));
         onUserInvited();
         setIsAddingUsers(false);
       } catch (error) {
         console.error('Failed to invite users:', error);
         dispatch(showError({ message: 'Failed to invite users.' }));
-        // alert('Failed to invite users.');
       }
     }
   };

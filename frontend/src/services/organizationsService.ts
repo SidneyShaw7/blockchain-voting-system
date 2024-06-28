@@ -36,8 +36,8 @@ const organizationsService = {
     return api.delete<void>(`/api/organizations/${organizationId}`);
   },
 
-  inviteUserToOrganization: (organizationId: string, email: string) => {
-    return api.post<void>(`/api/organizations/${organizationId}/invite`, { email });
+  inviteUserToOrganization: (organizationId: string, email: string, role: string) => {
+    return api.post<void>(`/api/organizations/${organizationId}/invite`, { email, role });
   },
 
   removeUserFromOrganization: (organizationId: string, userId: string) => {

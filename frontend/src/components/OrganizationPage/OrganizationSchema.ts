@@ -5,10 +5,16 @@ export const OrganizationSchema = z.object({
   location: z.string().min(2, 'Location must be between 2 and 100 characters').max(100, 'Location must be between 2 and 100 characters'),
   description: z.string().min(10, 'Description must be at least 10 characters long'),
   logo: z.instanceof(File).optional(),
-  role: z.string().min(2, 'Role must be between 2 and 50 characters').max(50, 'Role must be between 2 and 50 characters'),
   billingInfo: z.string().min(2, 'Billing info must be between 2 and 100 characters').max(100, 'Billing info must be between 2 and 100 characters'),
   billingEmail: z.string().email('Must be a valid email'),
-  userIds: z.array(z.string()).optional(),
+  roles: z
+    .array(
+      z.object({
+        userId: z.string(),
+        role: z.string(),
+      })
+    )
+    .optional(),
 });
 
 export type OrganizationFormValues = z.infer<typeof OrganizationSchema>;

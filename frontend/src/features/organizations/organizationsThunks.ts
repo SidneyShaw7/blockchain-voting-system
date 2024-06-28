@@ -8,6 +8,7 @@ export const addOrganization = createAsyncThunk<OrganizationResponse, Organizati
   async (formData, { rejectWithValue }) => {
     try {
       const response = await organizationService.addOrganization(formData);
+
       return response.data;
     } catch (error) {
       return rejectWithValue(processError(error));
@@ -50,11 +51,11 @@ export const deleteOrganization = createAsyncThunk<void, string, { rejectValue: 
   }
 );
 
-export const inviteUserToOrganization = createAsyncThunk<void, { organizationId: string; email: string }, { rejectValue: string }>(
+export const inviteUserToOrganization = createAsyncThunk<void, { organizationId: string; email: string; role: string }, { rejectValue: string }>(
   'organizations/inviteUser',
-  async ({ organizationId, email }, { rejectWithValue }) => {
+  async ({ organizationId, email, role }, { rejectWithValue }) => {
     try {
-      await organizationService.inviteUserToOrganization(organizationId, email);
+      await organizationService.inviteUserToOrganization(organizationId, email, role);
     } catch (error) {
       return rejectWithValue(processError(error));
     }

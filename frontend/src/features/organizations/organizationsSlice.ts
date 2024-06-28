@@ -7,6 +7,7 @@ import {
   deleteOrganization,
   inviteUserToOrganization,
   removeUserFromOrganization,
+  leaveOrganization,
 } from './organizationsThunks';
 
 interface OrganizationsState extends AsyncState<OrganizationResponse[]> {
@@ -127,6 +128,22 @@ const organizationsSlice = createSlice({
         state.isSuccess = true;
       })
       .addCase(removeUserFromOrganization.rejected, (state, action) => {
+        state.isProcessing = false;
+        state.isError = true;
+        state.errorMessage = action.payload;
+      })
+      .addCase(leaveOrganization.pending, (state) => {
+        state.isProcessing = true;
+        state.isSuccess = false;
+        state.isError = false;
+        state.errorMessage = undefined;
+      })
+      .addCase(leaveOrganization.fulfilled, (state, action) => {
+        state.isProcessing = false;
+        state.isSuccess = true;
+        state.data = state.data.filter((org) => org.id !== action.meta.arg);
+      })
+      .addCase(leaveOrganization.rejected, (state, action) => {
         state.isProcessing = false;
         state.isError = true;
         state.errorMessage = action.payload;
