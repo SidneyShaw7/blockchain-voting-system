@@ -1,2 +1,0 @@
-todo 
--- refactor login/register form using zod validation matching event form
