@@ -41,15 +41,15 @@ const organizationsSlice = createSlice({
         state.isError = false;
         state.errorMessage = undefined;
       })
-      .addCase(addOrganization.fulfilled, (state, action: PayloadAction<OrganizationResponse>) => {
+      .addCase(addOrganization.fulfilled, (state, action: PayloadAction<OrganizationResponse[]>) => {
         state.isProcessing = false;
         state.isSuccess = true;
-        state.data.push(action.payload);
+        state.data = action.payload;
       })
-      .addCase(addOrganization.rejected, (state, action: PayloadAction<string | undefined>) => {
+      .addCase(addOrganization.rejected, (state, action) => {
         state.isProcessing = false;
         state.isError = true;
-        state.errorMessage = action.payload ?? '';
+        state.errorMessage = action.payload;
       })
       .addCase(getOrganizations.pending, (state) => {
         state.isProcessing = true;
@@ -62,10 +62,10 @@ const organizationsSlice = createSlice({
         state.isSuccess = true;
         state.data = action.payload;
       })
-      .addCase(getOrganizations.rejected, (state, action: PayloadAction<string | undefined>) => {
+      .addCase(getOrganizations.rejected, (state, action) => {
         state.isProcessing = false;
         state.isError = true;
-        state.errorMessage = action.payload ?? '';
+        state.errorMessage = action.payload;
       })
       .addCase(updateOrganization.pending, (state) => {
         state.isProcessing = true;
@@ -73,18 +73,15 @@ const organizationsSlice = createSlice({
         state.isError = false;
         state.errorMessage = undefined;
       })
-      .addCase(updateOrganization.fulfilled, (state, action: PayloadAction<OrganizationResponse>) => {
+      .addCase(updateOrganization.fulfilled, (state, action: PayloadAction<OrganizationResponse[]>) => {
         state.isProcessing = false;
         state.isSuccess = true;
-        const index = state.data.findIndex((org) => org.id === action.payload.id);
-        if (index !== -1) {
-          state.data[index] = action.payload;
-        }
+        state.data = action.payload;
       })
-      .addCase(updateOrganization.rejected, (state, action: PayloadAction<string | undefined>) => {
+      .addCase(updateOrganization.rejected, (state, action) => {
         state.isProcessing = false;
         state.isError = true;
-        state.errorMessage = action.payload ?? '';
+        state.errorMessage = action.payload;
       })
       .addCase(deleteOrganization.pending, (state) => {
         state.isProcessing = true;
@@ -92,15 +89,15 @@ const organizationsSlice = createSlice({
         state.isError = false;
         state.errorMessage = undefined;
       })
-      .addCase(deleteOrganization.fulfilled, (state, action) => {
+      .addCase(deleteOrganization.fulfilled, (state, action: PayloadAction<OrganizationResponse[]>) => {
         state.isProcessing = false;
         state.isSuccess = true;
-        state.data = state.data.filter((org) => org.id !== action.meta.arg);
+        state.data = action.payload;
       })
-      .addCase(deleteOrganization.rejected, (state, action: PayloadAction<string | undefined>) => {
+      .addCase(deleteOrganization.rejected, (state, action) => {
         state.isProcessing = false;
         state.isError = true;
-        state.errorMessage = action.payload ?? '';
+        state.errorMessage = action.payload;
       })
       .addCase(inviteUserToOrganization.pending, (state) => {
         state.isProcessing = true;
@@ -108,14 +105,15 @@ const organizationsSlice = createSlice({
         state.isError = false;
         state.errorMessage = undefined;
       })
-      .addCase(inviteUserToOrganization.fulfilled, (state) => {
+      .addCase(inviteUserToOrganization.fulfilled, (state, action: PayloadAction<OrganizationResponse[]>) => {
         state.isProcessing = false;
         state.isSuccess = true;
+        state.data = action.payload;
       })
-      .addCase(inviteUserToOrganization.rejected, (state, action: PayloadAction<string | undefined>) => {
+      .addCase(inviteUserToOrganization.rejected, (state, action) => {
         state.isProcessing = false;
         state.isError = true;
-        state.errorMessage = action.payload ?? '';
+        state.errorMessage = action.payload;
       })
       .addCase(removeUserFromOrganization.pending, (state) => {
         state.isProcessing = true;
@@ -123,14 +121,15 @@ const organizationsSlice = createSlice({
         state.isError = false;
         state.errorMessage = undefined;
       })
-      .addCase(removeUserFromOrganization.fulfilled, (state) => {
+      .addCase(removeUserFromOrganization.fulfilled, (state, action: PayloadAction<OrganizationResponse[]>) => {
         state.isProcessing = false;
         state.isSuccess = true;
+        state.data = action.payload;
       })
-      .addCase(removeUserFromOrganization.rejected, (state, action: PayloadAction<string | undefined>) => {
+      .addCase(removeUserFromOrganization.rejected, (state, action) => {
         state.isProcessing = false;
         state.isError = true;
-        state.errorMessage = action.payload ?? '';
+        state.errorMessage = action.payload;
       })
       .addCase(leaveOrganization.pending, (state) => {
         state.isProcessing = true;
@@ -138,15 +137,15 @@ const organizationsSlice = createSlice({
         state.isError = false;
         state.errorMessage = undefined;
       })
-      .addCase(leaveOrganization.fulfilled, (state, action) => {
+      .addCase(leaveOrganization.fulfilled, (state, action: PayloadAction<OrganizationResponse[]>) => {
         state.isProcessing = false;
         state.isSuccess = true;
-        state.data = state.data.filter((org) => org.id !== action.meta.arg);
+        state.data = action.payload;
       })
-      .addCase(leaveOrganization.rejected, (state, action: PayloadAction<string | undefined>) => {
+      .addCase(leaveOrganization.rejected, (state, action) => {
         state.isProcessing = false;
         state.isError = true;
-        state.errorMessage = action.payload ?? '';
+        state.errorMessage = action.payload;
       });
   },
 });

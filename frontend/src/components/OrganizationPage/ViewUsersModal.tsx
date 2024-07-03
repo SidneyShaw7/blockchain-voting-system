@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from '../../store';
 import { inviteUserToOrganization, removeUserFromOrganization, leaveOrganization } from '../../features/organizations';
 import { Modal, Box, Typography, List, ListItem, TextField, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
@@ -17,11 +17,12 @@ interface ViewUsersModalProps {
   canDelete: boolean;
   adminId: string;
   onUserInvited: () => void;
+  onRemoveUser: (userId: string) => void;
   currentUser: SimpleUser;
   organization?: OrganizationResponse | null;
 }
 
-const ViewUsersModal = ({
+const ViewUsersModal: React.FC<ViewUsersModalProps> = ({
   organizationId,
   organizationName,
   users,
@@ -30,14 +31,22 @@ const ViewUsersModal = ({
   canDelete,
   adminId,
   onUserInvited,
+  onRemoveUser,
   currentUser,
   organization,
-}: ViewUsersModalProps) => {
+}) => {
   const [isAddingUsers, setIsAddingUsers] = useState(false);
   const [emails, setEmails] = useState('');
   const [role, setRole] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [userList, setUserList] = useState<SimpleUser[]>(users);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setUserList(users);
+    console.log('User List Updated:', users);  // debugging
+
+  }, [users]);
 
   const handleInvite = async () => {
     const emailList = emails
@@ -52,6 +61,8 @@ const ViewUsersModal = ({
         dispatch(showSuccess({ message: 'Users invited successfully!' }));
         onUserInvited();
         setIsAddingUsers(false);
+        console.log('Invited Users:', emailList);  // debugging
+
       } catch (error) {
         console.error('Failed to invite users:', error);
         dispatch(showError({ message: 'Failed to invite users.' }));
@@ -60,14 +71,9 @@ const ViewUsersModal = ({
   };
 
   const handleDeleteUser = async (userId: string) => {
-    const userInOrganization = organization?.users.some((user) => user.userId === userId);
-    if (!userInOrganization) {
-      dispatch(showError({ message: 'User not found in organization' }));
-      return;
-    }
     try {
       await dispatch(removeUserFromOrganization({ organizationId, userId })).unwrap();
-      onUserInvited();
+      onRemoveUser(userId);
     } catch (error) {
       console.error('Failed to remove user from organization:', error);
     }
@@ -123,7 +129,7 @@ const ViewUsersModal = ({
                 Users
               </Typography>
               <List>
-                {users.map((user) => (
+                {userList.map((user) => (
                   <ListItem key={user.id} className="flex justify-between items-center">
                     <div>
                       <Typography>

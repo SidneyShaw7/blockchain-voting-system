@@ -1,7 +1,14 @@
-import { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
+import {
+  getOrganizations,
+  updateOrganization,
+  resetOrganizationState,
+  addOrganization,
+  deleteOrganization,
+  removeUserFromOrganization,
+} from '../../features/organizations';
 import { RootState, useDispatch, useSelector } from '../../store';
-import { getOrganizations, updateOrganization, resetOrganizationState, addOrganization, deleteOrganization } from '../../features/organizations';
 import { InputField, FileInputField } from '../helpers/helperFieldComponents';
 import { OrganizationResponse, SimpleUser, OrganizationFormValues } from '../../types';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,7 +19,7 @@ import { AddButton, EditButton, CancelButton, DeleteButton, ViewButton } from '.
 import userService from '../../services/userService';
 import ViewUsersModal from './ViewUsersModal';
 
-const OrganizationsPage = () => {
+const OrganizationsPage: React.FC = () => {
   const dispatch = useDispatch();
   const { data: organizations, isError, isSuccess, errorMessage } = useSelector((state: RootState) => state.organizations);
   const currentUser = useSelector((state: RootState) => state.login.data?.user) as SimpleUser | undefined;
@@ -41,6 +48,7 @@ const OrganizationsPage = () => {
     try {
       const response = await userService.getUsers(userIds);
       setUsers(response.data);
+      console.log('Fetched Users:', response.data);  // debugging
     } catch (error) {
       console.error('Failed to fetch users:', error);
     }
@@ -54,6 +62,8 @@ const OrganizationsPage = () => {
     if (selectedOrganization) {
       const allUserIds = [selectedOrganization.createdBy, ...selectedOrganization.users.map((u) => u.userId)];
       fetchUsers(allUserIds);
+      console.log('Selected Organization:', selectedOrganization);  // debugging
+
     }
   }, [selectedOrganization, fetchUsers]);
 
@@ -66,10 +76,14 @@ const OrganizationsPage = () => {
       } else if (organizationToDelete) {
         dispatch(showSuccess({ message: 'Organization deleted successfully!' }));
       }
+      console.log('Success State:', isSuccess);  // dbugging
+
     }
 
     if (isError && errorMessage) {
       dispatch(showError({ message: errorMessage }));
+      console.log('Error State:', errorMessage);  // dbugging
+
     }
 
     if (isSuccess || isError) {
@@ -82,8 +96,6 @@ const OrganizationsPage = () => {
   const onSubmit: SubmitHandler<OrganizationFormValues> = (data) => {
     const updatedUsers = [...(data.users ?? []), { userId: currentUser!.id, role: 'admin' }];
     const formData = { ...data, users: updatedUsers };
-
-    console.log('Form Data to Submit:', formData); // Log form data to verify
 
     if (selectedOrganization) {
       dispatch(updateOrganization({ id: selectedOrganization.id, formData }));
@@ -116,6 +128,27 @@ const OrganizationsPage = () => {
       billingEmail: org.billingEmail,
       users: org.users,
     });
+  };
+
+  const handleUserInvited = () => {
+    if (selectedOrganization) {
+      const allUserIds = [selectedOrganization.createdBy, ...selectedOrganization.users.map((u) => u.userId)];
+      fetchUsers(allUserIds);
+      console.log('Users Invited:', allUserIds);  // dbugging
+
+    }
+  };
+
+  const handleRemoveUser = async (userId: string) => {
+    if (selectedOrganization) {
+      try {
+        await dispatch(removeUserFromOrganization({ organizationId: selectedOrganization.id, userId })).unwrap();
+        handleUserInvited();
+      } catch (error) {
+        console.error('Failed to remove user from organization:', error);
+        dispatch(showError({ message: 'Failed to remove user from organization.' }));
+      }
+    }
   };
 
   if (!currentUser) {
@@ -238,7 +271,8 @@ const OrganizationsPage = () => {
         onClose={() => setIsViewUsersModalOpen(false)}
         canDelete={currentUser?.id === selectedOrganization?.createdBy}
         adminId={selectedOrganization?.createdBy ?? ''}
-        onUserInvited={() => fetchUsers([selectedOrganization!.createdBy, ...(selectedOrganization!.users.map((u) => u.userId) ?? [])])}
+        onUserInvited={handleUserInvited}
+        onRemoveUser={handleRemoveUser}
         currentUser={currentUser}
         organization={selectedOrganization}
       />

@@ -1,5 +1,5 @@
 import api from '../api/api';
-import { OrganizationFormValues, OrganizationResponse } from '../types';
+import { OrganizationFormValues, OrganizationResponse, SimpleUser } from '../types';
 
 const organizationsService = {
   getOrganizations: () => api.get<OrganizationResponse[]>('/api/organizations'),
@@ -50,6 +50,10 @@ const organizationsService = {
 
   leaveOrganization: (organizationId: string) => {
     return api.post<void>(`/api/organizations/${organizationId}/leave`);
+  },
+
+  getOrganizationUsers: (organizationId: string) => {
+    return api.get<SimpleUser[]>(`/api/organizations/${organizationId}/users`);
   },
 };
 
