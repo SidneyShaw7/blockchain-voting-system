@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import organizationService from '../../services/organizationsService';
+import { organizationsService } from '../../services';
 import { OrganizationResponse, OrganizationFormValues } from '../../types';
 import { processError } from '../../utils/helpers';
 
@@ -7,8 +7,7 @@ export const addOrganization = createAsyncThunk<OrganizationResponse, Organizati
   'organizations/add',
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await organizationService.addOrganization(formData);
-
+      const response = await organizationsService.addOrganization(formData);
       return response.data;
     } catch (error) {
       return rejectWithValue(processError(error));
@@ -20,7 +19,7 @@ export const getOrganizations = createAsyncThunk<OrganizationResponse[], void, {
   'organizations/getAll',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await organizationService.getOrganizations();
+      const response = await organizationsService.getOrganizations();
       return response.data;
     } catch (error) {
       return rejectWithValue(processError(error));
@@ -32,7 +31,7 @@ export const updateOrganization = createAsyncThunk<OrganizationResponse, { id: s
   'organizations/update',
   async ({ id, formData }, { rejectWithValue }) => {
     try {
-      const response = await organizationService.updateOrganization(id, formData);
+      const response = await organizationsService.updateOrganization(id, formData);
       return response.data;
     } catch (error) {
       return rejectWithValue(processError(error));
@@ -44,7 +43,7 @@ export const deleteOrganization = createAsyncThunk<void, string, { rejectValue: 
   'organizations/delete',
   async (organizationId, { rejectWithValue }) => {
     try {
-      await organizationService.deleteOrganization(organizationId);
+      await organizationsService.deleteOrganization(organizationId);
     } catch (error) {
       return rejectWithValue(processError(error));
     }
@@ -55,7 +54,7 @@ export const inviteUserToOrganization = createAsyncThunk<void, { organizationId:
   'organizations/inviteUser',
   async ({ organizationId, email, role }, { rejectWithValue }) => {
     try {
-      await organizationService.inviteUserToOrganization(organizationId, email, role);
+      await organizationsService.inviteUserToOrganization(organizationId, email, role);
     } catch (error) {
       return rejectWithValue(processError(error));
     }
@@ -66,7 +65,7 @@ export const removeUserFromOrganization = createAsyncThunk<void, { organizationI
   'organizations/removeUser',
   async ({ organizationId, userId }, { rejectWithValue }) => {
     try {
-      await organizationService.removeUserFromOrganization(organizationId, userId);
+      await organizationsService.removeUserFromOrganization(organizationId, userId);
     } catch (error) {
       return rejectWithValue(processError(error));
     }
@@ -77,7 +76,7 @@ export const leaveOrganization = createAsyncThunk<void, string, { rejectValue: s
   'organizations/leave',
   async (organizationId, { rejectWithValue }) => {
     try {
-      await organizationService.leaveOrganization(organizationId);
+      await organizationsService.leaveOrganization(organizationId);
     } catch (error) {
       return rejectWithValue(processError(error));
     }

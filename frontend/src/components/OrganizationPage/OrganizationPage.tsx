@@ -81,11 +81,14 @@ const OrganizationsPage = () => {
 
   const onSubmit: SubmitHandler<OrganizationFormValues> = (data) => {
     const updatedUsers = [...(data.users ?? []), { userId: currentUser!.id, role: 'admin' }];
+    const formData = { ...data, users: updatedUsers };
+
+    console.log('Form Data to Submit:', formData); // Log form data to verify
 
     if (selectedOrganization) {
-      dispatch(updateOrganization({ id: selectedOrganization.id, formData: { ...data, users: updatedUsers } }));
+      dispatch(updateOrganization({ id: selectedOrganization.id, formData }));
     } else {
-      dispatch(addOrganization({ ...data, users: updatedUsers }));
+      dispatch(addOrganization(formData));
     }
   };
 
@@ -103,7 +106,6 @@ const OrganizationsPage = () => {
 
   const handleEdit = (org: OrganizationResponse) => {
     setSelectedOrganization(org);
-    console.log(org);
     setIsEditing(true);
     methods.reset({
       name: org.name,
@@ -194,7 +196,7 @@ const OrganizationsPage = () => {
       {(isEditing || isAdding) && (
         <FormProvider {...methods}>
           <h1 className="text-3xl font-bold mb-6">Organization</h1>
-          <form className="space-y-4 sm:w-96">
+          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4 sm:w-96">
             <InputField label="Organization Name" name="name" />
             <InputField label="Location" name="location" />
             <InputField label="Description" name="description" inputType="textarea" />

@@ -21,7 +21,11 @@ const organizationsService = {
     const formDataObj = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (value !== null && value !== undefined) {
-        formDataObj.append(key, value);
+        if (Array.isArray(value) || typeof value === 'object') {
+          formDataObj.append(key, JSON.stringify(value));
+        } else {
+          formDataObj.append(key, value as string | Blob);
+        }
       }
     });
 

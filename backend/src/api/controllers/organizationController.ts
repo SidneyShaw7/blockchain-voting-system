@@ -21,6 +21,7 @@ export const addOrganizationController = async (req: Request, res: Response, nex
     }
 
     const data = req.body;
+    console.log(data);
     const newOrganization = await addOrganization(userId, data);
     res.status(201).json({
       message: 'Organization created successfully',
@@ -57,6 +58,7 @@ export const getOrganizationsController = async (req: Request, res: Response, ne
 };
 
 export const updateOrganizationController = async (req: Request, res: Response, next: NextFunction) => {
+  console.log(req);
   handleValidationErrors(req);
   checkUserAuthentication(req);
 
@@ -68,6 +70,7 @@ export const updateOrganizationController = async (req: Request, res: Response, 
 
     const { id } = req.params;
     const data = req.body;
+
     const updatedOrganization = await updateOrganization(id, userId, data);
     res.json({
       message: 'Organization updated successfully',
@@ -110,7 +113,7 @@ export const addUserToOrganizationController = async (req: Request, res: Respons
 
   try {
     const { organizationId } = req.params;
-    const { email, role } = req.body; // role is added to the request body
+    const { email, role } = req.body;
 
     await addUserToOrganization(organizationId, email, role);
     res.status(200).json({ message: 'User added to organization successfully' });
@@ -128,8 +131,13 @@ export const removeUserFromOrganizationController = async (req: Request, res: Re
   checkUserAuthentication(req);
 
   try {
-    const { organizationId } = req.params;
-    const { userId } = req.body;
+    const { organizationId, userId } = req.params;
+
+    if (!userId) {
+      throw new ErrorWithStatus('User ID is missing', 400, 'USER_ID_MISSING');
+    }
+
+    console.log('Received userId:', userId);
 
     await removeUserFromOrganization(organizationId, userId);
     res.status(200).json({ message: 'User removed from organization successfully' });
