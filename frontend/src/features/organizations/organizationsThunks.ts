@@ -16,6 +16,18 @@ export const addOrganization = createAsyncThunk<OrganizationResponse[], Organiza
   }
 );
 
+export const getOrganization = createAsyncThunk<OrganizationResponse, string>(
+  'organizations/getOrganization',
+  async (organizationId, { rejectWithValue }) => {
+    try {
+      const response = await organizationsService.getOrganization(organizationId);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(processError(error));
+    }
+  }
+);
+
 export const getOrganizations = createAsyncThunk<OrganizationResponse[], void, { rejectValue: string }>(
   'organizations/getAll',
   async (_, { rejectWithValue }) => {

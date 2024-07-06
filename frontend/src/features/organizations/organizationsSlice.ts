@@ -8,6 +8,7 @@ import {
   inviteUserToOrganization,
   removeUserFromOrganization,
   leaveOrganization,
+  getOrganization,
 } from './organizationsThunks';
 
 interface OrganizationsState extends AsyncState<OrganizationResponse[]> {
@@ -146,6 +147,27 @@ const organizationsSlice = createSlice({
         state.isProcessing = false;
         state.isError = true;
         state.errorMessage = action.payload;
+      })
+      .addCase(getOrganization.pending, (state) => {
+        state.isProcessing = true;
+        state.isSuccess = false;
+        state.isError = false;
+        state.errorMessage = undefined;
+      })
+      .addCase(getOrganization.fulfilled, (state, action: PayloadAction<OrganizationResponse>) => {
+        state.isProcessing = false;
+        state.isSuccess = true;
+        const index = state.data.findIndex((org) => org.id === action.payload.id);
+        if (index !== -1) {
+          state.data[index] = action.payload;
+        } else {
+          state.data.push(action.payload);
+        }
+      })
+      .addCase(getOrganization.rejected, (state, action) => {
+        state.isProcessing = false;
+        state.isError = true;
+        state.errorMessage = action.payload as string;
       });
   },
 });

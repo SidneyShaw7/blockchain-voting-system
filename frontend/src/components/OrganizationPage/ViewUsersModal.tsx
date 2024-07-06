@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useDispatch } from '../../store';
-import { inviteUserToOrganization, removeUserFromOrganization, leaveOrganization } from '../../features/organizations';
-import { Modal, Box, Typography, List, ListItem, TextField, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
-import { OrganizationResponse, SimpleUser } from '../../types';
+import { inviteUserToOrganization, leaveOrganization } from '../../features/organizations';
+import { Modal, Box, Typography, List, ListItem, TextField } from '@mui/material';
+import { SimpleUser } from '../../types';
 import { CancelButton, AddButton, DeleteButton, LeaveButton } from '../Buttons';
 import { modalStyle } from './modalStyle';
 import { error as showError, success as showSuccess } from '../../features/alert/alertSlice';
@@ -15,38 +15,28 @@ interface ViewUsersModalProps {
   isOpen: boolean;
   onClose: () => void;
   canDelete: boolean;
-  adminId: string;
-  onUserInvited: () => void;
   onRemoveUser: (userId: string) => void;
+  onUserInvited: () => void;
+  adminId: string;
   currentUser: SimpleUser;
-  organization?: OrganizationResponse | null;
 }
 
-const ViewUsersModal: React.FC<ViewUsersModalProps> = ({
+const ViewUsersModal = ({
   organizationId,
   organizationName,
   users,
   isOpen,
   onClose,
   canDelete,
-  adminId,
-  onUserInvited,
   onRemoveUser,
+  onUserInvited,
+  adminId,
   currentUser,
-  organization,
-}) => {
+}: ViewUsersModalProps) => {
   const [isAddingUsers, setIsAddingUsers] = useState(false);
   const [emails, setEmails] = useState('');
-  const [role, setRole] = useState('');
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [userList, setUserList] = useState<SimpleUser[]>(users);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    setUserList(users);
-    console.log('User List Updated:', users);  // debugging
-
-  }, [users]);
 
   const handleInvite = async () => {
     const emailList = emails
@@ -55,27 +45,15 @@ const ViewUsersModal: React.FC<ViewUsersModalProps> = ({
       .filter((email) => email !== '');
     if (emailList.length > 0) {
       try {
-        await Promise.all(emailList.map((email) => dispatch(inviteUserToOrganization({ organizationId, email, role })).unwrap()));
+        await Promise.all(emailList.map((email) => dispatch(inviteUserToOrganization({ organizationId, email, role: 'member' })).unwrap()));
         setEmails('');
-        setRole('');
         dispatch(showSuccess({ message: 'Users invited successfully!' }));
         onUserInvited();
         setIsAddingUsers(false);
-        console.log('Invited Users:', emailList);  // debugging
-
       } catch (error) {
         console.error('Failed to invite users:', error);
         dispatch(showError({ message: 'Failed to invite users.' }));
       }
-    }
-  };
-
-  const handleDeleteUser = async (userId: string) => {
-    try {
-      await dispatch(removeUserFromOrganization({ organizationId, userId })).unwrap();
-      onRemoveUser(userId);
-    } catch (error) {
-      console.error('Failed to remove user from organization:', error);
     }
   };
 
@@ -86,6 +64,7 @@ const ViewUsersModal: React.FC<ViewUsersModalProps> = ({
       onClose();
     } catch (error) {
       console.error('Failed to leave organization:', error);
+      dispatch(showError({ message: 'Failed to leave organization.' }));
     }
   };
 
@@ -111,13 +90,6 @@ const ViewUsersModal: React.FC<ViewUsersModalProps> = ({
                 fullWidth
                 margin="normal"
               />
-              <FormControl fullWidth margin="normal">
-                <InputLabel>Role</InputLabel>
-                <Select value={role} onChange={(e) => setRole(e.target.value)}>
-                  <MenuItem value="admin">Admin</MenuItem>
-                  <MenuItem value="member">Member</MenuItem>
-                </Select>
-              </FormControl>
               <div className="flex justify-between mt-3">
                 <CancelButton onClick={() => setIsAddingUsers(false)}>Back</CancelButton>
                 <AddButton onClick={handleInvite}>+ Add</AddButton>
@@ -129,7 +101,7 @@ const ViewUsersModal: React.FC<ViewUsersModalProps> = ({
                 Users
               </Typography>
               <List>
-                {userList.map((user) => (
+                {users.map((user) => (
                   <ListItem key={user.id} className="flex justify-between items-center">
                     <div>
                       <Typography>
@@ -141,9 +113,9 @@ const ViewUsersModal: React.FC<ViewUsersModalProps> = ({
                     </div>
                     <div className="flex flex-col items-end ml-auto">
                       <Typography variant="body2" color="textSecondary">
-                        {organization?.users.find((u) => u.userId === user.id)?.role || 'N/A'}
+                        {user.id === adminId ? 'Admin' : 'Member'}
                       </Typography>
-                      {canDelete && user.id !== adminId && <DeleteButton onClick={() => handleDeleteUser(user.id)}>Remove</DeleteButton>}
+                      {canDelete && user.id !== adminId && <DeleteButton onClick={() => onRemoveUser(user.id)}>Remove</DeleteButton>}
                     </div>
                   </ListItem>
                 ))}

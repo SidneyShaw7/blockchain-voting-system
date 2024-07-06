@@ -3,6 +3,9 @@ import { OrganizationFormValues, OrganizationResponse, SimpleUser } from '../typ
 
 const organizationsService = {
   getOrganizations: () => api.get<OrganizationResponse[]>('/api/organizations'),
+  getOrganization: (organizationId: string) => {
+    return api.get<OrganizationResponse>(`/api/organizations/${organizationId}`);
+  },
   addOrganization: (formData: OrganizationFormValues) => {
     const formDataObj = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
@@ -35,23 +38,18 @@ const organizationsService = {
       },
     });
   },
-
   deleteOrganization: (organizationId: string) => {
     return api.delete<void>(`/api/organizations/${organizationId}`);
   },
-
   inviteUserToOrganization: (organizationId: string, email: string, role: string) => {
     return api.post<void>(`/api/organizations/${organizationId}/invite`, { email, role });
   },
-
   removeUserFromOrganization: (organizationId: string, userId: string) => {
     return api.delete<void>(`/api/organizations/${organizationId}/users/${userId}`);
   },
-
   leaveOrganization: (organizationId: string) => {
     return api.post<void>(`/api/organizations/${organizationId}/leave`);
   },
-
   getOrganizationUsers: (organizationId: string) => {
     return api.get<SimpleUser[]>(`/api/organizations/${organizationId}/users`);
   },

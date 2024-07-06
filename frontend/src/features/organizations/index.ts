@@ -8,4 +8,5 @@ export {
   inviteUserToOrganization,
   removeUserFromOrganization,
   leaveOrganization,
+  getOrganization
 } from './organizationsThunks';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
 import {
   getOrganizations,
@@ -19,7 +19,7 @@ import { AddButton, EditButton, CancelButton, DeleteButton, ViewButton } from '.
 import userService from '../../services/userService';
 import ViewUsersModal from './ViewUsersModal';
 
-const OrganizationsPage: React.FC = () => {
+const OrganizationsPage = () => {
   const dispatch = useDispatch();
   const { data: organizations, isError, isSuccess, errorMessage } = useSelector((state: RootState) => state.organizations);
   const currentUser = useSelector((state: RootState) => state.login.data?.user) as SimpleUser | undefined;
@@ -48,7 +48,6 @@ const OrganizationsPage: React.FC = () => {
     try {
       const response = await userService.getUsers(userIds);
       setUsers(response.data);
-      console.log('Fetched Users:', response.data);  // debugging
     } catch (error) {
       console.error('Failed to fetch users:', error);
     }
@@ -62,8 +61,6 @@ const OrganizationsPage: React.FC = () => {
     if (selectedOrganization) {
       const allUserIds = [selectedOrganization.createdBy, ...selectedOrganization.users.map((u) => u.userId)];
       fetchUsers(allUserIds);
-      console.log('Selected Organization:', selectedOrganization);  // debugging
-
     }
   }, [selectedOrganization, fetchUsers]);
 
@@ -76,14 +73,10 @@ const OrganizationsPage: React.FC = () => {
       } else if (organizationToDelete) {
         dispatch(showSuccess({ message: 'Organization deleted successfully!' }));
       }
-      console.log('Success State:', isSuccess);  // dbugging
-
     }
 
     if (isError && errorMessage) {
       dispatch(showError({ message: errorMessage }));
-      console.log('Error State:', errorMessage);  // dbugging
-
     }
 
     if (isSuccess || isError) {
@@ -134,8 +127,6 @@ const OrganizationsPage: React.FC = () => {
     if (selectedOrganization) {
       const allUserIds = [selectedOrganization.createdBy, ...selectedOrganization.users.map((u) => u.userId)];
       fetchUsers(allUserIds);
-      console.log('Users Invited:', allUserIds);  // dbugging
-
     }
   };
 
@@ -144,6 +135,8 @@ const OrganizationsPage: React.FC = () => {
       try {
         await dispatch(removeUserFromOrganization({ organizationId: selectedOrganization.id, userId })).unwrap();
         handleUserInvited();
+        const updatedUserIds = users.filter((user) => user.id !== userId).map((user) => user.id);
+        fetchUsers(updatedUserIds);
       } catch (error) {
         console.error('Failed to remove user from organization:', error);
         dispatch(showError({ message: 'Failed to remove user from organization.' }));
@@ -274,7 +267,6 @@ const OrganizationsPage: React.FC = () => {
         onUserInvited={handleUserInvited}
         onRemoveUser={handleRemoveUser}
         currentUser={currentUser}
-        organization={selectedOrganization}
       />
       <Modal
         title="Delete Organization"
