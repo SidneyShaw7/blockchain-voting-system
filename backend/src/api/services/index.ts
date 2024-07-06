@@ -19,4 +19,5 @@ export {
   addUserToOrganization,
   removeUserFromOrganization,
   leaveOrganization,
+  getOrganization,
 } from './organizationService';

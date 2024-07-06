@@ -7,6 +7,7 @@ import {
   addUserToOrganization,
   removeUserFromOrganization,
   leaveOrganization,
+  getOrganization,
 } from '../services';
 import { handleValidationErrors, ErrorWithStatus, checkUserAuthentication } from '../utils';
 
@@ -21,7 +22,7 @@ export const addOrganizationController = async (req: Request, res: Response, nex
     }
 
     const data = req.body;
-    console.log(data);
+    // console.log(data);
     const newOrganization = await addOrganization(userId, data);
     res.status(201).json({
       message: 'Organization created successfully',
@@ -30,6 +31,26 @@ export const addOrganizationController = async (req: Request, res: Response, nex
   } catch (error) {
     next(
       new ErrorWithStatus('Failed to add organization', 500, 'ADD_ORGANIZATION_ERROR', {
+        detail: error instanceof Error ? error.message : 'Unknown error',
+      })
+    );
+  }
+};
+
+export const getOrganizationController = async (req: Request, res: Response, next: NextFunction) => {
+  handleValidationErrors(req);
+  checkUserAuthentication(req);
+
+  try {
+    const { organizationId } = req.params;
+    const organization = await getOrganization(organizationId);
+    if (!organization) {
+      throw new ErrorWithStatus('Organization not found', 404, 'ORGANIZATION_NOT_FOUND');
+    }
+    res.json(organization);
+  } catch (error) {
+    next(
+      new ErrorWithStatus('Failed to get organization', 500, 'GET_ORGANIZATION_ERROR', {
         detail: error instanceof Error ? error.message : 'Unknown error',
       })
     );
@@ -58,7 +79,7 @@ export const getOrganizationsController = async (req: Request, res: Response, ne
 };
 
 export const updateOrganizationController = async (req: Request, res: Response, next: NextFunction) => {
-  console.log(req);
+  console.log(req.body);
   handleValidationErrors(req);
   checkUserAuthentication(req);
 
@@ -68,10 +89,12 @@ export const updateOrganizationController = async (req: Request, res: Response, 
       throw new ErrorWithStatus('User ID is missing', 400, 'USER_ID_MISSING');
     }
 
-    const { id } = req.params;
+    const { organizationId } = req.params;
     const data = req.body;
+    console.log('Organization ID:', organizationId);
+    console.log('Request Data:', data);
 
-    const updatedOrganization = await updateOrganization(id, userId, data);
+    const updatedOrganization = await updateOrganization(organizationId, userId, data);
     res.json({
       message: 'Organization updated successfully',
       organization: updatedOrganization,
@@ -137,11 +160,12 @@ export const removeUserFromOrganizationController = async (req: Request, res: Re
       throw new ErrorWithStatus('User ID is missing', 400, 'USER_ID_MISSING');
     }
 
-    console.log('Received userId:', userId);
+    console.log('Received request to remove userId:', userId);
 
     await removeUserFromOrganization(organizationId, userId);
     res.status(200).json({ message: 'User removed from organization successfully' });
   } catch (error) {
+    console.error('Error removing user from organization:', error);
     next(
       new ErrorWithStatus('Failed to remove user from organization', 500, 'REMOVE_USER_FROM_ORGANIZATION_ERROR', {
         detail: error instanceof Error ? error.message : 'Unknown error',

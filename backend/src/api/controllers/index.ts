@@ -10,4 +10,5 @@ export {
   addUserToOrganizationController,
   removeUserFromOrganizationController,
   leaveOrganizationController,
+  getOrganizationController
 } from './organizationController';
