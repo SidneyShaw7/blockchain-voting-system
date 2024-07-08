@@ -97,3 +97,16 @@ export const deleteUserFromEvent = createAsyncThunk<void, { eventId: string; use
     }
   }
 );
+
+export const inviteGroupToEvent = createAsyncThunk<void, { eventId: string; organizationId: string }, { rejectValue: string }>(
+  'events/inviteGroupToEvent',
+  async ({ eventId, organizationId }, { rejectWithValue }) => {
+    try {
+      console.log(eventId);
+
+      await eventService.inviteGroupToEvent(eventId, organizationId);
+    } catch (error) {
+      return rejectWithValue(processError(error));
+    }
+  }
+);

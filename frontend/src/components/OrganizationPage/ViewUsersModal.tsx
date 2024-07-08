@@ -112,7 +112,7 @@ const ViewUsersModal = ({
                       </Typography>
                     </div>
                     <div className="flex flex-col items-end ml-auto">
-                      <Typography variant="body2" color="textSecondary">
+                      <Typography mr={1} mt={1} variant="body2" color="textSecondary">
                         {user.id === adminId ? 'Admin' : 'Member'}
                       </Typography>
                       {canDelete && user.id !== adminId && <DeleteButton onClick={() => onRemoveUser(user.id)}>Remove</DeleteButton>}

@@ -10,6 +10,7 @@ const eventService = {
   getAllEvents: () => api.get('/api/events/'),
   inviteUser: (eventId: string, email: string) => api.post(`/api/events/${eventId}/invite`, { email }),
   deleteUserFromEvent: (eventId: string, userId: string) => api.delete(`/api/events/${eventId}/users/${userId}`),
+  inviteGroupToEvent: (eventId: string, organizationId: string) => api.post(`/api/events/${eventId}/inviteGroup`, { organizationId }),
 };
 
 export default eventService;

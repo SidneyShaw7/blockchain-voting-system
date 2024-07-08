@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { organizationsService } from '../../services';
-import { OrganizationResponse, OrganizationFormValues } from '../../types';
+import { OrganizationResponse, OrganizationFormValues, SimpleUser } from '../../types';
 import { processError } from '../../utils/helpers';
 
 export const addOrganization = createAsyncThunk<OrganizationResponse[], OrganizationFormValues, { rejectValue: string }>(
@@ -100,6 +100,18 @@ export const leaveOrganization = createAsyncThunk<OrganizationResponse[], string
     try {
       await organizationsService.leaveOrganization(organizationId);
       const response = await organizationsService.getOrganizations();
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(processError(error));
+    }
+  }
+);
+
+export const getOrganizationUsers = createAsyncThunk<SimpleUser[], string, { rejectValue: string }>(
+  'organizations/getUsers',
+  async (organizationId, { rejectWithValue }) => {
+    try {
+      const response = await organizationsService.getOrganizationUsers(organizationId);
       return response.data;
     } catch (error) {
       return rejectWithValue(processError(error));

@@ -7,6 +7,7 @@ import {
   addOrganization,
   deleteOrganization,
   removeUserFromOrganization,
+  // getOrganization,
 } from '../../features/organizations';
 import { RootState, useDispatch, useSelector } from '../../store';
 import { InputField, FileInputField } from '../helpers/helperFieldComponents';
@@ -126,15 +127,24 @@ const OrganizationsPage = () => {
   const handleUserInvited = () => {
     if (selectedOrganization) {
       const allUserIds = [selectedOrganization.createdBy, ...selectedOrganization.users.map((u) => u.userId)];
+      console.log(allUserIds);
       fetchUsers(allUserIds);
     }
   };
+
+  // const handleUserInvited = async () => {
+  //   if (selectedOrganization) {
+  //     const updOrg = dispatch(getOrganization(selectedOrganization.id));
+  //     const allUserIds = [updOrg.createdBy, ...updOrg.users.map((u) => u.userId)];
+  //     fetchUsers(allUserIds);
+  //   }
+  // };
 
   const handleRemoveUser = async (userId: string) => {
     if (selectedOrganization) {
       try {
         await dispatch(removeUserFromOrganization({ organizationId: selectedOrganization.id, userId })).unwrap();
-        handleUserInvited();
+        // handleUserInvited();
         const updatedUserIds = users.filter((user) => user.id !== userId).map((user) => user.id);
         fetchUsers(updatedUserIds);
       } catch (error) {

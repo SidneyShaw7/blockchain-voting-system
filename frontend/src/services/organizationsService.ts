@@ -50,9 +50,7 @@ const organizationsService = {
   leaveOrganization: (organizationId: string) => {
     return api.post<void>(`/api/organizations/${organizationId}/leave`);
   },
-  getOrganizationUsers: (organizationId: string) => {
-    return api.get<SimpleUser[]>(`/api/organizations/${organizationId}/users`);
-  },
+  getOrganizationUsers: (organizationId: string) => api.get<SimpleUser[]>(`/api/organizations/${organizationId}/users`),
 };
 
 export default organizationsService;

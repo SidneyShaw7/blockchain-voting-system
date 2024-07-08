@@ -14,3 +14,4 @@ export interface OrganizationResponse extends OrganizationFormValues {
   createdBy: string;
   // users: { userId: string; role: string }[];
 }
+

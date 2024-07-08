@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useDispatch } from '../../store';
-import { inviteUser } from '../../features/manageEvent';
-import { Modal, Box, Typography, List, ListItem, TextField } from '@mui/material';
-import { SimpleUser } from '../../types';
+import { inviteUser, inviteGroupToEvent } from '../../features/manageEvent';
+import { Modal, Box, Typography, List, ListItem, TextField, MenuItem, Select, FormControl } from '@mui/material';
+import { OrganizationResponse, SimpleUser } from '../../types';
 import { CancelButton, AddButton, DeleteButton, DisabledButton } from '../Buttons';
 import { modalStyle } from './modalStyle';
 import { error as showError, success as showSuccess } from '../../features/alert/alertSlice';
+import organizationsService from '../../services/organizationsService';
 
 interface ViewUsersModalProps {
   eventId: string;
@@ -33,8 +34,25 @@ const ViewUsersModal = ({
   isVotingPeriodOver,
 }: ViewUsersModalProps) => {
   const [isAddingUsers, setIsAddingUsers] = useState(false);
+  const [isAddingGroup, setIsAddingGroup] = useState(false);
   const [emails, setEmails] = useState('');
+  const [organizations, setOrganizations] = useState<OrganizationResponse[]>([]);
+  const [selectedOrganization, setSelectedOrganization] = useState<string>('');
   const dispatch = useDispatch();
+
+  const fetchOrganizations = useCallback(async () => {
+    try {
+      const response = await organizationsService.getOrganizations();
+      setOrganizations(response.data);
+    } catch (error) {
+      console.error('Failed to fetch organizations:', error);
+      dispatch(showError({ message: 'Failed to fetch organizations.' }));
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchOrganizations();
+  }, [fetchOrganizations]);
 
   const handleInvite = async () => {
     const emailList = emails
@@ -51,6 +69,20 @@ const ViewUsersModal = ({
       } catch (error) {
         console.error('Failed to invite users:', error);
         dispatch(showError({ message: 'Failed to invite users.' }));
+      }
+    }
+  };
+
+  const handleInviteGroup = async () => {
+    if (selectedOrganization) {
+      try {
+        await dispatch(inviteGroupToEvent({ eventId, organizationId: selectedOrganization })).unwrap();
+        dispatch(showSuccess({ message: 'Group invited successfully!' }));
+        onUserInvited();
+        setIsAddingGroup(false);
+      } catch (error) {
+        console.error('Failed to invite group:', error);
+        dispatch(showError({ message: 'Failed to invite group.' }));
       }
     }
   };
@@ -74,6 +106,41 @@ const ViewUsersModal = ({
             <div className="flex justify-between mt-3">
               <CancelButton onClick={() => setIsAddingUsers(false)}>Back</CancelButton>
               <AddButton onClick={handleInvite}>+ Add</AddButton>
+            </div>
+          </>
+        ) : isAddingGroup ? (
+          <>
+            <Typography variant="h6" component="h2" className="mb-4 flex justify-center">
+              Invite a Group
+            </Typography>
+            {organizations.length > 0 ? (
+              <FormControl fullWidth margin="normal">
+                <Select
+                  value={selectedOrganization}
+                  onChange={(e) => setSelectedOrganization(e.target.value)}
+                  displayEmpty
+                  disabled={isVotingPeriodOver}
+                >
+                  <MenuItem value="" disabled>
+                    Select a group
+                  </MenuItem>
+                  {organizations.map((org) => (
+                    <MenuItem key={org.id} value={org.id}>
+                      {org.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) : (
+              <Typography variant="body2" color="textSecondary" className="mb-4 flex justify-center">
+                No groups to invite
+              </Typography>
+            )}
+            <div className="flex justify-between mt-3">
+              <CancelButton onClick={() => setIsAddingGroup(false)}>Back</CancelButton>
+              <DisabledButton onClick={handleInviteGroup} disabled={!selectedOrganization || isVotingPeriodOver}>
+                + Add
+              </DisabledButton>
             </div>
           </>
         ) : (
@@ -106,9 +173,14 @@ const ViewUsersModal = ({
             </List>
             <div className="flex justify-between mt-3">
               <CancelButton onClick={onClose}>Back</CancelButton>
-              <DisabledButton onClick={() => setIsAddingUsers(true)} disabled={isVotingPeriodOver}>
-                + Add Users
-              </DisabledButton>
+              <div>
+                <DisabledButton onClick={() => setIsAddingUsers(true)} disabled={isVotingPeriodOver}>
+                  + Users
+                </DisabledButton>{' '}
+                <DisabledButton onClick={() => setIsAddingGroup(true)} disabled={isVotingPeriodOver}>
+                  + Group
+                </DisabledButton>
+              </div>
             </div>
           </>
         )}
