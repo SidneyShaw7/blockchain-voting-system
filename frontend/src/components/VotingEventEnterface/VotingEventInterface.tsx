@@ -8,6 +8,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import { CancelButton, ViewButton, GreenButton } from '../Buttons';
 import ViewUsersModal from './ViewUsersModal';
 import ConfirmVoteModal from './ConfirmVoteModal';
+import ViewResultsModal from './ViewResultsModal';
 import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import userService from '../../services/userService';
 
@@ -18,6 +19,7 @@ const VotingEventInterface = () => {
   const { data: event, isProcessing } = useSelector((state: RootState) => state.votingEvent);
   const userId = useSelector((state: RootState) => state.login.data?.user.id);
   const [isViewUsersModalOpen, setIsViewUsersModalOpen] = useState(false);
+  const [isViewResultsModalOpen, setIsViewResultsModalOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isVotingPeriodOver, setIsVotingPeriodOver] = useState(false);
@@ -167,8 +169,9 @@ const VotingEventInterface = () => {
         <CancelButton onClick={handleNavigateBack}>Back</CancelButton>
         {isAdmin && (
           <>
-            <div className="flex space-x-4">
+            <div className="flex space-x-2">
               <ViewButton onClick={() => setIsViewUsersModalOpen(true)}>Users</ViewButton>
+              {isVotingPeriodOver && <ViewButton onClick={() => setIsViewResultsModalOpen(true)}>Results</ViewButton>}
             </div>
             <ViewUsersModal
               eventId={event.id}
@@ -182,6 +185,7 @@ const VotingEventInterface = () => {
               adminId={event.createdBy}
               isVotingPeriodOver={isVotingPeriodOver}
             />
+            <ViewResultsModal event={event} isOpen={isViewResultsModalOpen} onClose={() => setIsViewResultsModalOpen(false)} />
           </>
         )}
       </div>

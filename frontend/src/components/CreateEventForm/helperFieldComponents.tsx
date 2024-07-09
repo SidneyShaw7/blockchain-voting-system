@@ -54,7 +54,7 @@ export const DateField = ({ name, label }: BaseFieldProps) => {
   );
 };
 
-export const SelectField = ({ name, label, options }: SelectFieldProps) => {
+export const SelectField = ({ name, label, options, disabledOptions = [] }: SelectFieldProps & { disabledOptions?: string[] }) => {
   const { register } = useFormContext();
   return (
     <div className="flex flex-col">
@@ -64,7 +64,7 @@ export const SelectField = ({ name, label, options }: SelectFieldProps) => {
         className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
       >
         {options.map((option, index) => (
-          <option key={index} value={option}>
+          <option key={index} value={option} disabled={disabledOptions.includes(option)}>
             {option}
           </option>
         ))}

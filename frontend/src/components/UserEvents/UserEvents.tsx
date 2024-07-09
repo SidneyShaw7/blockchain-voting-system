@@ -196,12 +196,12 @@ const UserEvents = () => {
               <h2 className="text-2xl font-semibold mb-2 text-gray-800">{event.title}</h2>
               <p className="text-gray-700 mb-2">{event.description}</p>
               <div className="flex justify-between text-gray-500 mb-2">
+                {isAdmin && <span>Storage: {event.storageType}</span>}
                 <span>Start Date: {new Date(event.startDate).toLocaleDateString()}</span>
-                <span>End Date: {new Date(event.endDate).toLocaleDateString()}</span>
               </div>
               <div className="flex justify-between text-gray-500 mb-2">
                 <span>Type: {event.eventType}</span>
-                {isAdmin && <span>Storage: {event.storageType}</span>}
+                <span>End Date: {new Date(event.endDate).toLocaleDateString()}</span>
               </div>
               <p className="text-gray-500 mb-4">Votes: {event.options.reduce((sum, option) => sum + option.votes, 0)}</p>
               <div className="flex justify-end">

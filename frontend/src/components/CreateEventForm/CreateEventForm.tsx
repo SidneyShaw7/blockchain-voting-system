@@ -31,8 +31,8 @@ const CreateEventForm = () => {
       options: [],
       startDate: new Date(),
       endDate: new Date(),
-      timezone: '',
-      votingMethod: '',
+      timezone: 'UTC',
+      votingMethod: 'Single choice',
       anonymity: false,
       resultVisibility: false,
       storageType: StorageType.Database,
@@ -104,12 +104,21 @@ const CreateEventForm = () => {
 
           <DateField name="startDate" label="Start date:" />
           <DateField name="endDate" label="End date:" />
-          <SelectField name="timezone" label="Select Timezone" options={['UTC', 'EST', 'PST']} />
-          <SelectField name="votingMethod" label="Select Voting Method" options={['Single choice', 'Multiple choice', 'Ranked choice']} />
+          <SelectField name="timezone" label="Select Timezone" options={['UTC', 'EST', 'PST']} disabledOptions={['EST', 'PST']} />
+          <SelectField
+            name="votingMethod"
+            label="Select Voting Method"
+            options={['Single choice', 'Multiple choice', 'Ranked choice']}
+            disabledOptions={['Multiple choice', 'Ranked choice']}
+          />
           <CheckboxField name="anonymity" label="Anonymity Allowed" />
           <CheckboxField name="resultVisibility" label="Show Results Immediately" />
-          <SelectField name="storageType" label="Select Storage Type" options={Object.values(StorageType)} />
-
+          <SelectField
+            name="storageType"
+            label="Select Storage Type"
+            options={Object.values(StorageType)}
+            disabledOptions={[StorageType.EthereumMainnet, StorageType.PrivateNetwork]}
+          />
           <button
             type="submit"
             disabled={methods.formState.isSubmitting}
