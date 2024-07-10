@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { OrganizationModel } from '../models/organization';
 import { UserModel } from '../models/user';
-import { OrganizationInput, OrganizationResponse } from '../types';
+import { OrganizationInput, OrganizationResponse, SimpleUser } from '../types';
 import { ErrorWithStatus } from '../utils';
 
 export const addOrganization = async (userId: string, data: OrganizationInput): Promise<OrganizationResponse> => {
@@ -143,5 +143,22 @@ export const leaveOrganization = async (organizationId: string, userId: string):
 
   await UserModel.findByIdAndUpdate(userObjectId, {
     $pull: { organizations: organization._id },
+  });
+};
+
+export const getUsersFromOrganization = async (organizationId: string): Promise<SimpleUser[]> => {
+  const organization = await OrganizationModel.findById(organizationId).populate('users.userId', 'firstName lastName email');
+  if (!organization) {
+    throw new ErrorWithStatus('Organization not found', 404, 'ORGANIZATION_NOT_FOUND');
+  }
+
+  return organization.users.map((userRole) => {
+    const user = userRole.userId as unknown as SimpleUser;
+    return {
+      id: user.id.toString(),
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+    };
   });
 };

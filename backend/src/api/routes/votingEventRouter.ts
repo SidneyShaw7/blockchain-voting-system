@@ -10,6 +10,7 @@ import {
   updateEventController,
   inviteUserController,
   deleteUserController,
+  inviteGroupToEventController,
 } from '../controllers/votingEventController';
 
 const router = express.Router();
@@ -21,6 +22,7 @@ router.delete('/:eventId', authenticate, handleAsync(deleteEventController));
 router.post('/:eventId/vote/:optionId', authenticate, handleAsync(voteOnEventController));
 router.put('/:eventId/update', authenticate, eventValidationRules(), handleAsync(updateEventController));
 router.post('/:eventId/invite', authenticate, handleAsync(inviteUserController));
+router.post('/:eventId/inviteGroup', authenticate, handleAsync(inviteGroupToEventController));
 router.delete('/:eventId/users/:userId', authenticate, handleAsync(deleteUserController));
 
 export default router;

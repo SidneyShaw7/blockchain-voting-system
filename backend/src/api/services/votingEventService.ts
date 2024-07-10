@@ -1,5 +1,6 @@
 import { UserModel } from '../models/user';
 import { VotingEvent } from '../models/votingEvent';
+import { OrganizationModel } from '../models/organization';
 import { VotingEventFormValues, VotingEventFormValuesDB, LeanVotingEvent } from '../types';
 import mongoose from 'mongoose';
 import { startSession, Types } from 'mongoose';
@@ -167,5 +168,35 @@ export const removeUserFromEvent = async (eventId: string, userId: string): Prom
   }
 
   event.invitedPersons.splice(userIndex, 1);
+  await event.save();
+};
+
+export const inviteGroupToEvent = async (eventId: string, organizationId: string): Promise<void> => {
+  const organization = await OrganizationModel.findById(organizationId).populate('users.userId', 'email');
+  if (!organization) {
+    throw new ErrorWithStatus('Organization not found', 404, 'ORGANIZATION_NOT_FOUND');
+  }
+  console.log(eventId);
+
+  const event = await VotingEvent.findById(eventId);
+  if (!event) {
+    throw new ErrorWithStatus('Event not found', 404, 'EVENT_NOT_FOUND');
+  }
+
+  const alreadyInvitedUserIds = new Set(event.invitedPersons.map((id) => id.toString()));
+  const adminUserId = event.createdBy.toString();
+
+  const usersToInvite = organization.users
+    .filter((userRole) => {
+      const userId = userRole.userId.toString();
+      return !alreadyInvitedUserIds.has(userId) && userId !== adminUserId;
+    })
+    .map((userRole) => userRole.userId);
+
+  if (usersToInvite.length === 0) {
+    return;
+  }
+
+  event.invitedPersons.push(...usersToInvite);
   await event.save();
 };

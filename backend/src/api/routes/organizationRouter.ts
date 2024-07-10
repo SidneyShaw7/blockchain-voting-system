@@ -8,6 +8,7 @@ import {
   removeUserFromOrganizationController,
   leaveOrganizationController,
   getOrganizationController,
+  getUsersFromOrganizationController,
 } from '../controllers';
 import { organizationValidationRules } from '../validations/organizationValidation';
 import { handleAsync, authenticate } from '../utils';
@@ -36,5 +37,6 @@ router.delete('/:organizationId', authenticate, handleAsync(deleteOrganizationCo
 router.post('/:organizationId/invite', authenticate, handleAsync(addUserToOrganizationController));
 router.delete('/:organizationId/users/:userId', authenticate, handleAsync(removeUserFromOrganizationController));
 router.post('/:organizationId/leave', authenticate, handleAsync(leaveOrganizationController));
+router.get('/:organizationId/users', authenticate, handleAsync(getUsersFromOrganizationController));
 
 export default router;

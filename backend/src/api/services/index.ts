@@ -9,6 +9,7 @@ export {
   voteOnEvent,
   inviteUserToEvent,
   removeUserFromEvent,
+  inviteGroupToEvent,
 } from './votingEventService';
 export { updateUser, getUsers } from './userService';
 export {
@@ -20,4 +21,5 @@ export {
   removeUserFromOrganization,
   leaveOrganization,
   getOrganization,
+  getUsersFromOrganization,
 } from './organizationService';

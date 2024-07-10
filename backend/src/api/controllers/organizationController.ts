@@ -8,6 +8,7 @@ import {
   removeUserFromOrganization,
   leaveOrganization,
   getOrganization,
+  getUsersFromOrganization,
 } from '../services';
 import { handleValidationErrors, ErrorWithStatus, checkUserAuthentication } from '../utils';
 
@@ -187,6 +188,23 @@ export const leaveOrganizationController = async (req: Request, res: Response, n
   } catch (error) {
     next(
       new ErrorWithStatus('Failed to leave organization', 500, 'LEAVE_ORGANIZATION_ERROR', {
+        detail: error instanceof Error ? error.message : 'Unknown error',
+      })
+    );
+  }
+};
+
+export const getUsersFromOrganizationController = async (req: Request, res: Response, next: NextFunction) => {
+  handleValidationErrors(req);
+  checkUserAuthentication(req);
+
+  try {
+    const { organizationId } = req.params;
+    const users = await getUsersFromOrganization(organizationId);
+    res.json(users);
+  } catch (error) {
+    next(
+      new ErrorWithStatus('Failed to get users from organization', 500, 'GET_USERS_FROM_ORGANIZATION_ERROR', {
         detail: error instanceof Error ? error.message : 'Unknown error',
       })
     );

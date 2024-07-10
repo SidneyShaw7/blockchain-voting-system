@@ -8,6 +8,7 @@ import {
   voteOnEvent,
   inviteUserToEvent,
   removeUserFromEvent,
+  inviteGroupToEvent,
 } from '../services';
 import { ErrorWithStatus, handleValidationErrors, checkUserAuthentication } from '../utils';
 
@@ -50,7 +51,7 @@ export const updateEventController = async (req: Request, res: Response, next: N
 
     res.status(200).json({
       message: 'Event updated successfully',
-      event: updatedEvent, //  DECIDE LATER what parts of the event to send back
+      event: updatedEvent,
     });
   } catch (error) {
     next(
@@ -152,6 +153,24 @@ export const deleteUserController = async (req: Request, res: Response, next: Ne
   } catch (error) {
     next(
       new ErrorWithStatus('Failed to delete user from event', 500, 'DELETE_USER_FAILED', {
+        detail: error instanceof Error ? error.message : 'Unknown error',
+      })
+    );
+  }
+};
+
+export const inviteGroupToEventController = async (req: Request, res: Response, next: NextFunction) => {
+  handleValidationErrors(req);
+  checkUserAuthentication(req);
+
+  try {
+    const { organizationId } = req.body;
+    const { eventId } = req.params;
+    await inviteGroupToEvent(eventId, organizationId);
+    res.status(200).json({ message: 'Group invited successfully' });
+  } catch (error) {
+    next(
+      new ErrorWithStatus('Failed to invite group', 500, 'INVITE_GROUP_FAILED', {
         detail: error instanceof Error ? error.message : 'Unknown error',
       })
     );
