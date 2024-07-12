@@ -10,6 +10,7 @@ import { UserEvents } from '../components/UserEvents';
 import { PrivateRoute } from '../components/PrivateRoute';
 import { ProfilePage } from '../components/ProfilePage';
 import { OrganizationPage } from '../components/OrganizationPage';
+import { WelcomePage } from '../components/WelcomePage';
 
 function App() {
   return (
@@ -17,10 +18,18 @@ function App() {
       <Router>
         <Routes>
           <Route
-            path="/"
+            path="/register"
             element={
               <AuthLayout>
                 <RegistrationForm />
+              </AuthLayout>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <AuthLayout>
+                <WelcomePage />
               </AuthLayout>
             }
           />

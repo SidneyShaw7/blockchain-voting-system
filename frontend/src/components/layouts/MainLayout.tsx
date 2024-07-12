@@ -60,14 +60,14 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <div className="flex h-screen bg-gray-100">
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white shadow p-1 flex justify-between items-center">
+        <header className="bg-white shadow py-3 flex justify-between items-center">
           <div className="text-left">
-            <StyledToggleButton onClick={() => dispatch(toggleSidebar())} className={isSidebarOpen ? 'active' : ''} disabled={isScreenSmall}>
-              {isSidebarOpen ? <CloseIcon /> : <MenuIcon />}
+            <StyledToggleButton  onClick={() => dispatch(toggleSidebar())} className={isSidebarOpen ? 'active' : ''} disabled={isScreenSmall}>
+              {isSidebarOpen ? <CloseIcon sx={{ fontSize: 30 }}/> : <MenuIcon sx={{ fontSize: 30 }}/>}
             </StyledToggleButton>
           </div>
           <div className="flex items-center">
-            <p className="text-xl font-semibold mr-2">
+            <p className="text-2xl font-semibold mr-2">
               {firstName} {lastName}
             </p>
             <span>
@@ -79,7 +79,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                     : ''
                 }
               >
-                <SettingsIcon />
+                <SettingsIcon  sx={{ fontSize: 30 }}/>
               </StyledIconButton>
               <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
                 <StyledMenuItem className={isCurrentPage('/profile') ? 'active' : ''} onClick={() => handleMenuClick('/profile')}>
@@ -96,7 +96,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                 </StyledMenuItem>
               </Menu>
             </span>
-            <span>
+            <span className='mr-2'>
               <LogoutButton />
             </span>
           </div>

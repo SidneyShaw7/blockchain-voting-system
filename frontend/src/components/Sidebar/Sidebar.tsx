@@ -26,18 +26,18 @@ const Sidebar = () => {
   return (
     <div
       className={`${
-        isOpen ? 'w-40' : 'w-14'
+        isOpen ? 'w-48' : 'w-14'
       } relative left-0 top-0 h-full bg-gradient-to-b from-[#D8E1E7] to-transparent shadow-md transition-width duration-300 ease-in-out flex flex-col justify-between`}
       aria-hidden={!isOpen}
     >
       <div>
-        <ul className="list-none p-1">
+        <ul className="list-none">
           {navItems.map(({ path, label, Icon }) => (
             <li key={path} className="flex items-center">
               <Tooltip title={label} placement="right">
                 <NavLink to={path} className={({ isActive }) => (isActive ? 'text-[#ff6747]' : 'text-[#00478F]')}>
                   <StyledIconButton className={isCurrentPage(path) ? 'active' : ''}>
-                    <Icon />
+                    <Icon sx={{ fontSize: 30 }}/>
                   </StyledIconButton>
                 </NavLink>
               </Tooltip>

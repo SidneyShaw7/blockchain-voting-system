@@ -29,7 +29,7 @@ export const LogoutButton = () => {
 
   return (
     <StyledIconButton onClick={handleLogout}>
-      <LogoutIcon />
+      <LogoutIcon sx={{ fontSize: 30 }}/>
     </StyledIconButton>
   );
 };
