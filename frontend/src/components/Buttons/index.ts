@@ -8,3 +8,6 @@ export { default as ViewButton } from './ViewButton';
 export { default as GreenButton } from './GreenButton';
 export { default as DisabledButton } from './DisabledButton';
 export { default as LeaveButton } from './LeaveButton';
+export { default as SignInUpButton } from './SignInUpButton';
+export { default as HomeButton } from './HomeButton';
+export { default as InfoButton } from './InfoButton';

@@ -9,3 +9,22 @@ body {
   outline-color: '#FF0000' !important;
   border-color: '#FF0000' !important;
 }
+/* 
+.playwrite-dk-uloopet-Uloopet {
+  font-family: "Playwrite DK Uloopet", cursive;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+} */
+
+/* .lobster-regular {
+  font-family: "Lobster", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+} */
+
+.acme-regular {
+  font-family: "Acme", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}

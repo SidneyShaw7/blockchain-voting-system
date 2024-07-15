@@ -7,6 +7,7 @@ import { login, resetLoginState } from '../../features/login';
 import { error as showError } from '../../features/alert/alertSlice';
 import { LoginSchema, LoginFormValues } from './LoginSchema';
 import { InputField } from '../helpers/helperFieldComponents';
+import { SignInUpButton } from '../Buttons';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -27,8 +28,6 @@ const LoginForm = () => {
       dispatch(resetLoginState());
     }
     if (isSuccess) {
-      // dispatch(showSuccess({ message: 'Login successful! Redirecting...' }));
-      // setTimeout(() => navigate('/home'), 1500);
       navigate('/home');
     }
   }, [dispatch, isError, isSuccess, errorMessage, navigate]);
@@ -76,12 +75,13 @@ const LoginForm = () => {
                 <InputField label="Username or Email" name="usernameOrEmail" />
                 <InputField label="Password" name="password" type="password" />
                 <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
-                  <button
+                  {/* <button
                     type="submit"
                     className="inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F]"
                   >
                     Log in
-                  </button>
+                  </button> */}
+                  <SignInUpButton onClick={methods.handleSubmit(onSubmit)}>Log in</SignInUpButton>
                   <p className="mt-4 text-sm text-gray-500 sm:mt-0">
                     Don't have an account?
                     <a href="/" className="text-gray-700 underline">

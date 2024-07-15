@@ -1,6 +1,6 @@
 import '../main.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { RegistrationForm } from '../components/RegistrationFrom';
+import { RegistrationForm } from '../components/RegistrationForm';
 import { LoginForm } from '../components/LoginForm';
 import { MainLayout, AuthLayout } from '../components/layouts';
 import { HomePage } from '../components/HomePage';
