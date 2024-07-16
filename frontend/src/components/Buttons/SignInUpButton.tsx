@@ -12,7 +12,7 @@ const SignInUpButton = ({ onClick, children, className, type = 'button' }: Butto
     <button
       type={type}
       onClick={onClick}
-      className={`inline-block shrink-0 rounded-md border border-[#00478F] bg-[#00478F] px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] focus:outline-none focus:ring active:text-[#00478F] ${className}`}
+      className={`inline-block shrink-0 rounded-md border border-[#74BDCB] bg-[#74BDCB] px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-[#00478F] hover:border-[#00478F] focus:outline-none focus:ring active:text-[#00478F] ${className}`}
     >
       {children}
     </button>

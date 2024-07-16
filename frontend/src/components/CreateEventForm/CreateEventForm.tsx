@@ -122,9 +122,9 @@ const CreateEventForm = () => {
           <button
             type="submit"
             disabled={methods.formState.isSubmitting}
-            className="inline-block shrink-0 rounded-md border border-[#ff6747] bg-[#ff6747] px-3 py-2 text-m font-medium text-white transition hover:bg-[#ff370c] hover:text-white focus:outline-none focus:ring active:text-[#ff370c] shadow-[2.0px_6.0px_6.0px_rgba(0,0,0,0.38)] hover:shadow-[3.0px_7.0px_7.0px_rgba(0,0,0,0.38)]"
+            className="inline-block shrink-0 rounded-md border border-[#EFE7BC] bg-[#ff6747] px-3 py-2 text-m font-medium text-[#E7F2F8] transition hover:bg-[#F54D3D] hover:text-[#E7F2F8] focus:outline-none focus:ring active:text-[#ff370c] shadow-[2px_2px_0px_0px_rgba(116,189,203)] hover:shadow-[3px_3px_0px_0px_rgba(116,189,203)]"
           >
-            Submit
+            Create Ballot
           </button>
         </form>
       </div>

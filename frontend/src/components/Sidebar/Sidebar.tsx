@@ -44,7 +44,7 @@ const Sidebar = () => {
               {isOpen && (
                 <NavLink
                   to={path}
-                  className={({ isActive }) => `ml-2 ${isActive ? 'text-[#ff6747]' : 'text-[#00478F] hover:text-[#2A231F]'}`}
+                  className={({ isActive }) => `ml-7 ${isActive ? 'text-[#ff6747]' : 'text-[#00478F] hover:text-[#2A231F]'}`}
                   onClick={() => dispatch(toggleSidebar())}
                 >
                   {label}

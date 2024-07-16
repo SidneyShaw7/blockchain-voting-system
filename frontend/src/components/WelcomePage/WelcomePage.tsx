@@ -1,12 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
 import pollingStation from '../../images/polling_station_last.jpg';
 import { HomeButton, AddButton, InfoButton } from '../Buttons';
+import { useNavigate } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 const WelcomePage = () => {
+  const navigate = useNavigate();
+
   const [showScrollTop, setShowScrollTop] = useState(false);
   const howItWorksRef = useRef<HTMLDivElement>(null);
+
+  const navigateToRegister = () => {
+    navigate('/register');
+  };
+  const navigateToLogin = () => {
+    navigate('/login');
+  };
 
   const handleScroll = () => {
     if (window.scrollY > 300) {
@@ -52,7 +62,7 @@ const WelcomePage = () => {
         <div className="container mx-auto flex justify-between items-center px-4">
           <h1 className="text-xl font-bold">Secure Voting</h1>
           <div>
-            <AddButton>Sign In</AddButton>
+            <AddButton onClick={() => navigateToLogin()}>Sign In</AddButton>
           </div>
         </div>
       </header>
@@ -64,7 +74,7 @@ const WelcomePage = () => {
             <p className="text-xl mb-5 text-left">Unforgettable online election experience! Voting system built for your needs.</p>
             <p className="mb-6 text-gray-600">Saves your time, secures your ballots.</p>
             <div className="flex space-x-4">
-              <HomeButton>Try Now</HomeButton>
+              <HomeButton onClick={() => navigateToRegister()}>Try Now</HomeButton>
               <InfoButton onClick={() => scrollToSection('how-it-works')}>Learn More</InfoButton>
             </div>
           </div>
@@ -188,10 +198,14 @@ const WelcomePage = () => {
         </div>
       </section>
 
+      <footer className="bg-white shadow p-2 text-center border-t-2 border-[#EFE7BC]">
+        <p>© 2024 Secure Voting System. All rights reserved.</p>
+      </footer>
+
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-12 right-12 bg-[#ff6747] text-white px-5 py-4 rounded-full shadow-lg hover:bg-[#F54D3D] transition duration-300"
+          className="fixed bottom-12 right-12 bg-[#ff6747] text-white px-5 py-3.5 rounded-full shadow-lg hover:bg-[#F54D3D] transition duration-300"
         >
           ↑
         </button>

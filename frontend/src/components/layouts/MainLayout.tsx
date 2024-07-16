@@ -24,6 +24,15 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isScreenSmall, setIsScreenSmall] = useState(window.innerWidth < 500);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  const handleScroll = (e) => {
+    if (e.target.scrollTop > 300) {
+      setShowScrollTop(true);
+    } else {
+      setShowScrollTop(false);
+    }
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -31,12 +40,22 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     };
 
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) {
+      mainContent.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+
+      if (mainContent) {
+        mainContent.removeEventListener('scroll', handleScroll);
+      }
+    };
   }, []);
 
   useEffect(() => {
-    console.log('Auth state changed:', isAuthenticated);
-
     if (!isAuthenticated) {
       navigate('/login');
     }
@@ -57,13 +76,20 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
   const isCurrentPage = (path: string) => location.pathname === path;
 
+  const scrollToTop = () => {
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) {
+      mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="flex h-screen bg-gray-100">
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white shadow py-3 flex justify-between items-center">
           <div className="text-left">
-            <StyledToggleButton  onClick={() => dispatch(toggleSidebar())} className={isSidebarOpen ? 'active' : ''} disabled={isScreenSmall}>
-              {isSidebarOpen ? <CloseIcon sx={{ fontSize: 30 }}/> : <MenuIcon sx={{ fontSize: 30 }}/>}
+            <StyledToggleButton onClick={() => dispatch(toggleSidebar())} className={isSidebarOpen ? 'active' : ''} disabled={isScreenSmall}>
+              {isSidebarOpen ? <CloseIcon sx={{ fontSize: 30 }} /> : <MenuIcon sx={{ fontSize: 30 }} />}
             </StyledToggleButton>
           </div>
           <div className="flex items-center">
@@ -79,7 +105,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                     : ''
                 }
               >
-                <SettingsIcon  sx={{ fontSize: 30 }}/>
+                <SettingsIcon sx={{ fontSize: 30 }} />
               </StyledIconButton>
               <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
                 <StyledMenuItem className={isCurrentPage('/profile') ? 'active' : ''} onClick={() => handleMenuClick('/profile')}>
@@ -96,22 +122,26 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                 </StyledMenuItem>
               </Menu>
             </span>
-            <span className='mr-2'>
+            <span className="mr-2">
               <LogoutButton />
             </span>
           </div>
         </header>
         <div className="flex flex-1 overflow-hidden">
           <Sidebar />
-          <main className="flex-1 overflow-y-auto p-4">
+          <main id="main-content" className="flex-1 overflow-y-auto p-4">
             <Alert />
             {children}
           </main>
-          {/* <footer className="bg-white shadow p-2 text-center">
-          footer info, links, social media icons
-          <p>© 2024 Secure Voting System. All rights reserved.</p>
-        </footer> */}
         </div>
+        {showScrollTop && (
+          <button
+            onClick={scrollToTop}
+            className="fixed bottom-12 right-12 bg-[#ff6747] text-white px-5 py-3.5 rounded-full shadow-lg hover:bg-[#F54D3D] transition duration-300"
+          >
+            ↑
+          </button>
+        )}
       </div>
     </div>
   );

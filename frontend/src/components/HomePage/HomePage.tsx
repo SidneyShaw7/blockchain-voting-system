@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { AddButton } from '../Buttons';
-import writingImage from '../../images/writing.jpg';
+import ballotImg from '../../images/Ballot.jpg';
 import groupPic from '../../images/company.jpg';
 
 const HomePage = () => {
@@ -37,11 +37,11 @@ const HomePage = () => {
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-lg flex flex-col">
-          <img src={writingImage} alt="Writing" className="rounded" />
+          <img src={ballotImg} alt="Writing" className="rounded" />
           <div className="p-6 flex-grow">
             <h2 className="text-2xl font-bold text-blue-900 mb-4">Start Creating Events</h2>
             <p className="text-gray-700">
-              You can start creating events or ballots for voting. This allows you to manage elections and gather votes efficiently and securely.
+              You can start creating ballots for voting. This allows you to manage elections and gather votes efficiently and securely.
             </p>
           </div>
           <div className="p-6 pt-0">
