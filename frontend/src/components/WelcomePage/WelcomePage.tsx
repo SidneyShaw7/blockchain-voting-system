@@ -60,7 +60,7 @@ const WelcomePage = () => {
     <div className="min-h-screen bg-gray-100 text-gray-800 font-sans">
       <header className="bg-[#74BDCB] text-white py-4 fixed top-0 left-0 w-full z-10 shadow-lg border-b-2 border-[#EFE7BC]">
         <div className="container mx-auto flex justify-between items-center px-4">
-          <h1 className="text-xl font-bold">Secure Voting</h1>
+          <h1 className="text-3xl font-bold acme-regular">Secure Voting</h1>
           <div>
             <AddButton onClick={() => navigateToLogin()}>Sign In</AddButton>
           </div>

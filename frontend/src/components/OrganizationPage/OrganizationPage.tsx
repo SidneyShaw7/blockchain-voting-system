@@ -7,7 +7,6 @@ import {
   addOrganization,
   deleteOrganization,
   removeUserFromOrganization,
-  // getOrganization,
 } from '../../features/organizations';
 import { RootState, useDispatch, useSelector } from '../../store';
 import { InputField, FileInputField } from '../helpers/helperFieldComponents';
@@ -132,19 +131,10 @@ const OrganizationsPage = () => {
     }
   };
 
-  // const handleUserInvited = async () => {
-  //   if (selectedOrganization) {
-  //     const updOrg = dispatch(getOrganization(selectedOrganization.id));
-  //     const allUserIds = [updOrg.createdBy, ...updOrg.users.map((u) => u.userId)];
-  //     fetchUsers(allUserIds);
-  //   }
-  // };
-
   const handleRemoveUser = async (userId: string) => {
     if (selectedOrganization) {
       try {
         await dispatch(removeUserFromOrganization({ organizationId: selectedOrganization.id, userId })).unwrap();
-        // handleUserInvited();
         const updatedUserIds = users.filter((user) => user.id !== userId).map((user) => user.id);
         fetchUsers(updatedUserIds);
       } catch (error) {
@@ -159,7 +149,7 @@ const OrganizationsPage = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="max-w mx-auto p-5">
       {!isEditing && !isAdding && (
         <div>
           {organizations.length === 0 ? (
@@ -172,42 +162,45 @@ const OrganizationsPage = () => {
           ) : (
             <div>
               <h1 className="text-3xl font-bold mb-6">Organizations</h1>
-              {organizations.map((org: OrganizationResponse) => {
-                const isAdmin = currentUser && org.createdBy === currentUser.id;
-                return (
-                  <div
-                    key={org.id}
-                    className="relative bg-[#EAEFF2] border border-gray-300 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p>
-                          <strong>Organization:</strong> {org.name}
-                        </p>
-                        <p>
-                          <strong>Users:</strong> {org.userCount}
-                        </p>
-                        <p>
-                          <strong>Billing Email:</strong> {org.billingEmail}
-                        </p>
-                        <p>
-                          <strong>Billing Address:</strong> {org.billingInfo}
-                        </p>
-                      </div>
-                    </div>
-                    {isAdmin && (
-                      <>
-                        <EditButton onClick={() => handleEdit(org)} className="mt-3 mr-2">
-                          Edit
-                        </EditButton>
-                      </>
-                    )}
-                    <ViewButton onClick={() => handleViewUsers(org)} className="mt-3">
-                      Users
-                    </ViewButton>
-                  </div>
-                );
-              })}
+              <table className="w-full bg-white">
+                <thead className="bg-[#00478F] text-white">
+                  <tr>
+                    <th className="py-2 px-4 border text-start">Organization</th>
+                    <th className="py-2 px-4 border text-start">Your Role</th>
+                    <th className="py-2 px-4 border text-start">Number of Users</th>
+                    <th className="py-2 px-4 border text-start">Billing Email</th>
+                    <th className="py-2 px-4 border text-start">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-[#E7F2F8]">
+                  {organizations.map((org: OrganizationResponse) => {
+                    const isAdmin = currentUser && org.createdBy === currentUser.id;
+                    return (
+                      <tr key={org.id}>
+                        <td className="py-2 px-4 border">{org.name}</td>
+                        <td className="py-2 px-4 border">{isAdmin ? 'Admin' : 'User'}</td>
+                        <td className="py-2 px-4 border text-center">{org.userCount}</td>
+                        <td className="py-2 px-4 border">{org.billingEmail}</td>
+                        <td className="py-2 px-4 border">
+                          <ViewButton onClick={() => handleViewUsers(org)} className="mr-2">
+                            View Users
+                          </ViewButton>
+                          |
+                          {isAdmin ? (
+                            <>
+                              <EditButton onClick={() => handleEdit(org)} className="ml-2">
+                                Edit
+                              </EditButton>
+                            </>
+                          ) : (
+                            'Ask Admin for permission'
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
               <AddButton
                 className="mt-3"
                 onClick={() => {
@@ -231,7 +224,7 @@ const OrganizationsPage = () => {
       )}
       {(isEditing || isAdding) && (
         <FormProvider {...methods}>
-          <h1 className="text-3xl font-bold mb-6">Organization</h1>
+          <h1 className="text-3xl font-bold mb-6">Organization / {selectedOrganization?.name}</h1>
           <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4 sm:w-96">
             <InputField label="Organization Name" name="name" />
             <InputField label="Location" name="location" />

@@ -15,6 +15,14 @@ export const StyledIconButton = styled(IconButton)(() => ({
   '&.active': {
     color: '#ff6747',
   },
+  '&:hover': {
+    backgroundColor: 'transparent',
+  },
+  // '&:focus': {
+  //   backgroundColor: 'transparent',
+  // },
+  '& .MuiTouchRipple-root': {},
+  borderRadius: 0,
 }));
 
 export const StyledMenuItem = styled(MenuItem)(() => ({

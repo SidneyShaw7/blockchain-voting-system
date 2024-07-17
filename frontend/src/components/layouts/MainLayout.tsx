@@ -1,15 +1,18 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { Alert } from '../AlertComponent';
 import { Sidebar } from '../Sidebar';
-import { useSelector, RootState, useDispatch } from '../../store';
+import { useSelector, RootState } from '../../store';
 import { LogoutButton } from '../LogoutButton';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { useNavigate } from 'react-router-dom';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
-import { toggleSidebar } from '../../features/sidebar';
+import { useNavigate, NavLink } from 'react-router-dom';
+import HomeIcon from '@mui/icons-material/Home';
+import EventIcon from '@mui/icons-material/Event';
+import CreateIcon from '@mui/icons-material/Create';
+// import InfoIcon from '@mui/icons-material/Info';
+// import ContactMailIcon from '@mui/icons-material/ContactMail';
+import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
-import { StyledIconButton, StyledMenuItem, StyledToggleButton } from './styledComponents';
+import { StyledIconButton, StyledMenuItem } from './styledComponents';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -20,10 +23,9 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const lastName = useSelector((state: RootState) => state.login.data?.user.lastName);
   const isAuthenticated = useSelector((state: RootState) => state.login.isAuthenticated);
   const navigate = useNavigate();
-  const isSidebarOpen = useSelector((state: RootState) => state.sidebar.isOpen);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [isScreenSmall, setIsScreenSmall] = useState(window.innerWidth < 500);
+  const [isScreenSmall, setIsScreenSmall] = useState(window.innerWidth < 768);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   const handleScroll = (e) => {
@@ -36,7 +38,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsScreenSmall(window.innerWidth < 500);
+      setIsScreenSmall(window.innerWidth < 768);
     };
 
     window.addEventListener('resize', handleResize);
@@ -83,14 +85,28 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     }
   };
 
+  const navItems = [
+    { path: '/home', label: 'Home', Icon: HomeIcon },
+    { path: '/events', label: 'Ballots', Icon: EventIcon },
+    { path: '/event/create', label: 'Create', Icon: CreateIcon },
+  ];
+
   return (
     <div className="flex h-screen bg-gray-100">
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white shadow py-3 flex justify-between items-center">
-          <div className="text-left">
-            <StyledToggleButton onClick={() => dispatch(toggleSidebar())} className={isSidebarOpen ? 'active' : ''} disabled={isScreenSmall}>
-              {isSidebarOpen ? <CloseIcon sx={{ fontSize: 30 }} /> : <MenuIcon sx={{ fontSize: 30 }} />}
-            </StyledToggleButton>
+          <div className="text-left flex items-center">
+            <h1 className="text-3xl font-bold  acme-regular ml-5 mr-5">Secure Voting </h1>
+            {!isScreenSmall &&
+              navItems.map(({ path, label, Icon }) => (
+                <Tooltip key={path} title={label} placement="bottom">
+                  <NavLink to={path} className={({ isActive }) => (isActive ? 'text-[#ff6747] text-sm' : 'text-[#00478F] ml-5')}>
+                    <StyledIconButton className={isCurrentPage(path) ? 'active ' : ''}>
+                      <Icon sx={{ fontSize: 30 }} /> <span className={`text-lg ml-2 ${isCurrentPage(path) ? 'underline' : ''}`}>{label}</span>
+                    </StyledIconButton>
+                  </NavLink>
+                </Tooltip>
+              ))}
           </div>
           <div className="flex items-center">
             <p className="text-2xl font-semibold mr-2">
@@ -128,7 +144,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
           </div>
         </header>
         <div className="flex flex-1 overflow-hidden">
-          <Sidebar />
+          {isScreenSmall && <Sidebar />}
           <main id="main-content" className="flex-1 overflow-y-auto p-4">
             <Alert />
             {children}

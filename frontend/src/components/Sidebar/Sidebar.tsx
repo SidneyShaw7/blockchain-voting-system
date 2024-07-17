@@ -4,8 +4,8 @@ import { toggleSidebar } from '../../features/sidebar';
 import HomeIcon from '@mui/icons-material/Home';
 import EventIcon from '@mui/icons-material/Event';
 import CreateIcon from '@mui/icons-material/Create';
-import InfoIcon from '@mui/icons-material/Info';
-import ContactMailIcon from '@mui/icons-material/ContactMail';
+// import InfoIcon from '@mui/icons-material/Info';
+// import ContactMailIcon from '@mui/icons-material/ContactMail';
 import Tooltip from '@mui/material/Tooltip';
 import { StyledIconButton } from './styledComponents';
 
@@ -17,8 +17,8 @@ const Sidebar = () => {
     { path: '/home', label: 'Home', Icon: HomeIcon },
     { path: '/events', label: 'Ballots', Icon: EventIcon },
     { path: '/event/create', label: 'Create', Icon: CreateIcon },
-    { path: '/about', label: 'About', Icon: InfoIcon },
-    { path: '/contact', label: 'Contact', Icon: ContactMailIcon },
+    // { path: '/about', label: 'About', Icon: InfoIcon },
+    // { path: '/contact', label: 'Contact', Icon: ContactMailIcon },
   ];
 
   const isCurrentPage = (path: string) => location.pathname === path;
@@ -27,7 +27,7 @@ const Sidebar = () => {
     <div
       className={`${
         isOpen ? 'w-48' : 'w-14'
-      } relative left-0 top-0 h-full bg-gradient-to-b from-[#D8E1E7] to-transparent shadow-md transition-width duration-300 ease-in-out flex flex-col justify-between`}
+      } relative left-0 top-0 h-full bg-gradient-to-b from-[#74BDCB] to-transparent shadow-md transition-width duration-300 ease-in-out flex flex-col justify-between`}
       aria-hidden={!isOpen}
     >
       <div>

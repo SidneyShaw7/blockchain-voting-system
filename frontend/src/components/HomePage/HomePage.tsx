@@ -21,7 +21,7 @@ const HomePage = () => {
         {/* <p className="text-lg text-gray-700">Here, you can manage your organizations and create events for voting seamlessly.</p> */}
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-white rounded-lg shadow-lg flex flex-col">
+        <div className="bg-white rounded-sm shadow-lg flex flex-col">
           <img src={groupPic} alt="Group" className="rounded" />
           <div className="p-6 flex-grow">
             <h2 className="text-2xl font-bold text-blue-900 mb-4">Finish Your Registration</h2>
@@ -36,7 +36,7 @@ const HomePage = () => {
             </AddButton>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-lg flex flex-col">
+        <div className="bg-white rounded-sm shadow-lg flex flex-col">
           <img src={ballotImg} alt="Writing" className="rounded" />
           <div className="p-6 flex-grow">
             <h2 className="text-2xl font-bold text-blue-900 mb-4">Start Creating Events</h2>

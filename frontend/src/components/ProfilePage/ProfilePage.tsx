@@ -1,123 +1,75 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
 import { RootState, useDispatch, useSelector } from '../../store';
 import { updateUserProfile, clearState } from '../../features/userProfile';
-import { InputField, FileInputField } from '../helpers/helperFieldComponents';
+import { InputField } from '../helpers/helperFieldComponents';
 import { UserProfileSchema, UserProfileFormValues } from './UserProfileSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { error as showError, success as showSuccess } from '../../features/alert';
-import { AddButton, EditButton, CancelButton } from '../Buttons';
+import { AddButton, CancelButton } from '../Buttons';
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
   const { isError, isSuccess, errorMessage } = useSelector((state: RootState) => state.userProfile);
   const { data: loginData } = useSelector((state: RootState) => state.login);
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [avatarPreview, setAvatarPreview] = useState<string | undefined>(loginData?.user.avatar);
-
-  const defaultValues: UserProfileFormValues = {
-    firstName: loginData?.user.firstName || '',
-    lastName: loginData?.user.lastName || '',
-    username: loginData?.user.username || '',
-    email: loginData?.user.email || '',
-    password: '',
-    newPassword: undefined,
-    avatar: undefined,
-  };
-
   const methods = useForm<UserProfileFormValues>({
     resolver: zodResolver(UserProfileSchema),
-    defaultValues,
+    defaultValues: {
+      firstName: loginData?.user.firstName || '',
+      lastName: loginData?.user.lastName || '',
+      username: loginData?.user.username || '',
+      email: loginData?.user.email || '',
+      password: '',
+      newPassword: undefined,
+    },
   });
 
   useEffect(() => {
     if (isSuccess) {
       dispatch(showSuccess({ message: 'Profile updated successfully!' }));
       dispatch(clearState());
-      setIsEditing(false);
+      methods.reset({
+        firstName: loginData?.user.firstName || '',
+        lastName: loginData?.user.lastName || '',
+        username: loginData?.user.username || '',
+        email: loginData?.user.email || '',
+        password: '',
+        newPassword: '',
+      });
     }
     if (isError && errorMessage) {
       dispatch(showError({ message: errorMessage }));
       dispatch(clearState());
     }
-  }, [dispatch, isSuccess, isError, errorMessage]);
+  }, [dispatch, isSuccess, isError, errorMessage, loginData, methods]);
 
   const onSubmit: SubmitHandler<UserProfileFormValues> = (data) => {
     dispatch(updateUserProfile(data));
   };
 
-  const handleAvatarChange = (file: File | undefined) => {
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setAvatarPreview(loginData?.user.avatar);
-    }
-  };
-
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Profile</h1>
-      {/* {isError && dispatch(showError({ message: errorMessage }))}
-      {isSuccess && <div className="text-green-500 mb-4">Profile updated successfully!</div>} */}
-
-      {!isEditing ? (
-        <div>
-          <div className="text-l mb-6 space-y-4">
-            {loginData?.user.avatar ? (
-              <div className="mt-4">
-                {typeof loginData.user.avatar === 'string' ? (
-                  <img src={loginData.user.avatar} alt="Avatar" className="h-20 w-20 rounded-full" />
-                ) : (
-                  <img src={URL.createObjectURL(loginData.user.avatar)} alt="Avatar" className="h-20 w-20 rounded-full" />
-                )}
-              </div>
-            ) : (
-              <div>
-                <img src="/src/images/default_avatar.jpeg" alt="Avatar" className="h-20 w-20 rounded-full" />
-              </div>
-            )}
-            <div>
-              <p>
-                <strong>First Name:</strong> {loginData?.user.firstName}
-              </p>
-              <p>
-                <strong>Last Name:</strong> {loginData?.user.lastName}
-              </p>
-              <p>
-                <strong>Username:</strong> {loginData?.user.username}
-              </p>
-              <p>
-                <strong>Email:</strong> {loginData?.user.email}
-              </p>
-            </div>
-            <EditButton onClick={() => setIsEditing(true)}>Edit</EditButton>
-          </div>
-        </div>
-      ) : (
+    <div className="flex justify-start items-center min-h-screen bg-gray-100">
+      <div className="max-w-lg w-full p-8 mx-auto ml-12">
+        <h1 className="text-3xl font-bold mb-6">Edit Profile</h1>
         <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4 sm:w-96">
+          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">
+            <h2 className="text-xl font-semibold">Contact Information</h2>
             <InputField label="First Name" name="firstName" />
             <InputField label="Last Name" name="lastName" />
             <InputField label="Username" name="username" />
             <InputField label="Email" name="email" type="email" />
-            <InputField label="Password" name="password" type="password" />
+            <h3 className="text-xl font-semibold">Change Password</h3>
             <InputField label="New Password" name="newPassword" type="password" />
-            {avatarPreview && (
-              <div className="mb-4">
-                <img src={avatarPreview} alt="Avatar Preview" className="h-20 w-20 rounded-full" />
-              </div>
-            )}
-            <FileInputField label="Avatar" name="avatar" onChange={(file) => handleAvatarChange(file)} />
-            <CancelButton onClick={() => setIsEditing(false)}>Back</CancelButton>
-            <AddButton onClick={methods.handleSubmit(onSubmit)}>Save</AddButton>{' '}
+            <h3 className="text-xl font-semibold">Enter Current Password to Update Settings</h3>
+            <InputField label="Current Password" name="password" type="password" />
+            <div className="space-x-4">
+              <CancelButton onClick={() => methods.reset()}>Cancel</CancelButton>
+              <AddButton onClick={methods.handleSubmit(onSubmit)}>Save</AddButton>
+            </div>
           </form>
         </FormProvider>
-      )}
+      </div>
     </div>
   );
 };

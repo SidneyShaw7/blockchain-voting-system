@@ -76,7 +76,7 @@ const UserEvents = () => {
   });
 
   return (
-    <div className="max-w-6xl mx-auto p-4">
+    <div className="max-w mx-auto p-5">
       <ThemeProvider theme={theme}>
         <div className="flex justify-between mb-6">
           <div className="flex space-x-4">
@@ -161,56 +161,62 @@ const UserEvents = () => {
           />
         </div>
       </ThemeProvider>
-      <ul className="space-y-6">
-        {filteredEvents.map((event) => {
-          const hasUserVoted = userId && event.options.some((option) => option.voters.includes(userId));
-          const isAdmin = event.createdBy === userId;
-          const now = new Date();
-          const isVotingPeriodOver = new Date(event.endDate) < now;
+      <table className="w-full bg-white">
+        <thead className="bg-[#00478F] text-white">
+          <tr>
+            <th className="py-2 px-4 border text-start">Title</th>
+            {/* <th className="py-2 px-4 border text-start">Description</th> */}
+            <th className="py-2 px-4 border text-start">Start Date</th>
+            <th className="py-2 px-4 border text-start">End Date</th>
+            <th className="py-2 px-4 border text-start">Votes</th>
+            <th className="py-2 px-4 border text-start">Status</th>
+            <th className="py-2 px-4 border text-start">Actions</th>
+          </tr>
+        </thead>
+        <tbody className="bg-[#E7F2F8]">
+          {filteredEvents.map((event) => {
+            const hasUserVoted = userId && event.options.some((option) => option.voters.includes(userId));
+            const isAdmin = event.createdBy === userId;
+            const now = new Date();
+            const isVotingPeriodOver = new Date(event.endDate) < now;
 
-          return (
-            <li
-              key={event.id}
-              className="relative bg-[#EAEFF2] border border-gray-300 rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300"
-            >
-              <div className="absolute top-2 right-2">
-                {isAdmin && (
-                  <Tooltip title="Admin">
-                    <SupervisorAccountIcon className="text-blue-500" />
-                  </Tooltip>
-                )}
-                {hasUserVoted ? (
-                  <Tooltip title="Voted">
-                    <TaskAltIcon className="text-green-500" />
-                  </Tooltip>
-                ) : isVotingPeriodOver ? (
-                  <Tooltip title="Voting period over">
-                    <LockClockIcon className="text-black-500" />
-                  </Tooltip>
-                ) : (
-                  <Tooltip title="Awaiting vote">
-                    <AccessTimeIcon className="text-yellow-500" />
-                  </Tooltip>
-                )}
-              </div>
-              <h2 className="text-2xl font-semibold mb-2 text-gray-800">{event.title}</h2>
-              <p className="text-gray-700 mb-2">{event.description}</p>
-              <div className="flex justify-between text-gray-500 mb-2">
-                {isAdmin && <span>Storage: {event.storageType}</span>}
-                <span>Start Date: {new Date(event.startDate).toLocaleDateString()}</span>
-              </div>
-              <div className="flex justify-between text-gray-500 mb-2">
-                <span>Type: {event.eventType}</span>
-                <span>End Date: {new Date(event.endDate).toLocaleDateString()}</span>
-              </div>
-              <p className="text-gray-500 mb-4">Votes: {event.options.reduce((sum, option) => sum + option.votes, 0)}</p>
-              <div className="flex justify-end">
-                <ViewButton onClick={() => handleViewEvent(event.id)}>View Ballot</ViewButton>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+            return (
+              <tr key={event.id}>
+                <td className="py-2 px-4 border">{event.title}</td>
+                {/* <td className="py-2 px-4 border">{event.description}</td> */}
+                <td className="py-2 px-4 border">{new Date(event.startDate).toLocaleDateString()}</td>
+                <td className="py-2 px-4 border">{new Date(event.endDate).toLocaleDateString()}</td>
+                <td className="py-2 px-4 border text-center">{event.options.reduce((sum, option) => sum + option.votes, 0)}</td>
+                <td className="py-2 px-4 border">
+                  <div className="flex justify-center items-center">
+                    {isAdmin && (
+                      <Tooltip title="Admin">
+                        <SupervisorAccountIcon className="text-blue-500" />
+                      </Tooltip>
+                    )}
+                    {hasUserVoted ? (
+                      <Tooltip title="Voted">
+                        <TaskAltIcon className="text-green-500" />
+                      </Tooltip>
+                    ) : isVotingPeriodOver ? (
+                      <Tooltip title="Voting period over">
+                        <LockClockIcon className="text-black-500" />
+                      </Tooltip>
+                    ) : (
+                      <Tooltip title="Awaiting vote">
+                        <AccessTimeIcon className="text-yellow-500" />
+                      </Tooltip>
+                    )}
+                  </div>
+                </td>
+                <td className="py-2 px-4 border">
+                  <ViewButton onClick={() => handleViewEvent(event.id)}>View Ballot</ViewButton>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 };

@@ -12,7 +12,7 @@ import { styled } from '@mui/material/styles';
 
 export const StyledIconButton = styled(IconButton)(() => ({
   margin: '4px',
-  color: '#00478F',
+  color: '#000',
   '&.active': {
     color: '#ff6747',
   },

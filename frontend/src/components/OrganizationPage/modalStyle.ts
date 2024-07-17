@@ -7,5 +7,5 @@ export const modalStyle = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
-  borderRadius: 2,
+  borderRadius: 0.8,
 };

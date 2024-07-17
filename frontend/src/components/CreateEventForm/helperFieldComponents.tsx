@@ -20,12 +20,12 @@ export const InputField = ({ label, name, inputType = 'input' }: BaseFieldProps 
       {inputType === 'textarea' ? (
         <textarea
           {...register(name)}
-          className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
       ) : (
         <input
           {...register(name)}
-          className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
       )}
       {errors[name] && <span className="text-red-500 text-sm mt-1">{errorMessage}</span>}
@@ -46,7 +46,7 @@ export const DateField = ({ name, label }: BaseFieldProps) => {
             {...field}
             selected={field.value}
             onChange={field.onChange}
-            className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
         )}
       />
@@ -61,7 +61,7 @@ export const SelectField = ({ name, label, options, disabledOptions = [] }: Sele
       <label className="text-gray-700 font-medium">{label}</label>
       <select
         {...register(name)}
-        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
       >
         {options.map((option, index) => (
           <option key={index} value={option} disabled={disabledOptions.includes(option)}>
@@ -92,12 +92,12 @@ export const OptionField = ({ index, remove }: OptionFieldProps) => {
       <input
         {...register(`options.${index}.name`)}
         placeholder="Name"
-        className="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        className="flex-grow px-3 py-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
       />
       <input
         {...register(`options.${index}.bio`)}
         placeholder="Bio"
-        className="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        className="flex-grow px-3 py-2 border border-gray-300 rounded-sm shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
       />
       <button type="button" onClick={() => remove(index)} className="ml-2 bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded">
         Remove

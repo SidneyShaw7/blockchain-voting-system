@@ -98,7 +98,7 @@ const ViewUsersModal = ({
           ) : (
             <>
               <Typography variant="h6" component="h2" className="mb-4 flex justify-center">
-                Users
+                Users / {organizationName}
               </Typography>
               <List>
                 {users.map((user) => (
