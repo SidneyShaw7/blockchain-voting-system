@@ -1,5 +1,5 @@
-import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
+import mongoose, { Schema } from 'mongoose';
 import { User } from '../../types/user.types';
 import logger from '../../middleware/logger';
 import { capitalize } from '../../utils';
@@ -53,16 +53,19 @@ const userSchema = new mongoose.Schema<User>({
 
 userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
-    try {
-      const salt = await bcrypt.genSalt(10);
-      this.password = await bcrypt.hash(this.password, salt);
-    } catch (error: unknown) {
-      logger.error('Error hashing password:', { error });
-      next(new Error('Failed to hash password'));
+    // Check if the password is already hashed
+    if (!this.password.startsWith('$2a$')) {
+      try {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+        console.log(`Pre-save hook: New hashed password: ${this.password}`);
+      } catch (error: unknown) {
+        logger.error('Error hashing password:', { error });
+        next(new Error('Failed to hash password'));
+      }
     }
-  } else {
-    next();
   }
+  next();
 });
 
 const UserModel = mongoose.model<User>('User', userSchema);

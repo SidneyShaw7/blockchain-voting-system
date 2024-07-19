@@ -12,6 +12,8 @@ export const updateUserController = async (req: Request, res: Response, next: Ne
   const { firstName, lastName, username, email, password, newPassword } = req.body;
   const avatar = req.file?.path;
 
+  console.log(`Request data:`, { firstName, lastName, username, email, password, newPassword });
+
   const updatedData: UserProfileValues = {
     firstName,
     lastName,
@@ -32,7 +34,6 @@ export const updateUserController = async (req: Request, res: Response, next: Ne
       username: updatedUser.username,
       email: updatedUser.email,
       avatar: updatedUser.avatar,
-      events: updatedUser.events?.map((event) => event),
     };
 
     res.json(userResponse);
