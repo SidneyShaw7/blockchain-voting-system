@@ -50,7 +50,7 @@ const ProfilePage = () => {
 
   return (
     <div className="flex justify-start items-center min-h-screen bg-gray-100">
-      <div className="max-w-lg w-full p-8 mx-auto ml-12">
+      <div className="max-w-lg w-full p-8 mx-auto ml-12 max-[640px]:ml-0">
         <h1 className="text-3xl font-bold mb-6">Edit Profile</h1>
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4">

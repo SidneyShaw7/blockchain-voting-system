@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 body {
-  font-family: 'Nunito', sans-serif;
+  font-family: "Lato", sans-serif;
 }
 
 .textField:focus {
@@ -24,7 +24,7 @@ body {
 } */
 
 .acme-regular {
-  font-family: "Acme", sans-serif;
+  font-family: 'Acme', sans-serif;
   font-weight: 400;
   font-style: normal;
 }

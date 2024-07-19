@@ -9,7 +9,7 @@ import {
   removeUserFromOrganization,
 } from '../../features/organizations';
 import { RootState, useDispatch, useSelector } from '../../store';
-import { InputField, FileInputField } from '../helpers/helperFieldComponents';
+import { InputField } from '../helpers/helperFieldComponents';
 import { OrganizationResponse, SimpleUser, OrganizationFormValues } from '../../types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { OrganizationSchema } from './OrganizationSchema';
@@ -223,41 +223,43 @@ const OrganizationsPage = () => {
         </div>
       )}
       {(isEditing || isAdding) && (
-        <FormProvider {...methods}>
-          <h1 className="text-3xl font-bold mb-6">Organization / {selectedOrganization?.name}</h1>
-          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4 sm:w-96">
-            <InputField label="Organization Name" name="name" />
-            <InputField label="Location" name="location" />
-            <InputField label="Description" name="description" inputType="textarea" />
-            <FileInputField label="Logo" name="logo" />
-            <InputField label="Billing Info" name="billingInfo" />
-            <InputField label="Billing Email" name="billingEmail" />
-            <div className="flex space-x-4">
-              <CancelButton
-                onClick={() => {
-                  setIsEditing(false);
-                  setIsAdding(false);
-                  methods.reset();
-                }}
-              >
-                Back
-              </CancelButton>
-              <AddButton onClick={methods.handleSubmit(onSubmit)}>Save</AddButton>
-            </div>
-            {isEditing && !isAdding && (
-              <div className="mt-3">
-                <DeleteButton
+        <div className="max-w-lg w-full p-8 mx-auto ml-12 max-[640px]:ml-0">
+          <FormProvider {...methods}>
+            <h1 className="text-3xl font-bold mb-6">Organization {selectedOrganization?.name}</h1>
+            <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-4 sm:w-96">
+              <InputField label="Organization Name" name="name" />
+              <InputField label="Location" name="location" />
+              <InputField label="Description" name="description" inputType="textarea" />
+              {/* <FileInputField label="Logo" name="logo" /> */}
+              <InputField label="Billing Info" name="billingInfo" />
+              <InputField label="Billing Email" name="billingEmail" />
+              <div className="flex space-x-4">
+                <CancelButton
                   onClick={() => {
-                    setOrganizationToDelete(selectedOrganization);
-                    setIsModalOpen(true);
+                    setIsEditing(false);
+                    setIsAdding(false);
+                    methods.reset();
                   }}
                 >
-                  Delete organization
-                </DeleteButton>
+                  Back
+                </CancelButton>
+                <AddButton onClick={methods.handleSubmit(onSubmit)}>Save</AddButton>
               </div>
-            )}
-          </form>
-        </FormProvider>
+              {isEditing && !isAdding && (
+                <div className="mt-3">
+                  <DeleteButton
+                    onClick={() => {
+                      setOrganizationToDelete(selectedOrganization);
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    Delete organization
+                  </DeleteButton>
+                </div>
+              )}
+            </form>
+          </FormProvider>
+        </div>
       )}
       <ViewUsersModal
         organizationId={selectedOrganization?.id ?? ''}
