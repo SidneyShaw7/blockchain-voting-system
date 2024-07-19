@@ -9,7 +9,6 @@ export const login = createAsyncThunk<AuthResponse, LoginCredentials, { rejectVa
     try {
       const response = await userService.login(credentials);
       console.log('Login response:', response.data);
-
       return response.data;
     } catch (error) {
       return rejectWithValue(processError(error));

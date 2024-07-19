@@ -8,7 +8,7 @@ export type {
   UserProfileFormValues,
   SimpleUser,
 } from './user.types';
-export type { ErrorWithStatus, FieldsError } from './error.types';
+export type { ErrorWithStatus, FieldsError, CustomError } from './error.types';
 export type {
   VotingEventFormValues,
   VotingEventFormValuesDB,

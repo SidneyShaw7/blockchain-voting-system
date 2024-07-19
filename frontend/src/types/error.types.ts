@@ -19,3 +19,7 @@ export interface FieldsError extends Error {
   type?: string;
   value?: string;
 }
+
+export interface CustomError {
+  message: string;
+}

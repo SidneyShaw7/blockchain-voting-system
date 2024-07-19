@@ -7,9 +7,11 @@ import { UserProfileSchema, UserProfileFormValues } from './UserProfileSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { error as showError, success as showSuccess } from '../../features/alert';
 import { AddButton, CancelButton } from '../Buttons';
+import { useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { isError, isSuccess, errorMessage } = useSelector((state: RootState) => state.userProfile);
   const { data: loginData } = useSelector((state: RootState) => state.login);
 
@@ -64,7 +66,7 @@ const ProfilePage = () => {
             <h3 className="text-xl font-semibold">Enter Current Password to Update Settings</h3>
             <InputField label="Current Password" name="password" type="password" />
             <div className="space-x-4">
-              <CancelButton onClick={() => methods.reset()}>Cancel</CancelButton>
+              <CancelButton onClick={() => navigate('/home')}>Cancel</CancelButton>
               <AddButton onClick={methods.handleSubmit(onSubmit)}>Save</AddButton>
             </div>
           </form>

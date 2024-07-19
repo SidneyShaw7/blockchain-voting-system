@@ -38,7 +38,11 @@ const loginSlice = createSlice({
         fulfilled(state, action);
         state.isAuthenticated = true;
       })
-      .addCase(login.rejected, rejected)
+      .addCase(login.rejected, (state, action: PayloadAction<string | undefined>) => {
+        rejected(state, action);
+        state.errorMessage = action.payload;
+        console.log(state.errorMessage);
+      })
       .addCase(logout.pending, pending)
       .addCase(logout.fulfilled, (state) => {
         state.isProcessing = false;
@@ -46,7 +50,10 @@ const loginSlice = createSlice({
         state.data = null;
         state.isAuthenticated = false;
       })
-      .addCase(logout.rejected, rejected);
+      .addCase(logout.rejected, (state, action: PayloadAction<string | undefined>) => {
+        rejected(state, action);
+        state.errorMessage = action.payload;
+      });
   },
 });
 

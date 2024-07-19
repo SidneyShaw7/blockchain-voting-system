@@ -8,8 +8,6 @@ import { useNavigate, NavLink } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import EventIcon from '@mui/icons-material/Event';
 import CreateIcon from '@mui/icons-material/Create';
-// import InfoIcon from '@mui/icons-material/Info';
-// import ContactMailIcon from '@mui/icons-material/ContactMail';
 import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
 import { StyledIconButton, StyledMenuItem } from './styledComponents';
@@ -23,13 +21,13 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const lastName = useSelector((state: RootState) => state.login.data?.user.lastName);
   const isAuthenticated = useSelector((state: RootState) => state.login.isAuthenticated);
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isScreenSmall, setIsScreenSmall] = useState(window.innerWidth < 768);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   const handleScroll = (e) => {
-    if (e.target.scrollTop > 300) {
+    const mainContent = e.target;
+    if (mainContent.scrollTop > 300) {
       setShowScrollTop(true);
     } else {
       setShowScrollTop(false);
@@ -96,7 +94,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white shadow py-3 flex justify-between items-center">
           <div className="text-left flex items-center">
-            <h1 className="text-3xl font-bold  acme-regular ml-5 mr-5">Secure Voting </h1>
+            <h1 className="text-3xl font-bold acme-regular ml-5 mr-5">Secure Voting</h1>
             {!isScreenSmall &&
               navItems.map(({ path, label, Icon }) => (
                 <Tooltip key={path} title={label} placement="bottom">
@@ -145,9 +143,15 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         </header>
         <div className="flex flex-1 overflow-hidden">
           {isScreenSmall && <Sidebar />}
-          <main id="main-content" className="flex-1 overflow-y-auto p-4">
-            <Alert />
-            {children}
+          {/* <main id="main-content" className="flex-1 overflow-y-auto p-4"> */}
+          <main id="main-content" className="flex-1 overflow-y-auto flex flex-col">
+            <div className='p-5'>
+              <Alert />
+              {children}
+            </div>
+            <footer className="mt-auto bg-white shadow p-2 text-center border-t-2 border-[#EFE7BC]">
+              <p>© 2024 Secure Voting System. All rights reserved.</p>
+            </footer>
           </main>
         </div>
         {showScrollTop && (

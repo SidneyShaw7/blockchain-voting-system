@@ -67,8 +67,8 @@ const WelcomePage = () => {
         </div>
       </header>
 
-      <section className="pt-18 h-screen flex">
-        <div className="w-2/5 bg-[#E7F2F8] flex flex-col justify-center items-start pl-12">
+      <section className="pt-18 md:h-screen flex flex-col-reverse md:flex-row">
+        <div className="w-full md:w-2/5 bg-[#E7F2F8] flex flex-col justify-center items-start pl-12">
           <div className="ml-10">
             <h2 className="text-5xl font-bold mb-5 text-left acme-regular">Vote Here!</h2>
             <p className="text-xl mb-5 text-left">Unforgettable online election experience! Voting system built for your needs.</p>
@@ -79,8 +79,8 @@ const WelcomePage = () => {
             </div>
           </div>
         </div>
-        <div className="w-4/6 relative">
-          <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#E7F2F8]"></div>
+        <div className="w-full md:w-4/6 relative">
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent to-[#E7F2F8] max-[767px]:bg-gradient-to-b"></div>
           <img src={pollingStation} alt="Vote" className="object-cover h-full w-full" />
         </div>
       </section>
