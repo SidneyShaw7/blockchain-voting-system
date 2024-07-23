@@ -36,6 +36,7 @@ export interface VotingEventFormValues {
   eventType: EventType;
   createdBy: string;
   invitedPersons: string[];
+  file?: File | null;
 }
 
 export interface VotingEventFormValuesDB extends VotingEventFormValues {

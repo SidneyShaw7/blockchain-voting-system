@@ -69,7 +69,7 @@ const WelcomePage = () => {
 
       <section className="pt-18 md:h-screen flex flex-col-reverse md:flex-row">
         <div className="w-full md:w-2/5 bg-[#E7F2F8] flex flex-col justify-center items-start pl-12">
-          <div className="ml-10">
+          <div className="ml-10 max-[460px]:ml-auto">
             <h2 className="text-5xl font-bold mb-5 text-left acme-regular">Vote Here!</h2>
             <p className="text-xl mb-5 text-left">Unforgettable online election experience! Voting system built for your needs.</p>
             <p className="mb-6 text-gray-600">Saves your time, secures your ballots.</p>

@@ -26,6 +26,7 @@ export const EventSchema = z.object({
   resultVisibility: z.boolean(),
   storageType: z.nativeEnum(StorageType),
   eventType: z.nativeEnum(EventType),
+  file: z.any().optional(), 
 });
 
 export type ZodVotingEventFormValues = z.infer<typeof EventSchema>;

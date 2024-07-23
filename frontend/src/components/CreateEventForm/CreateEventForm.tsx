@@ -22,6 +22,7 @@ const CreateEventForm = () => {
   const navigate = useNavigate();
   const { isSuccess, data, isError, errorMessage } = useSelector((state: RootState) => state.votingEvent);
   const [shouldNavigate, setShouldNavigate] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
 
   const methods = useForm<VotingEventFormValues>({
     resolver: zodResolver(EventSchema),
@@ -39,6 +40,7 @@ const CreateEventForm = () => {
       eventType: EventType.Candidate,
       createdBy: '',
       invitedPersons: [],
+      file: null, // Initialize file field
     },
   });
 
@@ -72,8 +74,18 @@ const CreateEventForm = () => {
 
   const onSubmit = (data: VotingEventFormValues) => {
     console.log('Form data before submit:', data);
-    dispatch(createEvent(data));
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(data));
+    if (file) {
+      formData.append('file', file);
+    }
+    dispatch(createEvent(formData));
     setShouldNavigate(true);
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0] || null;
+    setFile(selectedFile);
   };
 
   return (
@@ -83,6 +95,13 @@ const CreateEventForm = () => {
         <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-6">
           <InputField label="Event Title" name="title" />
           <InputField label="Description" name="description" inputType="textarea" />
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="file">
+              Attach a file (PDF, etc.)
+            </label>
+            <input type="file" id="file" accept=".pdf,.doc,.docx" onChange={handleFileChange} />
+            {file && <p className="mt-2 text-sm text-gray-500">{file.name}</p>}
+          </div>
           <SelectField name="eventType" label="Event Type" options={Object.values(EventType)} />
 
           {fields.map((field, index) =>
