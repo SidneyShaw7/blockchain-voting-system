@@ -12,8 +12,6 @@ export const updateUser = async (userId: string, formData: UserProfileValues): P
     throw new ErrorWithStatus('User not found', 404, 'USER_NOT_FOUND');
   }
 
-  console.log(`Current password from formData: ${password}`);
-  console.log(`Stored hashed password: ${user.password}`);
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
@@ -35,7 +33,6 @@ export const updateUser = async (userId: string, formData: UserProfileValues): P
   }
 
   await user.save();
-  console.log('User saved successfully with updated password');
 
   const userResponse: UserResponse = {
     id: user._id.toString(),
